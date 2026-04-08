@@ -860,10 +860,10 @@
       </table>
 
       <h4 style="color:#152D32; margin-top:1.75rem; margin-bottom:0.5rem;">BASIE Applied to PIP&rsquo;s Five Candidates</h4>
-      <p style="line-height:1.65;">The figure below shows what happens when BASIE reinterprets the five apparent winners. The grey bars show the original frequentist estimates; the teal bars show the Bayesian estimates, which are &ldquo;shrunk&rdquo; toward more realistic values by accounting for the overall distribution of effects in the i3 portfolio.</p>
+      <p style="line-height:1.65;">The figure below shows what happens when BASIE reinterprets the five apparent winners. The tan bars show the original frequentist estimates; the dark gold bars show the Bayesian estimates, which are &ldquo;shrunk&rdquo; toward more realistic values by accounting for the overall distribution of effects in the i3 portfolio.</p>
 
       <figure class="pip-figure">
-        <div class="pip-figcaption"><strong>Figure 2.</strong> Frequentist estimates (grey) vs. Bayesian estimates (teal) for the five programs selected by PIP&rsquo;s standard approach. Bayesian estimates are shrunk substantially toward more plausible values.</div>
+        <div class="pip-figcaption"><strong>Figure 2.</strong> Frequentist estimates (tan) vs. Bayesian estimates (dark gold) for the five programs selected by PIP&rsquo;s standard approach. Bayesian estimates are shrunk substantially toward more plausible values.</div>
         <div id="pip-fig2-wrap">
           <div style="height:300px; position:relative;"><canvas id="pip-fig2-chart"></canvas></div>
         </div>
@@ -876,7 +876,7 @@
       </div>
 
       <div class="pip-conclusion">
-        <strong>No candidate clears 50%.</strong> The honest answer may be: none of these programs meet the bar. This is a little disappointing now &mdash; but it prevents a much bigger disappointment later.
+        <strong>No candidate clearly clears 50%.</strong> The honest answer may be: none of these programs meet the bar. The closest calls &mdash; DEV104 and VALID21 &mdash; hover right around 49&ndash;50%, which is essentially a coin flip on whether these programs truly meet PIP&rsquo;s threshold. That ambiguity is a little disappointing now &mdash; but it prevents a much bigger disappointment later. (Results this close to 50% are also subject to small amounts of Monte Carlo variability; refresh the page to see how much they move.)
       </div>
 
       <h3 class="pip-section-header">4. What This Means for Grant Making</h3>
@@ -1154,7 +1154,7 @@
 
       <h3 class="welcome-section-header">Posterior computation</h3>
       <p style="line-height:1.65;">Inference proceeds by marginalizing over <em>&mu;</em> analytically (conditional on <em>&tau;</em>), with each <em>&theta;<sub>j</sub></em> then sampled from its conjugate normal posterior conditional on (<em>&mu;</em>, <em>&tau;</em>). The marginal posterior of <em>&tau;</em> given the data is evaluated on a fine grid (1,000 points from 0.001 to 40); &tau; is then sampled from this discrete approximation. Conditional on each <em>&tau;</em> draw, <em>&mu;</em> is sampled from its conjugate normal posterior, and each <em>&theta;<sub>j</sub></em> is sampled from its conjugate normal posterior. This grid-based approach follows the algorithm described in Deke &amp; Finucane (2019). The default uses 10,000 posterior draws.</p>
-      <p style="line-height:1.65;">The default priors &mdash; <em>&mu;</em> ~ N(0, 0.2<sup>2</sup>) and <em>&tau;</em> ~ Gamma(2, 2) &mdash; were chosen to reflect the empirical distribution of true effects observed in the i3 evaluation portfolio: most true effects are small, and fewer than 10% exceed 0.10 standard deviations.</p>
+      <p style="line-height:1.65;">The default prior for <em>&mu;</em> is N(0, 0.2<sup>2</sup>). The default prior for <em>&tau;</em> is uninformative (flat), consistent with the Rubin (1981) eight schools model &mdash; the degree of shrinkage is determined entirely by the data. Users can impose informative Gamma priors on <em>&tau;</em> using the slider in the prior panel.</p>
 
       <h3 class="welcome-section-header">The predictive distribution</h3>
       <p style="line-height:1.65;">The <strong>Predict</strong> tab displays the posterior predictive distribution for the <em>true effect</em> in a new study drawn from the same population &mdash; that is, <em>&theta;</em><sub>new</sub> ~ N(<em>&mu;</em>, <em>&tau;</em><sup>2</sup>) marginalized over the joint posterior of (<em>&mu;</em>, <em>&tau;</em>). This is <em>not</em> the predictive distribution for a new <em>estimate</em> <em>y</em><sub>new</sub>, which would add an additional layer of sampling variance. The distinction matters: the predictive interval for the true effect answers the decision-relevant question of what impact a comparable program would actually have, setting aside measurement error.</p>
@@ -1453,7 +1453,7 @@
     // Prior state (shared across tabs)
     // ================================
     const muWidthValues = [0.1, 0.2, 0.4, 1.0];
-    const priorState = { muWidthIndex: 2, tauVariationIndex: 4 };
+    const priorState = { muWidthIndex: 2, tauVariationIndex: 5 };
 
     function getCurrentMuPriorParams() {
       return { prior_mu_mean_mean: 0, prior_mu_mean_sd: 0,
@@ -3476,7 +3476,7 @@
       try {
         dataset = JSON.parse(JSON.stringify(defaultData));
         priorState.muWidthIndex    = 2;  // somewhat cautious (0.2 SD)
-        priorState.tauVariationIndex = 4; // gamma(2,2)
+        priorState.tauVariationIndex = 5; // flat (uninformative)
         await runModel();
         pipModelResults = modelResults;
       } catch(e) {
