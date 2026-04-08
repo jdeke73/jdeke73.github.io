@@ -689,17 +689,23 @@
     <div class="welcome-narrative">
 
       <div class="welcome-hero">
-        <h2>Traditional statistical methods answer a question nobody asks</h2>
-        <p>Decision makers want data to help answer questions like:</p>
+        <h2>BASIE bridges the gap from evidence to decision making</h2>
+        <div style="text-align:center; font-size:1.1rem; font-weight:600; color:#7A5F43; letter-spacing:0.04em; margin:0.75rem 0 1.25rem;">
+          Evidence &nbsp;&rarr;&nbsp; BASIE &nbsp;&rarr;&nbsp; Decision Making
+        </div>
+        <p>Decision makers need to know whether a program truly works &mdash; not just what was found in a study, but what it means for their decisions. They need to know how confident they can be, whether the evidence is strong enough to act on, and what they should realistically expect if they invest in a program or scale it to a new context. <strong>BASIE (Bayesian Interpretation of Estimates)</strong> was designed to answer these questions directly, in plain terms that support a yes, no, or not-yet decision.</p>
+        <p>BASIE answers questions like:</p>
         <div class="fade-box">
           <span class="fade-item" data-fade-group="welcome-q" data-fade-index="0">&ldquo;Did the program really work?&rdquo;</span>
           <span class="fade-item" data-fade-group="welcome-q" data-fade-index="1">&ldquo;Are outcomes truly different between groups?&rdquo;</span>
           <span class="fade-item" data-fade-group="welcome-q" data-fade-index="2">&ldquo;Did outcomes improve over time?&rdquo;</span>
         </div>
-        <p><strong>Those are the right questions!</strong> But the standard statistical methods that researchers report &mdash; like statistical significance &mdash; were never designed to answer them.</p>
-        <p>Statistical significance tells you that a random error as large as your estimate is unlikely. As we will see with <strong>The PIP Foundation</strong>, that&rsquo;s importantly different from telling you whether the program really worked, the difference between groups is real, or the change over time is meaningful.</p>
-        <p>It&rsquo;s also based on an arbitrary threshold, unrelated to the goals of the decision maker.</p>
-        <p><strong>BASIE (Bayesian Interpretation of Estimates) provides tailored, flexible answers to the right questions:</strong> given all the evidence, what is the probability this program truly produces meaningful results, that the outcomes are truly different between groups, or that outcomes improved over time?</p>
+        <p>Given all the evidence, BASIE produces probability statements &mdash; how likely is it that this program truly works? how likely is the true effect to exceed a meaningful threshold? &mdash; that map directly onto your decision criteria.</p>
+      </div>
+
+      <h3 class="welcome-section-header">Traditional statistical methods answer a question nobody asks</h3>
+      <div style="line-height:1.65;">
+        <p>Getting clear, direct answers to these questions is exactly what decision makers need. Yet the standard statistical methods used in most evaluation reports &mdash; significance tests, p-values &mdash; were not designed for this purpose. Statistical significance tells you that a random error as large as your estimate is unlikely. As we will see with <strong>The PIP Foundation</strong>, that&rsquo;s importantly different from telling you whether the program really worked, the difference between groups is real, or the change over time is meaningful. It&rsquo;s also based on an arbitrary threshold, unrelated to the goals of the decision maker.</p>
       </div>
 
 
@@ -792,6 +798,30 @@
         <div class="pip-callout-stat">6.5&times;</div>
         <div class="pip-callout-text"><strong>Magnitude error of the standard approach.</strong> Simulations show that &ldquo;winning&rdquo; estimates average 0.52 SD &mdash; but the true effects behind those winners average only 0.08 SD. Across simulations, fewer than half of selected programs truly meet PIP&rsquo;s criteria.</div>
       </div>
+
+      <details style="margin:0.75rem 0 1rem; border:1px solid #D4C4B0; border-radius:4px; padding:0.5rem 1rem; background:#F5F0E8;">
+        <summary style="cursor:pointer; font-weight:600; color:#152D32; padding:0.3rem 0; user-select:none; font-size:0.92rem;">&#128300;&nbsp; Simulation methodology (technical details)</summary>
+        <div style="margin-top:0.85rem; font-size:0.9rem; line-height:1.7; color:#333;">
+
+          <p style="margin-bottom:0.75rem;">To assess inferential errors, we need to compare inferences to the truth. For example, calculating a Type M error requires comparing an <em>estimate</em> of an intervention&rsquo;s effect to its <em>true</em> effect. This is impossible with real data because true effects are unknown &mdash; but it is straightforward in a simulation, where true effects are generated and then estimated subject to random error.</p>
+
+          <p style="margin-bottom:0.5rem;"><strong>Data inputs.</strong> The simulation uses the actual standard errors from the 44 i3 evaluations. The distribution of true effects is anchored to a random-effects meta-analysis of those evaluations, which yields &mu;&nbsp;=&nbsp;0.014 and &tau;&nbsp;=&nbsp;0.062 &mdash; implying that only about 8% of true effects exceed 0.10 SD.</p>
+
+          <p style="margin-bottom:0.5rem;"><strong>Simulation steps (repeated across many replications):</strong></p>
+          <ol style="padding-left:1.4rem; margin-bottom:0.75rem;">
+            <li style="margin-bottom:0.4rem;">Draw 44 true effects &theta;<sub>j</sub> from N(&mu;,&nbsp;&tau;<sup>2</sup>), using the meta-analytic parameter estimates.</li>
+            <li style="margin-bottom:0.4rem;">For each true effect, generate a noisy impact estimate <em>y&#770;<sub>j</sub></em>&nbsp;~&nbsp;N(&theta;<sub>j</sub>,&nbsp;s<sub>j</sub><sup>2</sup>), using the actual i3 standard errors s<sub>j</sub>.</li>
+            <li style="margin-bottom:0.4rem;">Calculate t-statistics and apply PIP&rsquo;s selection rule: flag estimates where t&nbsp;&ge;&nbsp;1.96 and <em>y&#770;<sub>j</sub></em>&nbsp;&ge;&nbsp;0.10.</li>
+            <li style="margin-bottom:0.4rem;">Record the minimum, median, and maximum selected estimate alongside their corresponding true effects &theta;<sub>j</sub>.</li>
+            <li>Compare the average selected estimates to the average true effects to compute Type M errors.</li>
+          </ol>
+
+          <p style="margin-bottom:0.5rem;"><strong>Key result.</strong> Under the meta-analytic scenario, the average maximum selected estimate is 0.52 SD while the average corresponding true effect is only 0.08 SD &mdash; a 6.5&times; Type M error. The probability that a selected program&rsquo;s true effect is negative never exceeds 10%, so PIP&rsquo;s goal of avoiding harm is roughly met. But fewer than 43% of selected programs have a true effect exceeding PIP&rsquo;s 0.10 SD threshold for meaningful improvement.</p>
+
+          <p style="margin-bottom:0;"><strong>Sensitivity analyses.</strong> Three additional scenarios were examined with wider distributions of true effects (&tau;&nbsp;=&nbsp;0.10, 0.15, and 0.20). Type M errors decline as true effect variability increases (because genuinely large effects become more common), but remain substantial across all scenarios. The qualitative conclusion &mdash; that significance-filtered shortlists are systematically misleading &mdash; is robust to the choice of prior distribution.</p>
+
+        </div>
+      </details>
 
       <h3 class="pip-section-header">3. The Solution: BASIE</h3>
       <p style="line-height:1.65;">BASIE (<em>Bayesian Interpretation of Estimates</em>) replaces &ldquo;Is this statistically significant?&rdquo; with questions that directly support decision making:</p>
