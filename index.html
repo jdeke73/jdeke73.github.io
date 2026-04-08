@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>John Deke, PhD</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:    #152D32;
+      --gold:    #7A5F43;
+      --bg:      #F9F9F1;
+      --bg2:     #F2EDE3;
+      --border:  #D4C4B0;
+      --text:    #1a1a18;
+      --muted:   #5a5244;
+      --font:    'Nimbus Sans', 'NimbusSan', Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 56px;
+    }
+    .nav-brand {
+      font-size: 1.05rem; font-weight: 600;
+      color: var(--dark); text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-links button {
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font); font-size: 0.93rem;
+      color: var(--muted); padding: 0.4rem 0.9rem;
+      border-radius: 4px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-links button:hover { background: var(--bg2); color: var(--dark); }
+    .nav-links button.active {
+      color: var(--gold);
+      border-bottom: 2px solid var(--gold);
+      border-radius: 0;
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── SHARED ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+    .page-header { text-align: center; margin-bottom: 3rem; }
+    .page-header h1 { font-size: 2.2rem; color: var(--dark); margin-bottom: 0.5rem; }
+    .page-header p { color: var(--muted); font-size: 1rem; }
+
+    .tag {
+      display: inline-block; font-size: 0.8rem;
+      border: 1px solid var(--border); border-radius: 20px;
+      padding: 3px 12px; color: var(--muted);
+      margin: 0.2rem;
+    }
+    .tag-label {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.5rem; margin-top: 1.25rem;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--dark); color: #fff;
+      border: none; border-radius: 6px;
+      padding: 0.65rem 1.3rem; font-size: 0.93rem;
+      font-family: var(--font); cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: none; color: var(--dark);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 0.65rem 1.3rem; font-size: 0.93rem;
+      font-family: var(--font); cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-outline:hover { background: var(--bg2); }
+
+    /* ── HOME PAGE ── */
+    .home-hero {
+      display: flex; gap: 3rem; align-items: flex-start;
+      margin-bottom: 2.5rem;
+    }
+    .home-text { flex: 1; }
+    .home-badge {
+      display: inline-block; font-size: 0.82rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 14px;
+      color: var(--muted); margin-bottom: 1rem;
+    }
+    .home-name {
+      font-size: 2.8rem; font-weight: 700;
+      color: var(--dark); line-height: 1.15;
+      margin-bottom: 1.1rem;
+    }
+    .home-bio { color: var(--text); line-height: 1.7; margin-bottom: 0.9rem; }
+    .home-photo {
+      flex-shrink: 0; width: 240px;
+    }
+    .home-photo img {
+      width: 100%; border-radius: 10px;
+      object-fit: cover; object-position: center top;
+      height: 290px;
+      border: 1px solid var(--border);
+    }
+    .home-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+    /* ── TOOL PAGE ── */
+    .tool-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .tool-card h2 {
+      font-size: 1.4rem; color: var(--dark); margin-bottom: 0.5rem;
+    }
+    .tool-card p { color: var(--muted); line-height: 1.65; margin-bottom: 1.25rem; }
+    .tool-card .tool-meta {
+      font-size: 0.83rem; color: var(--muted);
+      border-top: 1px solid var(--border); padding-top: 0.9rem;
+      margin-top: 0.9rem;
+    }
+
+    /* ── PUBLICATIONS ── */
+    .pub-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .pub-meta {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 0.6rem; align-items: center;
+    }
+    .pub-type {
+      font-size: 0.75rem; font-weight: 600;
+      background: var(--bg2); color: var(--gold);
+      border-radius: 20px; padding: 2px 10px;
+    }
+    .pub-year { font-size: 0.8rem; color: var(--muted); }
+    .pub-card h3 { font-size: 1rem; color: var(--dark); margin-bottom: 0.35rem; line-height: 1.4; }
+    .pub-card .pub-authors { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.3rem; }
+    .pub-card .pub-venue {
+      font-size: 0.85rem; color: var(--gold); font-style: italic;
+    }
+    .pub-link {
+      font-size: 0.83rem; color: var(--gold);
+      text-decoration: none; margin-top: 0.5rem; display: inline-block;
+    }
+    .pub-link:hover { text-decoration: underline; }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .contact-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.1rem 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .contact-icon {
+      width: 40px; height: 40px; border-radius: 8px;
+      background: var(--bg2); display: flex;
+      align-items: center; justify-content: center;
+      color: var(--dark); font-size: 1.1rem; flex-shrink: 0;
+    }
+    .contact-card label { font-size: 0.78rem; color: var(--muted); display: block; }
+    .contact-card a, .contact-card span {
+      font-size: 0.93rem; color: var(--dark); font-weight: 500;
+      text-decoration: none;
+    }
+    .contact-card a:hover { color: var(--gold); text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--muted); font-size: 0.83rem;
+      background: var(--bg);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .home-hero { flex-direction: column-reverse; }
+      .home-photo { width: 100%; }
+      .home-photo img { height: 240px; }
+      .home-name { font-size: 2rem; }
+      .contact-grid { grid-template-columns: 1fr; }
+      nav { padding: 0 1rem; }
+      .container { padding: 2rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <span class="nav-brand" onclick="showPage('home')">John Deke</span>
+  <div class="nav-links">
+    <button id="nav-home"   onclick="showPage('home')">Home</button>
+    <button id="nav-tool"   onclick="showPage('tool')">BASIE Workbench</button>
+    <button id="nav-pubs"   onclick="showPage('pubs')">Publications</button>
+    <button id="nav-contact" onclick="showPage('contact')">Contact</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HOME
+════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="container">
+    <div class="home-hero">
+      <div class="home-text">
+        <div class="home-badge">Independent Consultant</div>
+        <h1 class="home-name">John Deke, PhD</h1>
+        <p class="home-bio">I am an economist and nationally recognized expert in experimental and non-experimental impact evaluation methodology, Bayesian inference, and the interpretation of impact and descriptive findings. I bring more than two decades of experience designing and analyzing experimental, quasi-experimental, and descriptive evaluations for OPRE, IES, CMS, and OPA.</p>
+        <p class="home-bio">As a Senior Fellow at Mathematica, I co-led the development of <strong>BASIE (Bayesian Interpretation of Estimates)</strong>, an approach now used across federal agencies to provide transparent, probability-based interpretation of both impact estimates and descriptive differences between groups or across time. BASIE empowers more useful, comprehensive, and integrated interpretation of heterogeneous research findings.</p>
+
+        <div class="tag-label">Areas of Expertise</div>
+        <div>
+          <span class="tag">Bayesian inference</span>
+          <span class="tag">Program evaluation</span>
+          <span class="tag">Causal inference</span>
+          <span class="tag">Impact evaluation</span>
+          <span class="tag">Applied statistics</span>
+          <span class="tag">Education research</span>
+          <span class="tag">Health policy</span>
+        </div>
+
+        <div class="home-buttons">
+          <button class="btn-primary" onclick="showPage('tool')">BASIE Workbench &rarr;</button>
+          <button class="btn-outline" onclick="showPage('pubs')">Publications</button>
+          <button class="btn-outline" onclick="showPage('contact')">Get in Touch</button>
+        </div>
+      </div>
+      <div class="home-photo">
+        <img src="photo.jpeg" alt="John Deke">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     BASIE WORKBENCH
+════════════════════════════════════════════ -->
+<div id="page-tool" class="page">
+  <div class="container">
+    <div class="page-header">
+      <h1>BASIE Workbench</h1>
+      <p>An interactive tool for Bayesian interpretation of impact evaluation findings</p>
+    </div>
+
+    <div class="tool-card">
+      <h2>BASIE Workbench</h2>
+      <p>BASIE Workbench is a free, browser-based tool that applies the BASIE framework to a portfolio of impact estimates. Upload your own estimates — or explore the pre-loaded example — to see how Bayesian reinterpretation changes the picture. The tool produces posterior probabilities, credible intervals, and a predictive distribution for the true effect in a comparable future study.</p>
+      <p>The pre-loaded example illustrates the PIP Foundation: a fictional grant-making organization that discovers how the standard significance-based approach to picking winners is systematically misleading — and how BASIE provides a better path forward.</p>
+      <a class="btn-primary" href="BASIE_Workbench_demo.html" target="_blank">Open BASIE Workbench &rarr;</a>
+      <div class="tool-meta">
+        Built with Chart.js &middot; Runs entirely in your browser &middot; No data is uploaded or stored
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <h2>About BASIE</h2>
+      <p>BASIE (Bayesian Interpretation of Estimates) replaces the question <em>"Is this statistically significant?"</em> with decision-relevant questions: What is the probability this program truly works? What is the probability the effect exceeds a meaningful threshold? BASIE combines prior knowledge about the plausible range of effects with the current study's estimates to produce probability statements that map directly onto decision criteria.</p>
+      <p>BASIE is described in detail in the resources below and has been applied across evaluations sponsored by IES, OPRE, CMS, and other federal agencies.</p>
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <a class="btn-outline" href="https://acf.gov/opre/report/moving-beyond-statistical-significance-basie-bayesian-interpretation-estimates" target="_blank">OPRE Report &rarr;</a>
+        <a class="btn-outline" href="https://ies.ed.gov/use-work/resource-library/resource/tooltoolkit/basie-bayesian-interpretation-estimates-framework-interpreting-findings-impact-evaluations-practical" target="_blank">IES Toolkit &rarr;</a>
+        <a class="btn-outline" href="https://statmodeling.stat.columbia.edu/2022/04/27/hey-check-this-out-its-really-cool-a-bayesian-framework-for-interpreting-findings-from-impact-evaluations/" target="_blank">Gelman Blog &rarr;</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PUBLICATIONS
+════════════════════════════════════════════ -->
+<div id="page-pubs" class="page">
+  <div class="container">
+    <div class="page-header">
+      <h1>Featured Publications</h1>
+      <p>A selection of recent and representative work</p>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Journal Article</span>
+        <span class="pub-year">2023</span>
+      </div>
+      <h3>A Strong Case for Rethinking Causal Inference</h3>
+      <div class="pub-authors">Deke, John</div>
+      <div class="pub-venue">Journal of Research on Educational Effectiveness</div>
+      <a class="pub-link" href="https://doi.org/10.1080/19345747.2023.2203683" target="_blank">doi.org/10.1080/19345747.2023.2203683 &rarr;</a>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Journal Article</span>
+        <span class="pub-year">2022</span>
+      </div>
+      <h3>Bayesian Interpretation of Cluster-Robust Subgroup Impact Estimates: The Best of Both Worlds</h3>
+      <div class="pub-authors">Lipman, Erin R., Deke, John, and Finucane, Mariel M.</div>
+      <div class="pub-venue">Journal of Policy Analysis and Management, 41(4), 1204–1224</div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Journal Article</span>
+        <span class="pub-year">2021</span>
+      </div>
+      <h3>Asymdystopia: The Threat of Small Biases in Evaluations of Education Interventions That Need to Be Powered to Detect Small Impacts</h3>
+      <div class="pub-authors">Deke, John, Thomas Wei, and Tim Kautz</div>
+      <div class="pub-venue">Journal of Research on Educational Effectiveness, 14(1), 207–240</div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Report</span>
+        <span class="pub-year">2022</span>
+      </div>
+      <h3>The BASIE (BAyeSian Interpretation of Estimates) Framework for Interpreting Findings from Impact Evaluations: A Practical Guide for Education Researchers</h3>
+      <div class="pub-authors">Deke, J., Finucane, M., &amp; Thal, D.</div>
+      <div class="pub-venue">National Center for Education Evaluation, Institute of Education Sciences, U.S. Department of Education</div>
+      <a class="pub-link" href="https://ies.ed.gov/ncee/pubs/2022005/pdf/2022005.pdf" target="_blank">Download PDF &rarr;</a>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Report</span>
+        <span class="pub-year">2019</span>
+      </div>
+      <h3>Moving Beyond Statistical Significance: The BASIE (BAyeSian Interpretation of Estimates) Framework for Interpreting Findings from Impact Evaluations</h3>
+      <div class="pub-authors">Deke, J., and Finucane, M.</div>
+      <div class="pub-venue">OPRE Report #2019-35. Office of Planning, Research, and Evaluation, ACF, U.S. DHHS</div>
+      <a class="pub-link" href="https://acf.gov/opre/report/moving-beyond-statistical-significance-basie-bayesian-interpretation-estimates" target="_blank">View Report &rarr;</a>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Report</span>
+        <span class="pub-year">2023</span>
+      </div>
+      <h3>Using Bayesian Meta-Analysis to Explore the Components of Early Literacy Interventions</h3>
+      <div class="pub-authors">Walsh, E., Deke, J., Robles, S., Streke, A., and Thal, D.</div>
+      <div class="pub-venue">National Center for Education Evaluation, Institute of Education Sciences (WWC 2023008)</div>
+      <a class="pub-link" href="https://whatworks.ed.gov" target="_blank">whatworks.ed.gov &rarr;</a>
+    </div>
+
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Journal Article</span>
+        <span class="pub-year">2017</span>
+      </div>
+      <h3>The WWC Attrition Standard: Sensitivity to Assumptions and Opportunities for Refining and Adapting to New Contexts</h3>
+      <div class="pub-authors">Deke, John, and Hanley Chiang</div>
+      <div class="pub-venue">Evaluation Review, 41(2), 130–154</div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Journal Article</span>
+        <span class="pub-year">2016</span>
+      </div>
+      <h3>Design and Analysis Considerations for Cluster Randomized Controlled Trials That Have a Small Number of Clusters</h3>
+      <div class="pub-authors">Deke, John</div>
+      <div class="pub-venue">Evaluation Review, 40(5), 444–486</div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Report</span>
+        <span class="pub-year">2015</span>
+      </div>
+      <h3>Preview of Regression Discontinuity Designs Standards</h3>
+      <div class="pub-authors">Deke, J., Cook, T., Dragoset, L., Reardon, S., Titiunik, R., Todd, P., Van der Klaauw, W., and Waddell, G.</div>
+      <div class="pub-venue">Institute of Education Sciences, U.S. Department of Education</div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-meta">
+        <span class="pub-type">Journal Article</span>
+        <span class="pub-year">2003</span>
+      </div>
+      <h3>Study of the Impact of Public School Spending on Postsecondary Educational Attainment Using Statewide School District Refinancing in Kansas</h3>
+      <div class="pub-authors">Deke, John</div>
+      <div class="pub-venue">Economics of Education Review, 22(3), 275–284</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CONTACT
+════════════════════════════════════════════ -->
+<div id="page-contact" class="page">
+  <div class="container" style="max-width:700px;">
+    <div class="page-header">
+      <h1>Get in Touch</h1>
+      <p>I welcome inquiries about consulting engagements, research collaborations, and other professional opportunities.</p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-icon">&#9993;</div>
+        <div>
+          <label>Email</label>
+          <a href="mailto:jdeke73@gmail.com">jdeke73@gmail.com</a>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">in</div>
+        <div>
+          <label>LinkedIn</label>
+          <a href="https://www.linkedin.com/in/john-deke-b622b1108/" target="_blank">linkedin.com/in/john-deke</a>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">&#128205;</div>
+        <div>
+          <label>Location</label>
+          <span>Overland Park, Kansas</span>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">&#128196;</div>
+        <div>
+          <label>BASIE Tool</label>
+          <a href="BASIE_Workbench_demo.html" target="_blank">BASIE Workbench</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>John Deke, PhD &middot; Independent Consultant</span>
+  <span>&copy; 2026 John Deke. All rights reserved.</span>
+</footer>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.getElementById('nav-' + id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  // Set initial active nav
+  document.getElementById('nav-home').classList.add('active');
+</script>
+</body>
+</html>

@@ -1,0 +1,3930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BASIE Workbench — Patterson Family Foundation</title>
+  <!-- Import Montserrat and Zilla Slab fonts from Google Fonts -->
+    <!-- Load external libraries from trusted CDNs -->
+  <!-- jQuery is required for DataTables -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+          integrity="sha256-K+8g5XvLqL4Ub+j68z8WM+duPwyJ9z7MM3bXU6Y9sPo=" crossorigin="anonymous"></script>
+  <!-- DataTables CSS and JS for tabular display -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <!-- PapaParse for CSV parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <!-- jStat provides statistical distributions (normal, gamma) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
+  <!-- Chart.js for plotting; includes error bars plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-error-bars@3.1.0/dist/chartjs-plugin-error-bars.min.js"></script>
+  <!-- Plugin to display data labels (used for significance stars) -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+  <style>
+
+
+
+    /* ── Welcome tab fade animation ── */
+    .fade-box {
+      position: relative;
+      background: #152D32;
+      border-radius: 5px;
+      padding: 0.45rem 1.25rem;
+      margin: 0.6rem 0 1rem;
+      min-height: 2rem;
+      display: flex;
+      align-items: center;
+    }
+    .fade-box .fade-item {
+      position: absolute;
+      left: 1.25rem;
+      right: 1.25rem;
+      opacity: 0;
+      transition: opacity 0.7s ease;
+      color: white;
+      font-size: 1.02rem;
+      font-style: italic;
+      line-height: 1.4;
+      text-align: center;
+    }
+    .fade-box .fade-item.fade-visible {
+      opacity: 1;
+    }
+
+    /* ── Welcome tab ── */
+    .welcome-narrative {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 2.5rem;
+    }
+    .welcome-hero {
+      margin-bottom: 1.75rem;
+    }
+    .welcome-hero h2 {
+      font-size: 1.7rem;
+      margin-bottom: 0.5rem;
+    }
+    .welcome-hero p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #333;
+    }
+    .welcome-contrast {
+      display: flex;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+    .welcome-contrast-box {
+      flex: 1;
+      min-width: 220px;
+      border-radius: 6px;
+      padding: 1.1rem 1.25rem;
+    }
+    .welcome-contrast-box.old {
+      background: #F2EDE3;
+      border: 1px solid #D4C4B0;
+    }
+    .welcome-contrast-box.new {
+      background: #152D32;
+      color: white;
+    }
+    .welcome-contrast-box h4 {
+      margin: 0 0 0.6rem 0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .welcome-contrast-box.old h4 { color: #888; }
+    .welcome-contrast-box.new h4 { color: #c8a97a; }
+    .welcome-contrast-box ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      line-height: 1.75;
+      font-size: 0.93rem;
+    }
+    .welcome-contrast-box.new ul { color: #E8DDD0; }
+    .welcome-section-header {
+      color: #152D32;
+      border-left: 4px solid #7A5F43;
+      padding-left: 0.75rem;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      font-size: 1.15rem;
+    }
+    .welcome-roadmap {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.93rem;
+    }
+    .welcome-roadmap td {
+      padding: 0.65rem 0.9rem;
+      vertical-align: top;
+      border-bottom: 1px solid #D8CCBB;
+      line-height: 1.5;
+    }
+    .welcome-roadmap tr:last-child td { border-bottom: none; }
+    .welcome-roadmap .tab-name {
+      font-weight: 700;
+      color: #7A5F43;
+      white-space: nowrap;
+      width: 1%;
+    }
+    .welcome-roadmap .tab-arrow {
+      color: #aaa;
+      text-align: center;
+      width: 1%;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .welcome-roadmap tr:nth-child(odd) td { background: #F5F0E8; }
+    .welcome-pitch {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #152D32 0%, rgb(4,70,60) 100%);
+      color: white;
+      border-radius: 8px;
+    }
+    .welcome-pitch h3 {
+      color: #c8a97a;
+      margin: 0 0 0.6rem 0;
+      font-size: 1.15rem;
+    }
+    .welcome-pitch p {
+      color: #d8e4ee;
+      line-height: 1.65;
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+    }
+    .welcome-pitch ul {
+      color: #d8e4ee;
+      padding-left: 1.3rem;
+      line-height: 1.75;
+      font-size: 0.93rem;
+      margin: 0.5rem 0;
+    }
+    .welcome-cta {
+      margin-top: 1.1rem;
+      padding: 0.85rem 1rem;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 5px;
+      font-size: 0.93rem;
+      color: #E8DDD0;
+      line-height: 1.55;
+    }
+    .welcome-cta strong { color: white; }
+
+    /* ── PIP Foundation narrative tab ── */
+    .pip-narrative {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 2rem;
+    }
+    .pip-lead {
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: #333;
+    }
+    .pip-stat-strip {
+      display: flex;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+    .pip-stat-box {
+      flex: 1;
+      min-width: 110px;
+      background: #152D32;
+      color: white;
+      border-radius: 6px;
+      padding: 1rem 0.75rem;
+      text-align: center;
+    }
+    .pip-stat-num {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #c8a97a;
+    }
+    .pip-stat-label {
+      font-size: 0.82rem;
+      margin-top: 0.3rem;
+      opacity: 0.9;
+    }
+    .pip-section-header {
+      color: #152D32;
+      border-left: 4px solid #7A5F43;
+      padding-left: 0.75rem;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      font-size: 1.2rem;
+    }
+    .pip-figure {
+      margin: 1.25rem 0;
+      padding: 0.75rem;
+      background: #F5F0E8;
+      border: 1px solid #D8CCBB;
+      border-radius: 4px;
+    }
+    .pip-figcaption {
+      font-size: 0.88rem;
+      color: #555;
+      margin-bottom: 0.6rem;
+      line-height: 1.4;
+    }
+    .pip-list {
+      margin: 0.5rem 0 0.75rem 1.5rem;
+      line-height: 1.7;
+      padding: 0;
+    }
+    .pip-list li {
+      margin-bottom: 0.4rem;
+    }
+    .pip-callout {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+      padding: 1.25rem 1.5rem;
+      background: #152D32;
+      color: white;
+      border-radius: 6px;
+      flex-wrap: wrap;
+    }
+    .pip-callout-stat {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #c8a97a;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-width: 80px;
+      text-align: center;
+      line-height: 1;
+    }
+    .pip-callout-text {
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+    .pip-comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .pip-comparison-table th,
+    .pip-comparison-table td {
+      border: 1px solid #ddd;
+      padding: 0.5rem 0.75rem;
+      vertical-align: top;
+      line-height: 1.4;
+    }
+    .pip-comparison-table thead th {
+      background: #152D32;
+      color: white;
+      font-weight: 600;
+      text-align: center;
+    }
+    .pip-comparison-table thead th:first-child {
+      background: #4a6080;
+    }
+    .pip-comparison-table td:first-child {
+      font-weight: 500;
+      background: #F2EDE3;
+      width: 32%;
+    }
+    .pip-bad  { color: #c8102e; text-align: center; }
+    .pip-good { color: #7A5F43; font-weight: 600; text-align: center; }
+    .pip-conclusion {
+      margin: 1.5rem 0;
+      padding: 1.1rem 1.25rem;
+      background: #fff8e1;
+      border-left: 5px solid #c8102e;
+      border-radius: 0 4px 4px 0;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .pip-footer-note {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #D8CCBB;
+      font-size: 0.88rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    /* Base styling to approximate the Shiny app aesthetic */
+    body {
+      /* Use Montserrat for primary text with Zilla Slab as a secondary option */
+      font-family: 'Nimbus Sans', 'NimbusSan', Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #F9F9F1;
+      color: #333333; /* dark grey text for improved contrast */
+    }
+    h2, h3, h4, h5 {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-family: 'Nimbus Sans', 'NimbusSan', Helvetica, Arial, sans-serif;
+    }
+    h2 {
+      font-size: 1.75rem;
+      /* Dark blue for main headings: RGB(11,41,73) */
+      color: #152D32;
+    }
+    h3 {
+      font-size: 1.3rem;
+      color: #152D32;
+    }
+    h4 {
+      font-size: 1.1rem;
+      color: #152D32;
+    }
+    p {
+      line-height: 1.4;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-family: 'Nimbus Sans', 'NimbusSan', Helvetica, Arial, sans-serif;
+    }
+    ul, ol {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    code {
+      background-color: #EDE8DF;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 0.95em;
+    }
+    /* Top navigation tabs */
+    .tab-container {
+      display: flex;
+      /* Thin bottom border similar to Mathematica site */
+      border-bottom: 1px solid #D8CCBB;
+      background-color: #F9F9F1;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .tab-container button {
+      background: none;
+      border: none;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      flex: 1;
+      border-bottom: 3px solid transparent;
+      transition: border-color 0.2s;
+      color: #152D32;
+      font-weight: 600;
+      font-family: Helvetica, Arial, sans-serif;
+    }
+    .tab-container button:hover {
+      background-color: #F2EDE3;
+    }
+    .tab-container button.active {
+      /* Teal accent for active tab: RGB(4, 107, 92) */
+      border-bottom: 3px solid #7A5F43;
+      color: #7A5F43;
+    }
+    .tab-content {
+      display: none;
+      padding: 1rem;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    /* Two-column layout for overview */
+    .two-col {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .two-col .col-left {
+      flex: 2;
+      min-width: 260px;
+    }
+    .two-col .col-right {
+      flex: 1;
+      min-width: 200px;
+    }
+    .well {
+      background-color: #F2EDE3;
+      border: 1px solid #D4C4B0;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+    /* Generic table styling */
+    table.simple {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    table.simple th, table.simple td {
+      border: 1px solid #ddd;
+      padding: 0.3rem 0.5rem;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    table.simple th {
+      background-color: #E8DDD0;
+    }
+    /* Sidebar layout */
+    .sidebar-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .sidebar-layout .sidebar {
+      flex: 1;
+      min-width: 220px;
+    }
+    .sidebar-layout .main {
+      flex: 3;
+      min-width: 320px;
+    }
+    /* Buttons */
+    button.btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-family: 'Nimbus Sans', 'NimbusSan', Helvetica, Arial, sans-serif;
+      letter-spacing: 0.3px;
+    }
+    button.btn-primary {
+      /* Primary button uses the updated teal RGB(4,107,92) */
+      background-color: #7A5F43;
+      color: #ffffff;
+    }
+    button.btn-success {
+      /* Success button uses the dark blue: RGB(11,41,73) */
+      background-color: #152D32;
+      color: #ffffff;
+    }
+    button.btn-primary:disabled {
+      background-color: #c8b49a;
+      cursor: not-allowed;
+    }
+    /* Inputs */
+    input[type="number"], select {
+      width: 100%;
+      padding: 0.4rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 0.95rem;
+    }
+    /* Chart containers */
+    .chart-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .chart-col {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    /* Fix the height of the prior charts to avoid runaway resizing */
+    #mu-prior-chart, #tau-prior-chart {
+      height: 250px !important;
+      max-height: 250px !important;
+    }
+
+    /* Fix the height of the posterior charts to avoid runaway resizing */
+    #mu-post-chart, #tau-post-chart {
+      height: 250px !important;
+      max-height: 250px !important;
+    }
+    /* Sticky forest wrapper */
+    #forest_wrap {
+      height: 600px;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+      border: 1px solid #ddd;
+      padding-bottom: 60px;
+      background-color: #F9F9F1;
+    }
+    #forest_axis_wrap {
+      position: sticky;
+      bottom: 0;
+      z-index: 1;
+      background: #F9F9F1;
+      border-top: 1px solid #ddd;
+      padding: 2px 6px;
+      width: 100%;
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
+    }
+    #forest_plot_container {
+      overflow: visible;
+    }
+    /* Ensure the forest/bars chart has sufficient height to display bars clearly */
+    #forest-chart {
+      height: 400px !important;
+    }
+    /* Data table container to handle overflow */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    /* Help text */
+    .help-text {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    /* Custom forest plot styles for the BASIE tables & plots tab.  These styles
+       create a simple horizontal forest plot using HTML elements instead of
+       Chart.js.  Each row displays the study ID on the left and two horizontal
+       intervals representing the frequentist (grey) and Bayesian (blue)
+       intervals with dots at the means.  A vertical red zero line is drawn
+       across all rows. */
+    #custom-forest {
+      width: 100%;
+      font-size: 12px;
+      position: relative;
+    }
+    .custom-forest-row {
+      display: flex;
+      align-items: center;
+      height: 24px;
+      position: relative;
+    }
+    .custom-forest-label {
+      width: 80px;
+      text-align: right;
+      margin-right: 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .custom-forest-line {
+      flex: 1;
+      position: relative;
+      height: 10px;
+    }
+    .custom-forest-interval {
+      position: absolute;
+      height: 2px;
+      border-radius: 1px;
+    }
+    .custom-forest-interval.freq {
+      /* Grey-blue interval for frequentist */
+      background-color: rgba(185,168,140,1);
+      top: 3px;
+    }
+    .custom-forest-interval.bayes {
+      /* Teal interval for Bayesian */
+      background-color: rgba(122,95,67,1);
+      top: 5px;
+    }
+    .custom-forest-point {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .custom-forest-point.freq {
+      background-color: rgba(185,168,140,1);
+      top: 4px;
+    }
+    .custom-forest-point.bayes {
+      background-color: rgba(122,95,67,1);
+      top: 7px;
+    }
+    .custom-forest-zero-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: #d00;
+      opacity: 0.7;
+    }
+    .custom-forest-axis {
+      position: relative;
+      height: 20px;
+      margin-top: 4px;
+      font-size: 11px;
+    }
+    .custom-forest-axis-tick {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    /* Hide spin buttons on number inputs for consistency */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .tab-container button {
+        font-size: 0.9rem;
+        padding: 0.8rem;
+      }
+      .two-col {
+        flex-direction: column;
+      }
+      .sidebar-layout {
+        flex-direction: column;
+      }
+      #forest_wrap {
+        height: 450px;
+      }
+    }
+
+    /* Link styling to match Mathematica palette */
+    a {
+      /* Use teal for links */
+      color: #7A5F43;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Mathematica branding header */
+    .mathematica-header {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background-color: #F9F9F1;
+      border-bottom: 2px solid #D8CCBB;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    /* Style for the Mathematica logo image anchor */
+    .mathematica-header .logo-link {
+      display: flex;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+<div style="padding: 0.6rem 1.5rem; background-color: #F9F9F1; border-bottom: 1px solid #D8CCBB; text-align: center;">
+    <span style="font-size: 1.4rem; font-weight: 700; color: #152D32;">BASIE Workbench</span>
+    <span style="font-size: 1.4rem; font-weight: 400; color: #152D32;"> by John Deke</span>
+  </div>
+  <!-- Tab navigation -->
+  <div class="tab-container">
+    <button class="active" data-tab="welcome">Welcome</button>
+    <button data-tab="pip-foundation">The PIP Foundation</button>
+    <button data-tab="upload-data">Enter Traditional (frequentist) Estimates</button>
+    <button data-tab="interpret-estimates">Interpret Estimates</button>
+    <button data-tab="predict">Predict</button>
+    <button data-tab="about">About BASIE Workbench</button>
+  </div>
+
+  <!-- Welcome Tab -->
+  <div id="welcome" class="tab-content active">
+    <div class="welcome-narrative">
+
+      <div class="welcome-hero">
+        <h2>Traditional statistical methods answer a question nobody asks</h2>
+        <p>Decision makers want data to help answer questions like:</p>
+        <div class="fade-box">
+          <span class="fade-item" data-fade-group="welcome-q" data-fade-index="0">&ldquo;Did the program really work?&rdquo;</span>
+          <span class="fade-item" data-fade-group="welcome-q" data-fade-index="1">&ldquo;Are outcomes truly different between groups?&rdquo;</span>
+          <span class="fade-item" data-fade-group="welcome-q" data-fade-index="2">&ldquo;Did outcomes improve over time?&rdquo;</span>
+        </div>
+        <p><strong>Those are the right questions!</strong> But the standard statistical methods that researchers report &mdash; like statistical significance &mdash; were never designed to answer them.</p>
+        <p>Statistical significance tells you that a random error as large as your estimate is unlikely. As we will see with <strong>The PIP Foundation</strong>, that&rsquo;s importantly different from telling you whether the program really worked, the difference between groups is real, or the change over time is meaningful.</p>
+        <p>It&rsquo;s also based on an arbitrary threshold, unrelated to the goals of the decision maker.</p>
+        <p><strong>BASIE (Bayesian Interpretation of Estimates) provides tailored, flexible answers to the right questions:</strong> given all the evidence, what is the probability this program truly produces meaningful results, that the outcomes are truly different between groups, or that outcomes improved over time?</p>
+      </div>
+
+
+      <h3 class="welcome-section-header">A guide to this tool</h3>
+      <p style="font-size:0.92rem; color:#555; margin-bottom:0.75rem;">Work through the tabs from left to right, or jump directly to what you need.</p>
+      <table class="welcome-roadmap">
+        <tbody>
+          <tr>
+            <td class="tab-name">The PIP Foundation</td>
+            <td class="tab-arrow">&rarr;</td>
+            <td>A worked example showing how a fictional foundation&rsquo;s standard approach to picking grant winners goes wrong &mdash; and how BASIE fixes it. Start here if you&rsquo;re new to BASIE.</td>
+          </tr>
+          <tr>
+            <td class="tab-name">Enter Estimates</td>
+            <td class="tab-arrow">&rarr;</td>
+            <td>Load your own estimates. Upload a CSV with impact estimates and standard errors, or explore the pre-loaded i3 evaluation data from the PIP Foundation example.</td>
+          </tr>
+          <tr>
+            <td class="tab-name">Interpret Estimates</td>
+            <td class="tab-arrow">&rarr;</td>
+            <td>See Bayesian re-interpretations of your estimates side by side with the original frequentist results. Includes a forest plot, posterior summary table, and probability statements for each study.</td>
+          </tr>
+          <tr>
+            <td class="tab-name">Predict</td>
+            <td class="tab-arrow">&rarr;</td>
+            <td>Project what a new study from the same portfolio of evidence would likely find &mdash; a forward-looking answer to &ldquo;what should we expect if we tried this again?&rdquo;</td>
+          </tr>
+          <tr>
+            <td class="tab-name">About BASIE Workbench</td>
+            <td class="tab-arrow">&rarr;</td>
+            <td>Technical background on the BASIE framework, the statistical model, and links to the underlying research.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="welcome-pitch">
+        <h3>Need something more powerful?</h3>
+        <p>This tool is a working demonstration of what BASIE can do with a simple model and a standard dataset. It is designed to make the core concepts tangible and to give you a genuine, hands-on sense of the Bayesian approach &mdash; not just a description of it.</p>
+        <p>More advanced implementations can go considerably further:</p>
+        <ul>
+          <li>Models tailored to your organization&rsquo;s specific domain, decision rules, and threshold criteria</li>
+          <li>Integration with your own evaluation data pipelines or reporting workflows</li>
+          <li>More sophisticated hierarchical models that account for site-level variation, subgroup effects, or multi-arm designs</li>
+          <li>Interactive dashboards that let stakeholders explore uncertainty and tradeoffs directly</li>
+          <li>Sensitivity analyses that make the role of prior assumptions transparent and auditable</li>
+        </ul>
+        <p>Whether you need a one-time analysis, a reusable tool, or a full evaluation framework built around Bayesian reasoning, we can design something that fits your team, your data, and your decisions.</p>
+        <div class="welcome-cta">
+          <strong>Interested in a custom solution?</strong> Contact <strong><a href="mailto:jdeke73@gmail.com?subject=BASIE%20Workbench%20--%20user%20inquiry" style="color:inherit;">John Deke</a></strong> to discuss what a tailored BASIE implementation could look like for your organization.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PIP Foundation Tab -->
+  <div id="pip-foundation" class="tab-content">
+    <div class="pip-narrative">
+
+      <h2 style="color:#152D32; margin-bottom:0.5rem;">The PIP Foundation: A Motivating Example</h2>
+      <p class="pip-lead">The <strong>Philanthropy in Perpetuity (PIP) Foundation</strong> is a fictional organization facing a very real challenge: how do you choose which programs to fund when you have dozens of rigorous evaluations to draw from, and the results are noisy?</p>
+      <p style="line-height:1.65;">PIP wants to fund math interventions in school districts. They have set two explicit criteria for what &ldquo;works&rdquo;: a program should be <strong>very unlikely to produce a negative effect</strong>, and <strong>more likely than not to improve math scores by at least 0.10 standard deviations</strong> &mdash; a threshold they consider educationally meaningful. Their evidence base is 44 rigorous evaluations of programs funded by the U.S. Department of Education&rsquo;s <em>Investing in Innovation</em> (i3) program.</p>
+
+      <div class="pip-stat-strip">
+        <div class="pip-stat-box"><div class="pip-stat-num">44</div><div class="pip-stat-label">rigorous evaluations</div></div>
+        <div class="pip-stat-box"><div class="pip-stat-num">5</div><div class="pip-stat-label">apparent winners</div></div>
+        <div class="pip-stat-box"><div class="pip-stat-num">0.40 SD</div><div class="pip-stat-label">standout estimate</div></div>
+      </div>
+
+      <h3 class="pip-section-header">1. The Standard Approach</h3>
+      <p style="line-height:1.65;">PIP&rsquo;s staff apply a straightforward filter: select programs with estimates that are <strong>positive, statistically significant, and larger than 0.10 standard deviations</strong>. This filter yields five candidates, with impact estimates of 0.40, 0.22, 0.18, 0.16, and 0.13 standard deviations. The 0.40 estimate looks especially compelling &mdash; nearly twice as large as the next best result.</p>
+
+      <figure class="pip-figure">
+        <div class="pip-figcaption"><strong>Figure 1.</strong> Frequentist impact estimates for all 44 i3 evaluations, sorted by magnitude. Gold bars are programs that meet PIP&rsquo;s selection criteria (statistically significant and effect &gt; 0.10 SD). Asterisks (*) mark statistically significant estimates.</div>
+        <div style="height:360px; position:relative;"><canvas id="pip-fig1-chart"></canvas></div>
+      </figure>
+
+      <p style="line-height:1.65;">This looks like a solid, evidence-based shortlist. But is it as good as it seems?</p>
+
+      <h3 class="pip-section-header">2. The Problem: The Winner&rsquo;s Curse</h3>
+      <p style="line-height:1.65;">PIP&rsquo;s procedure has a conceptually subtle but consequential flaw. When winners are selected using noisy performance estimates, the winners&rsquo; true quality is almost always lower than their measured performance. <strong>Part of what made them look best was luck.</strong> This is the <em>winner&rsquo;s curse</em>, and it shows up across many fields:</p>
+      <ul class="pip-list">
+        <li><strong>Sports Illustrated cover jinx:</strong> Athletes who make the cover had exceptional recent performance &mdash; partly skill, partly luck. Subsequent performance regresses toward their true level.</li>
+        <li><strong>Promising trials bias:</strong> Treatments selected for confirmatory trials based on early promising results routinely show smaller effects when confirmed.</li>
+        <li><strong>The replication crisis:</strong> Landmark findings in social science have repeatedly failed to replicate at their original magnitude, partly because the studies that became famous were selected for large, significant results.</li>
+      </ul>
+      <p style="line-height:1.65;">To quantify how serious this is for PIP, we can use a simulation grounded in the i3 evidence itself. A meta-analysis of the 44 evaluations reveals that <strong>only about 8% of i3 programs have a true effect larger than 0.10 SD</strong> &mdash; a needle-in-a-haystack problem. When genuinely effective programs are rare, a filter that selects partly on luck picks up mostly hay.</p>
+
+      <div class="pip-callout">
+        <div class="pip-callout-stat">6.5&times;</div>
+        <div class="pip-callout-text"><strong>Magnitude error of the standard approach.</strong> Simulations show that &ldquo;winning&rdquo; estimates average 0.52 SD &mdash; but the true effects behind those winners average only 0.08 SD. Across simulations, fewer than half of selected programs truly meet PIP&rsquo;s criteria.</div>
+      </div>
+
+      <h3 class="pip-section-header">3. The Solution: BASIE</h3>
+      <p style="line-height:1.65;">BASIE (<em>Bayesian Interpretation of Estimates</em>) replaces &ldquo;Is this statistically significant?&rdquo; with questions that directly support decision making:</p>
+      <ul class="pip-list">
+        <li><strong>What is the probability this program causes harm?</strong></li>
+        <li><strong>What is the probability the effect exceeds our meaningful threshold?</strong></li>
+      </ul>
+      <p style="line-height:1.65;">BASIE uses prior evidence about how program effects are typically distributed in a domain and combines it with the current study&rsquo;s estimates to produce probability statements that map directly onto PIP&rsquo;s decision criteria. The results are dramatically better:</p>
+
+      <table class="pip-comparison-table">
+        <thead>
+          <tr><th></th><th>Standard approach</th><th>BASIE</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Magnitude error (best candidate)</td>
+            <td class="pip-bad">6.5&times;</td>
+            <td class="pip-good">1.1&times;</td>
+          </tr>
+          <tr>
+            <td>Does the best pick truly win?</td>
+            <td class="pip-bad">No &mdash; true effect of &ldquo;best&rdquo; pick is smaller than the median pick</td>
+            <td class="pip-good">Yes &mdash; apparent winner truly is the winner</td>
+          </tr>
+          <tr>
+            <td>Selected candidates exceed threshold</td>
+            <td class="pip-bad">37&ndash;43% of the time</td>
+            <td class="pip-good">57&ndash;72% of the time</td>
+          </tr>
+          <tr>
+            <td>Knows when to say no?</td>
+            <td class="pip-bad">Selects a candidate in 97% of simulations &mdash; but often shouldn&rsquo;t</td>
+            <td class="pip-good">Selects a candidate in only 53% of simulations</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 style="color:#152D32; margin-top:1.75rem; margin-bottom:0.5rem;">BASIE Applied to PIP&rsquo;s Five Candidates</h4>
+      <p style="line-height:1.65;">The figure below shows what happens when BASIE reinterprets the five apparent winners. The grey bars show the original frequentist estimates; the teal bars show the Bayesian estimates, which are &ldquo;shrunk&rdquo; toward more realistic values by accounting for the overall distribution of effects in the i3 portfolio.</p>
+
+      <figure class="pip-figure">
+        <div class="pip-figcaption"><strong>Figure 2.</strong> Frequentist estimates (grey) vs. Bayesian estimates (teal) for the five programs selected by PIP&rsquo;s standard approach. Bayesian estimates are shrunk substantially toward more plausible values.</div>
+        <div id="pip-fig2-wrap">
+          <div style="height:300px; position:relative;"><canvas id="pip-fig2-chart"></canvas></div>
+        </div>
+      </figure>
+
+      <div id="pip-results-loading" style="padding:0.75rem; background:#F2EDE3; border:1px solid #D8CCBB; border-radius:4px; margin:1rem 0; text-align:center; color:#666; font-style:italic;">Computing Bayesian results&hellip;</div>
+      <div id="pip-results-container" style="display:none; margin-bottom:1rem;">
+        <p style="font-size:0.88rem; color:#555; margin-bottom:0.4rem;">P(effect &gt; 0.10 SD) is the probability that the true effect exceeds PIP&rsquo;s meaningful threshold.</p>
+        <table id="pip-results-table" class="simple" style="width:100%;"></table>
+      </div>
+
+      <div class="pip-conclusion">
+        <strong>No candidate clears 50%.</strong> The honest answer may be: none of these programs meet the bar. This is a little disappointing now &mdash; but it prevents a much bigger disappointment later.
+      </div>
+
+      <h3 class="pip-section-header">4. What This Means for Grant Making</h3>
+      <p style="line-height:1.65;">The winner&rsquo;s curse is systematic, not accidental &mdash; it affects any significance-filtered shortlist. Useful next steps for a foundation in PIP&rsquo;s position might include:</p>
+      <ul class="pip-list">
+        <li><strong>Revisit the decision criteria.</strong> Accepting a smaller effect size may be warranted if lower-cost options are also on the table.</li>
+        <li><strong>Commission a local evaluation.</strong> Effect sizes vary across contexts. A well-designed local study, combined with qualitative assessment of fit, can yield more targeted evidence.</li>
+        <li><strong>Invest in program development.</strong> If few existing programs have large true effects, funding earlier-stage development work could improve the pool of candidates for future evaluation.</li>
+      </ul>
+
+      <p class="pip-footer-note">The pre-loaded estimates in this tool are the 44 i3 evaluations from the PIP Foundation example. Explore them using the <strong>Interpret Estimates</strong> and <strong>Predict</strong> tabs &mdash; or upload your own estimates on the <strong>Enter Traditional Estimates</strong> tab.</p>
+
+    </div>
+  </div>
+
+  <!-- Upload Data Tab -->
+<div id="upload-data" class="tab-content">
+    <h2 style="color:#152D32; margin-bottom:0.5rem;">What the evaluations found</h2>
+    <!-- Top strip: description + upload controls -->
+    <div style="display:flex; flex-wrap:wrap; align-items:flex-start; gap:1.5rem; margin-bottom:1rem; padding-bottom:0.75rem; border-bottom:1px solid #D8CCBB;">
+      <div style="flex:2; min-width:260px;">
+        <p style="font-size:0.9rem; margin-top:0;">The pre‑loaded estimates are the 44 i3 evaluations from the <strong>PIP Foundation</strong> motivating example (see first tab). Upload your own CSV to replace them. Using your own data? Not required, but please consider taking the time to drop me a line at <a href="mailto:jdeke73@gmail.com?subject=BASIE%20Workbench%20--%20user%20inquiry">jdeke73@gmail.com</a> &mdash; I&rsquo;d love to know how you&rsquo;re using BASIE Workbench.</p>
+        <p class="help-text" style="margin-top:0.25rem;">CSV must include <code>Estimate</code> and <code>StdError</code> columns. Optional: <code>id</code>, <code>Description</code>.</p>
+      </div>
+      <div style="flex:1; min-width:200px; display:flex; flex-direction:column; gap:0.5rem;">
+        <div>
+          <label for="csv-upload" style="display:block; font-weight:600; margin-bottom:0.25rem;">Upload CSV</label>
+          <input type="file" id="csv-upload" accept=".csv,.txt,text/csv" style="width:100%; font-size:0.9rem;">
+        </div>
+        <button id="download-template" class="btn btn-success" style="width:100%;">Download template CSV</button>
+      </div>
+    </div>
+    <!-- Transposed summary stats -->
+    <div style="margin-bottom:0.75rem;">
+      <table id="data-summary" class="simple"></table>
+    </div>
+    <!-- View selector radio buttons -->
+    <div style="margin-bottom:0.75rem;">
+      <strong>View as:</strong>&nbsp;&nbsp;
+      <label><input type="radio" name="freq-view" value="bars" checked> Vertical bars</label>
+      <label style="margin-left:1rem;"><input type="radio" name="freq-view" value="forest"> Forest plot</label>
+      <label style="margin-left:1rem;"><input type="radio" name="freq-view" value="table"> Table</label>
+      <label style="margin-left:1rem;"><input type="radio" name="freq-view" value="fe"> Fixed effects meta-analysis</label>
+    </div>
+    <!-- View panels (only one visible at a time) -->
+    <div id="freq-view-bars">
+      <div style="height:400px; position:relative;">
+        <canvas id="freq-bars-chart"></canvas>
+      </div>
+    </div>
+    <div id="freq-view-forest" style="display:none;">
+      <div id="freq-forest-wrap" style="height:600px; overflow-y:scroll; position:relative; border:1px solid #ddd; padding-bottom:60px; background:#F9F9F1;">
+        <div id="freq-forest-plot-container"></div>
+        <div id="freq-forest-axis-wrap" style="position:sticky; bottom:0; z-index:1; background:white; border-top:1px solid #ddd; padding:2px 6px; width:100%; box-shadow:0 -2px 4px rgba(0,0,0,0.05);"></div>
+      </div>
+    </div>
+    <div id="freq-view-table" style="display:none;">
+      <div class="table-responsive">
+        <table id="data-table" class="simple"></table>
+      </div>
+    </div>
+    <div id="freq-view-fe" style="display:none;">
+      <pre id="fe-summary" style="background-color:#F4EFE6; border:1px solid #ddd; padding:0.5rem; border-radius:4px; white-space:pre-wrap; font-family:monospace; font-size:0.85rem; overflow-x:auto;"></pre>
+    </div>
+  </div>
+
+  <!-- Interpret Estimates Tab -->
+  <div id="interpret-estimates" class="tab-content">
+    <h2 style="color:#152D32; margin-bottom:0.5rem;">What does the evidence really mean?</h2>
+    <p style="font-size:1.0rem; line-height:1.65; color:#333; margin-bottom:1rem;">Traditional methods tell you how the estimates look &mdash; BASIE tells you what they mean. Use the views below to compare frequentist estimates with Bayesian posteriors, and to see the probability that each true effect exceeds a threshold that matters for your decisions.</p>
+    <!-- Prior assumptions (top) -->
+    <details class="prior-sensitivity-panel" style="margin-bottom:1rem; border:1px solid #D4C4B0; border-radius:4px; padding:0.5rem 1rem; background:#F5F0E8;">
+      <summary style="cursor:pointer; font-weight:600; color:#152D32; padding:0.3rem 0; user-select:none;">&#9881;&#xFE0E;&nbsp; Adjust prior assumptions</summary>
+      <div style="margin-top:0.75rem; display:flex; flex-wrap:wrap; gap:1.5rem; padding-bottom:0.5rem;">
+        <div style="flex:1; min-width:240px;">
+          <label class="prior-panel-mu-label" style="display:block; font-weight:600; margin-bottom:0.4rem;"></label>
+          <input type="range" class="mu-width-slider" min="1" max="4" step="1" value="2" style="width:100%;">
+          <div style="display:flex; justify-content:space-between; font-size:0.76rem; color:#555; margin-top:0.1rem;">
+            <span>N(0,.10)</span><span>N(0,.20)</span><span>N(0,.40)</span><span>N(0,1.0)</span>
+          </div>
+          <div id="mu-slider-label-interpret" style="margin-top:0.5rem;"></div>
+        </div>
+        <div style="flex:1; min-width:240px;">
+          <label class="prior-panel-tau-label" style="display:block; font-weight:600; margin-bottom:0.4rem;"></label>
+          <input type="range" class="tau-variation-slider" min="1" max="5" step="1" value="4" style="width:100%;">
+          <div style="display:flex; justify-content:space-between; font-size:0.76rem; color:#555; margin-top:0.1rem;">
+            <span>G(2,16)</span><span>G(2,8)</span><span>G(2,4)</span><span>G(2,2)</span><span>Uninformative</span>
+          </div>
+          <div id="tau-slider-label-interpret" style="margin-top:0.5rem;"></div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Not-ready message -->
+    <div id="basie-message" style="display:none; margin-bottom:0.75rem; padding:0.5rem; background-color:#FBF3E0; border:1px solid #F0DFA8; border-radius:4px;">
+      <strong>Upload estimates on the first tab to get started.</strong>
+    </div>
+
+    <!-- Controls row: view options on left, sort/filter on right -->
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:0.75rem; align-items:flex-start;">
+
+      <!-- View options -->
+      <div style="flex:1; min-width:280px; background:#F2EDE3; border:1px solid #D4C4B0; border-radius:4px; padding:0.65rem 0.9rem;">
+        <div style="font-weight:600; margin-bottom:0.4rem;">View as:</div>
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem 1.25rem; margin-bottom:0.4rem;">
+          <label><input type="radio" name="viz-choice" value="bars" checked> Vertical bars</label>
+          <label><input type="radio" name="viz-choice" value="forest"> Forest plot</label>
+          <label><input type="radio" name="viz-choice" value="table"> Table</label>
+
+        </div>
+
+        <!-- Bar sub-options (shown only when bars selected) -->
+        <div id="bars-options-group" style="margin-top:0.5rem; padding-top:0.5rem; border-top:1px solid #D4C4B0;">
+          <div style="display:flex; flex-wrap:wrap; gap:0.5rem 1.5rem; align-items:flex-start;">
+            <div>
+              <div style="font-weight:600; font-size:0.88rem; margin-bottom:0.25rem;">Show:</div>
+              <label style="display:block;"><input type="radio" name="bars-type" value="estimate" checked> Point estimate</label>
+              <label style="display:block;"><input type="radio" name="bars-type" value="probability"> Probability</label>
+            </div>
+            <!-- Point estimate sub-options -->
+            <div id="bars-estimate-group">
+              <div style="font-weight:600; font-size:0.88rem; margin-bottom:0.25rem;">Which estimate:</div>
+              <label style="display:block;"><input type="radio" name="bars-show" value="freq" checked> Frequentist</label>
+              <label style="display:block;"><input type="radio" name="bars-show" value="bayes"> Bayesian (posterior mean)</label>
+              <label style="display:block;"><input type="radio" name="bars-show" value="both"> Both</label>
+            </div>
+            <!-- Probability sub-options -->
+            <div id="bars-prob-group" style="display:none;">
+              <div class="help-text">Always shows P(&gt;0). Also shows P(&gt;cutoff) if filled.</div>
+            </div>
+          </div>
+        </div>
+        <!-- Cutoff input: shown for Probability bars or Table view -->
+        <div id="view-cutoff-group" style="display:none; margin-top:0.6rem; padding-top:0.6rem; border-top:1px solid #D4C4B0;">
+          <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+            <label style="font-weight:600; font-size:0.88rem; white-space:nowrap; margin-bottom:0;">Cutoff (optional):</label>
+            <input type="number" id="cutoff-input" class="cutoff-sync" value="0.1" step="0.01" style="width:80px; margin-bottom:0;">
+            <span class="help-text">Leave blank to show only P(&gt;0).</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sort + Filter -->
+      <div style="flex:2; min-width:260px; display:flex; flex-wrap:wrap; gap:1rem;">
+        <div style="flex:1; min-width:140px;">
+          <label for="sort-option" style="font-weight:600; display:block; margin-bottom:0.25rem;">Sort by:</label>
+          <select id="sort-option" style="width:100%;">
+            <option value="est_desc">Estimate ↓</option>
+            <option value="est_asc">Estimate ↑</option>
+            <option value="post_desc">Posterior mean ↓</option>
+            <option value="post_asc">Posterior mean ↑</option>
+          </select>
+        </div>
+        <div style="flex:1; min-width:200px;">
+          <label for="filter-metric" style="font-weight:600; display:block; margin-bottom:0.25rem;">Filter by:</label>
+          <select id="filter-metric" style="width:100%; margin-bottom:0.3rem;">
+            <option value="freq_est">Frequentist estimate</option>
+            <option value="post_mean">Posterior mean</option>
+          </select>
+          <div style="display:flex; gap:0.5rem;">
+            <input type="number" id="filter-lower" placeholder="Lower bound" style="flex:1;">
+            <input type="number" id="filter-upper" placeholder="Upper bound" style="flex:1;">
+          </div>
+          <div class="help-text" style="margin-top:0.2rem;">Leave bounds blank for no limit.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Content panels -->
+    <div id="interpret-view-bars">
+      <div style="height:400px; position:relative;">
+        <canvas id="forest-chart" width="100%"></canvas>
+      </div>
+    </div>
+    <div id="interpret-view-forest" style="display:none;">
+      <div id="forest_wrap">
+        <div id="forest_plot_container">
+          <canvas id="forest-chart-forest" width="100%"></canvas>
+        </div>
+        <div id="forest_axis_wrap">
+          <canvas id="axis-chart" height="56"></canvas>
+        </div>
+      </div>
+    </div>
+    <div id="interpret-view-table" style="display:none;">
+      <h4 style="margin-top:0.5rem;">Posterior summary table</h4>
+      <div class="table-responsive">
+        <table id="basie-table" class="display" style="width:100%"></table>
+      </div>
+    </div>
+
+    <!-- Error message -->
+    <div id="basie-error" style="display:none; color:red; margin-top:0.5rem;"></div>
+
+  </div>
+
+  <!-- Predict Tab -->
+  <div id="predict" class="tab-content">
+    <h2 style="color:#152D32; margin-bottom:0.5rem;">What is the true impact in another study like those in this analysis likely to be?</h2>
+    <p style="font-size:0.95rem; color:#555; margin-top:0; margin-bottom:0.75rem;">Studies measure program impacts with error. This prediction sets that measurement error aside and asks: if we could observe the true effect in a comparable study—not just one study’s noisy estimate of it—what would we expect to find?</p>
+  <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; flex-wrap:wrap; padding:0.5rem 0;">
+    <label style="font-weight:600; white-space:nowrap; margin-bottom:0;">Cutoff of interest:</label>
+    <input type="number" id="cutoff-input-predict" class="cutoff-sync" value="0.1" step="0.01" style="width:90px; margin-bottom:0; display:inline-block;">
+    <span class="help-text">The probability the next effect exceeds this value will be calculated.</span>
+  </div>
+  <details class="prior-sensitivity-panel" style="margin-bottom:1rem; border:1px solid #D4C4B0; border-radius:4px; padding:0.5rem 1rem; background:#F5F0E8;">
+    <summary style="cursor:pointer; font-weight:600; color:#152D32; padding:0.3rem 0; user-select:none;">&#9881;&#xFE0E;&nbsp; Adjust prior assumptions</summary>
+    <div style="margin-top:0.75rem; display:flex; flex-wrap:wrap; gap:1.5rem; padding-bottom:0.5rem;">
+      <div style="flex:1; min-width:240px;">
+        <label class="prior-panel-mu-label" style="display:block; font-weight:600; margin-bottom:0.4rem;"></label>
+        <input type="range" class="mu-width-slider" min="1" max="4" step="1" value="2" style="width:100%;">
+        <div style="display:flex; justify-content:space-between; font-size:0.76rem; color:#555; margin-top:0.1rem;">
+          <span>N(0,.10)</span><span>N(0,.20)</span><span>N(0,.40)</span><span>N(0,1.0)</span>
+        </div>
+        <div id="mu-slider-label-predict" style="margin-top:0.5rem;"></div>
+      </div>
+      <div style="flex:1; min-width:240px;">
+        <label class="prior-panel-tau-label" style="display:block; font-weight:600; margin-bottom:0.4rem;"></label>
+        <input type="range" class="tau-variation-slider" min="1" max="5" step="1" value="4" style="width:100%;">
+        <div style="display:flex; justify-content:space-between; font-size:0.76rem; color:#555; margin-top:0.1rem;">
+          <span>G(2,16)</span><span>G(2,8)</span><span>G(2,4)</span><span>G(2,2)</span><span>Uninformative</span>
+        </div>
+        <div id="tau-slider-label-predict" style="margin-top:0.5rem;"></div>
+      </div>
+    </div>
+  </details>
+    <div id="predict-no-data" style="padding:1rem; background:#F9F9F13cd; border:1px solid #F0DFA8; border-radius:4px; margin-top:0.5rem;">
+      Upload estimates on the first tab to see predictions.
+    </div>
+    <div id="predict-results" style="display:none;">
+
+      <!-- Animation canvas -->
+      <div style="position:relative; margin-bottom:0.5rem;">
+        <canvas id="predict-anim-canvas" style="width:100%; height:220px; display:block; border-radius:4px; background:#f0f2f5;"></canvas>
+        <button id="predict-replay-btn" style="position:absolute; top:8px; right:8px; background:rgba(21,45,50,0.75); color:white; border:none; border-radius:3px; padding:4px 10px; font-size:0.8rem; cursor:pointer; font-family:inherit;">&#9654; Replay</button>
+      </div>
+
+      <!-- Predictive distribution and summary (always visible) -->
+      <div style="margin-top:1rem; border:1px solid #D4C4B0; border-radius:4px; padding:0.75rem 1rem; background:#F5F0E8;">
+        <div class="chart-row" style="align-items:flex-start;">
+          <div class="chart-col" style="flex:2; min-width:280px;">
+            <h4 style="margin-bottom:0.4rem;">Predictive distribution</h4>
+            <p class="help-text" style="margin-bottom:0.5rem;">Shaded area shows positive effects. Red line marks zero; dashed line marks the cutoff (if specified).</p>
+            <div style="height:280px; position:relative;">
+              <canvas id="predict-density-chart"></canvas>
+            </div>
+          </div>
+          <div class="chart-col" style="flex:1; min-width:180px;">
+            <h4 style="margin-bottom:0.4rem;">Summary</h4>
+            <table id="predict-summary-table" class="simple" style="width:100%;"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- About Tab -->
+  <div id="about" class="tab-content">
+    <div class="welcome-narrative">
+
+      <h2 style="color:#152D32; margin-bottom:0.5rem;">About this tool</h2>
+      <p style="font-size:1.05rem; line-height:1.65; color:#333;">BASIE Workbench is a browser-based implementation of the BASIE (Bayesian Interpretation of Estimates) framework, developed by John Deke and Mariel Finucane. It applies a hierarchical Bayesian model to a portfolio of impact estimates, producing posterior probabilities and predictive intervals that directly support evidence-based decisions. The motivating example used throughout this tool &mdash; the fictional PIP Foundation evaluating 44 i3 math interventions &mdash; is described in detail on the <strong>PIP Foundation</strong> tab.</p>
+
+      <h3 class="welcome-section-header">The statistical model</h3>
+      <p style="line-height:1.65;">The model is a two-level normal-normal hierarchy, a direct generalization of the eight schools model introduced by Rubin (1981). For <em>J</em> studies with impact estimates <em>y<sub>j</sub></em> and known standard errors <em>&sigma;<sub>j</sub></em>:</p>
+      <div style="background:#F2EDE3; border:1px solid #D4C4B0; border-radius:4px; padding:0.9rem 1.25rem; margin:0.75rem 0; font-family:Georgia,serif; line-height:2;">
+        <em>y<sub>j</sub></em> &sim; N(<em>&theta;<sub>j</sub></em>, <em>&sigma;<sub>j</sub></em><sup>2</sup>) &nbsp;&nbsp; [observation model]<br>
+        <em>&theta;<sub>j</sub></em> &sim; N(<em>&mu;</em>, <em>&tau;</em><sup>2</sup>) &nbsp;&nbsp; [population model]<br>
+        <em>&mu;</em> &sim; N(<em>m</em><sub>0</sub>, <em>s</em><sub>0</sub><sup>2</sup>) &nbsp;&nbsp; [prior on mean effect]<br>
+        <em>&tau;</em> &sim; Gamma(<em>k</em>, <em>&beta;</em>) &nbsp;&nbsp; [prior on SD of effects]
+      </div>
+      <p style="line-height:1.65;">Here <em>&theta;<sub>j</sub></em> is the true causal effect for study <em>j</em>, <em>&mu;</em> is the mean of true effects across the population of studies, and <em>&tau;</em> is the standard deviation of true effects. The prior on <em>&mu;</em> is always zero-centered (<em>m</em><sub>0</sub> = 0); the slider controls <em>s</em><sub>0</sub>, the prior standard deviation. All priors on <em>&mu;</em> are proper. For <em>&tau;</em>, the Gamma family is used because it is defined only on the positive real line (enforcing <em>&tau;</em> &ge; 0) and, with shape parameter <em>k</em> = 2, places relatively little mass near zero &mdash; avoiding the unrealistic assumption that all true effects are identical. An improper flat prior on <em>&tau;</em> is also available; in that case <em>&tau;</em> is estimated entirely from the data with no regularization toward any particular level of heterogeneity.</p>
+
+      <h3 class="welcome-section-header">Posterior computation</h3>
+      <p style="line-height:1.65;">Inference proceeds by marginalizing over <em>&mu;</em> analytically (conditional on <em>&tau;</em>), with each <em>&theta;<sub>j</sub></em> then sampled from its conjugate normal posterior conditional on (<em>&mu;</em>, <em>&tau;</em>). The marginal posterior of <em>&tau;</em> given the data is evaluated on a fine grid (1,000 points from 0.001 to 40); &tau; is then sampled from this discrete approximation. Conditional on each <em>&tau;</em> draw, <em>&mu;</em> is sampled from its conjugate normal posterior, and each <em>&theta;<sub>j</sub></em> is sampled from its conjugate normal posterior. This grid-based approach follows the algorithm described in Deke &amp; Finucane (2019). The default uses 10,000 posterior draws.</p>
+      <p style="line-height:1.65;">The default priors &mdash; <em>&mu;</em> ~ N(0, 0.2<sup>2</sup>) and <em>&tau;</em> ~ Gamma(2, 2) &mdash; were chosen to reflect the empirical distribution of true effects observed in the i3 evaluation portfolio: most true effects are small, and fewer than 10% exceed 0.10 standard deviations.</p>
+
+      <h3 class="welcome-section-header">The predictive distribution</h3>
+      <p style="line-height:1.65;">The <strong>Predict</strong> tab displays the posterior predictive distribution for the <em>true effect</em> in a new study drawn from the same population &mdash; that is, <em>&theta;</em><sub>new</sub> ~ N(<em>&mu;</em>, <em>&tau;</em><sup>2</sup>) marginalized over the joint posterior of (<em>&mu;</em>, <em>&tau;</em>). This is <em>not</em> the predictive distribution for a new <em>estimate</em> <em>y</em><sub>new</sub>, which would add an additional layer of sampling variance. The distinction matters: the predictive interval for the true effect answers the decision-relevant question of what impact a comparable program would actually have, setting aside measurement error.</p>
+
+      <h3 class="welcome-section-header">Data requirements</h3>
+      <p style="line-height:1.65;">Upload a CSV with at minimum two columns: <code>Estimate</code> (the point estimate) and <code>StdError</code> (its standard error). Optional columns <code>id</code> and <code>Description</code> are used for labeling. All estimates should be in comparable units (e.g., standardized effect sizes). Rows with missing or non-positive standard errors are dropped automatically.</p>
+
+      <h3 class="welcome-section-header">Acknowledgments</h3>
+      <p style="line-height:1.65;">BASIE was developed by <strong>John Deke</strong> and <strong>Mariel Finucane</strong>. BASIE Workbench is a browser-based demonstration tool built by John Deke. The pre-loaded i3 evaluation estimates are drawn from the IES-funded evaluation portfolio described in Deke &amp; Finucane (2019).</p>
+
+      <h3 class="welcome-section-header">References</h3>
+      <ol style="line-height:1.9; font-size:0.93rem; padding-left:1.3rem;">
+        <li>Deke, J. &amp; Finucane, M. (2019). <em>Moving Beyond Statistical Significance: The BASIE (Bayesian Interpretation of Estimates) Framework for Interpreting Findings from Impact Evaluations.</em> OPRE Report 2019-35. Office of Planning, Research, and Evaluation, ACF, U.S. DHHS. <a href="https://acf.gov/opre/report/moving-beyond-statistical-significance-basie-bayesian-interpretation-estimates" target="_blank" rel="noopener">acf.gov &rarr;</a></li>
+        <li>IES BASIE Framework and Toolkit. <a href="https://ies.ed.gov/use-work/resource-library/resource/tooltoolkit/basie-bayesian-interpretation-estimates-framework-interpreting-findings-impact-evaluations-practical" target="_blank" rel="noopener">ies.ed.gov &rarr;</a></li>
+        <li>Rubin, D. B. (1981). Estimation in parallel randomized experiments. <em>Journal of Educational Statistics, 6</em>(4), 377&ndash;401.</li>
+        <li>Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., &amp; Rubin, D. B. (2013). <em>Bayesian Data Analysis</em> (3rd ed.). Chapman &amp; Hall/CRC. <a href="http://www.stat.columbia.edu/~gelman/book/" target="_blank" rel="noopener">stat.columbia.edu &rarr;</a></li>
+        <li>Gelman, A. (2022). Hey, check this out &mdash; it&rsquo;s really cool: A Bayesian framework for interpreting findings from impact evaluations. <em>Statistical Modeling, Causal Inference, and Social Science</em> (blog). <a href="https://statmodeling.stat.columbia.edu/2022/04/27/hey-check-this-out-its-really-cool-a-bayesian-framework-for-interpreting-findings-from-impact-evaluations/" target="_blank" rel="noopener">statmodeling.stat.columbia.edu &rarr;</a></li>
+        <li>Wasserstein, R. L. &amp; Lazar, N. A. (2016). The ASA&rsquo;s statement on <em>p</em>-values: Context, process, and purpose. <em>The American Statistician, 70</em>(2), 129&ndash;133. <a href="https://doi.org/10.1080/00031305.2016.1154108" target="_blank" rel="noopener">doi.org &rarr;</a></li>
+        <li>Wasserstein, R. L., Schirm, A. L., &amp; Lazar, N. A. (2019). Moving to a world beyond &ldquo;<em>p</em> &lt; 0.05.&rdquo; <em>The American Statistician, 73</em>(sup1), 1&ndash;19. <a href="https://doi.org/10.1080/00031305.2019.1583913" target="_blank" rel="noopener">doi.org &rarr;</a></li>
+      </ol>
+
+    </div>
+  </div>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Wrap everything in an IIFE to avoid polluting global scope
+(function(){
+    // Register the data labels plugin globally so that significance stars can be drawn on charts
+    if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+      Chart.register(ChartDataLabels);
+    }
+    // Custom plugin for drawing horizontal error bars on scatter charts (forest plot).  The
+    // plugin expects arrays of lower and upper limits for each point in the dataset.  These
+    // arrays are provided via the plugin options when creating the chart.
+    const errorBarPlugin = {
+      // Use a unique id to avoid conflicting with external plugins
+      id: 'customErrorBarPlugin',
+      afterDatasetsDraw(chart) {
+        const {ctx} = chart;
+        const xScale = chart.scales.x;
+        // Iterate datasets; expect each dataset to have errorMin and errorMax arrays
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          const errMin = dataset.errorMin || [];
+          const errMax = dataset.errorMax || [];
+          meta.data.forEach((elem, idx) => {
+            const lowVal  = errMin[idx];
+            const highVal = errMax[idx];
+            if (lowVal === undefined || highVal === undefined) return;
+            const yPos = elem.y;
+            const xStart = xScale.getPixelForValue(lowVal);
+            const xEnd   = xScale.getPixelForValue(highVal);
+            ctx.save();
+            const color = dataset.borderColor || '#000';
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+            // Draw horizontal line
+            ctx.beginPath();
+            ctx.moveTo(xStart, yPos);
+            ctx.lineTo(xEnd, yPos);
+            ctx.stroke();
+            // Draw whiskers
+            ctx.beginPath();
+            ctx.moveTo(xStart, yPos - 4);
+            ctx.lineTo(xStart, yPos + 4);
+            ctx.moveTo(xEnd, yPos - 4);
+            ctx.lineTo(xEnd, yPos + 4);
+            ctx.stroke();
+            ctx.restore();
+          });
+        });
+      }
+    };
+    if (typeof Chart !== 'undefined') {
+      Chart.register(errorBarPlugin);
+      // Custom plugin to draw significance stars on top of bars in vertical bar charts.
+      const significancePlugin = {
+        // Use a unique id to avoid clashes
+        id: 'customSignificancePlugin',
+        afterDatasetsDraw(chart, args, opts) {
+          const {ctx} = chart;
+          const signifs = opts?.significance || [];
+          // Iterate over each dataset; only apply to the Frequentist bars
+          chart.data.datasets.forEach((dataset, datasetIndex) => {
+            if (dataset.label !== 'Frequentist') return;
+            const meta = chart.getDatasetMeta(datasetIndex);
+            meta.data.forEach((bar, index) => {
+              if (!signifs[index]) return;
+              // Determine top of bar: use the smaller of y and base
+              // Determine top of bar.  In some Chart.js versions `bar.base` may be
+              // undefined, so compute the baseline via the y-axis scale and
+              // zero value.  Use the smaller of the bar's current y and the
+              // baseline to position the star above the bar.
+              const yScale = chart.scales.y;
+              const baseY  = yScale.getPixelForValue(0);
+              const topY   = Math.min(bar.y, baseY);
+              const xPos   = bar.x;
+              ctx.save();
+              ctx.fillStyle = '#c8102e'; /* red accent for significance stars */
+              ctx.font = '16px Helvetica, Arial, sans-serif';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'bottom';
+              ctx.fillText('*', xPos, topY - 2);
+              ctx.restore();
+            });
+          });
+        }
+      };
+      Chart.register(significancePlugin);
+
+      // Custom plugin to draw a horizontal dashed line at y=1 for relative density charts
+      const relativeLinePlugin = {
+        id: 'relativeLinePlugin',
+        afterDraw(chart, args, opts) {
+          // Only draw when plugin is enabled via chart.options.plugins.relativeLinePlugin.display
+          if (!opts || !opts.display) return;
+          if (!chart.scales || !chart.scales.y) return;
+          const yScale = chart.scales.y;
+          if (typeof yScale.getPixelForValue !== 'function') return;
+          const yValue = 1;
+          const pixelY = yScale.getPixelForValue(yValue);
+          const chartArea = chart.chartArea;
+          const ctx = chart.ctx;
+          if (pixelY < chartArea.top || pixelY > chartArea.bottom) return;
+          ctx.save();
+          ctx.strokeStyle = '#666666';
+          ctx.setLineDash([4, 4]);
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(chartArea.left, pixelY);
+          ctx.lineTo(chartArea.right, pixelY);
+          ctx.stroke();
+          ctx.restore();
+        }
+      };
+      Chart.register(relativeLinePlugin);
+      // Vertical reference lines for the predictive density chart
+      const predictVLinesPlugin = {
+        id: 'predictVLines',
+        afterDraw(chart, args, opts) {
+          if (!opts || !chart.scales.x || !chart.chartArea) return;
+          const { ctx, chartArea, scales } = chart;
+          const vLine = (xVal, color, dash) => {
+            if (!isFinite(xVal)) return;
+            const px = scales.x.getPixelForValue(xVal);
+            if (px < chartArea.left || px > chartArea.right) return;
+            ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.5;
+            ctx.setLineDash(dash || []);
+            ctx.beginPath(); ctx.moveTo(px, chartArea.top); ctx.lineTo(px, chartArea.bottom);
+            ctx.stroke(); ctx.restore();
+          };
+          vLine(opts.zero, '#c8102e', []);
+          if (isFinite(opts.cutoff) && opts.cutoff !== 0) vLine(opts.cutoff, '#888', [5, 4]);
+        }
+      };
+      Chart.register(predictVLinesPlugin);
+    }
+
+    // Global error handler for debugging.  If an uncaught error occurs (for example,
+    // during Chart.js rendering), this will display the error message in the
+    // basie-error element so that issues can be diagnosed without accessing the
+    // browser console.
+    window.addEventListener('error', function(event) {
+      const errDiv = document.getElementById('basie-error');
+      if (errDiv) {
+        errDiv.style.display = 'block';
+        errDiv.textContent = 'Unhandled error: ' + (event && event.message ? event.message : event);
+      }
+    });
+    window.addEventListener('unhandledrejection', function(event) {
+      console.error('Unhandled promise rejection:', event.reason);
+    });
+    // ================================
+    // Data and configuration
+    // ================================
+    // Default dataset (pre-loaded) from the original R code
+    const defaultData = [
+      { id: 'DEV08', Description: 'School of One', Estimate: -0.02, StdError: 0.10 },
+      { id: 'DEV09', Description: 'Boston Teacher Residency (BTR)', Estimate: 0.01, StdError: 0.06 },
+      { id: 'DEV104', Description: 'G2ROW STEM', Estimate: 0.40, StdError: 0.12 },
+      { id: 'DEV11', Description: 'STEM Learning Opportunities Providing Equity (SLOPE)', Estimate: -0.08, StdError: 0.05 },
+      { id: 'DEV115', Description: 'Rural Math Innovation Network (RMIN)', Estimate: -0.17, StdError: 0.21 },
+      { id: 'DEV13', Description: 'Everyday Arts for Special Education (EASE)', Estimate: 0.05, StdError: 1.43 },
+      { id: 'DEV15', Description: 'Innovations in Early Mathematics', Estimate: -0.07, StdError: 0.06 },
+      { id: 'DEV18', Description: 'Rio Grande Valley Center for Teaching and Leading Excellence: New Teacher Training (NTT)', Estimate: -0.08, StdError: 0.05 },
+      { id: 'DEV23', Description: 'Schools to Watch (STW): School Transformation Network Project', Estimate: -0.14, StdError: 0.09 },
+      { id: 'DEV24', Description: 'New England Network for Personalization and Performance (NETWORK)', Estimate: 0.06, StdError: 0.10 },
+      { id: 'DEV26', Description: 'Florida Master Teacher Initiative (FMTI)', Estimate: -0.04, StdError: 0.04 },
+      { id: 'DEV31', Description: 'Accelerating Academic Achievement in Appalachian Kentucky (A4KY)', Estimate: -0.01, StdError: 0.07 },
+      { id: 'DEV34', Description: "Texas Tech University 'Tech Teach' Program", Estimate: -0.13, StdError: 0.12 },
+      { id: 'DEV38', Description: 'InnovateNYC Ecosystem', Estimate: 0.07, StdError: 0.08 },
+      { id: 'DEV40', Description: 'STEM Summer Learning with VEX Robotics', Estimate: 0.07, StdError: 0.14 },
+      { id: 'DEV46', Description: 'Turnaround with Increased Learning Time', Estimate: 0.02, StdError: 0.05 },
+      { id: 'DEV48', Description: 'Accomplished Teaching, Learning, and Schools (ATLAS)', Estimate: 0.15, StdError: 1.08 },
+      { id: 'DEV52', Description: 'PTA Comunitario', Estimate: -0.02, StdError: 0.08 },
+      { id: 'DEV58', Description: 'Rural Math Excellence Partnership (RMEP)', Estimate: -0.95, StdError: 0.91 },
+      { id: 'DEV60', Description: 'Middle-Grades Leadership Development (MLD) Project', Estimate: 0.00, StdError: 0.16 },
+      { id: 'DEV62', Description: 'Targeted Intensive School Support Program (TISS)', Estimate: -0.07, StdError: 0.05 },
+      { id: 'DEV65', Description: 'Engineering STEM Identity (ESI)', Estimate: 0.14, StdError: 0.08 },
+      { id: 'DEV66', Description: 'Infusing Innovative STEM Practices Into Rigorous Education (INSPIRE)', Estimate: -0.22, StdError: 0.10 },
+      { id: 'DEV68', Description: 'Unconditional Education', Estimate: 0.22, StdError: 0.10 },
+      { id: 'DEV77', Description: 'Learning by Making', Estimate: 0.18, StdError: 0.15 },
+      { id: 'DEV81', Description: 'System for Educator Effectiveness Development (SEED)', Estimate: 0.09, StdError: 0.19 },
+      { id: 'DEV82', Description: 'PreK - 12 Pathway to Teaching Academies', Estimate: -0.08, StdError: 0.09 },
+      { id: 'DEV83', Description: 'Leading with Learning', Estimate: 0.23, StdError: 0.19 },
+      { id: 'DEV95', Description: 'Teach to One: Math (TtO)', Estimate: -0.08, StdError: 0.06 },
+      { id: 'DEV96', Description: 'Data-Based Individualization (DBI)', Estimate: -0.10, StdError: 0.27 },
+      { id: 'SCALE01', Description: 'KIPP', Estimate: 0.18, StdError: 0.07 },
+      { id: 'SCALE04', Description: 'Teach for America (TFA)', Estimate: 0.05, StdError: 0.04 },
+      { id: 'SCALE05', Description: 'PowerTeaching', Estimate: 0.04, StdError: 0.47 },
+      { id: 'VALID03', Description: 'GO College (An Enhanced Version of Talent Search)', Estimate: 0.04, StdError: 0.05 },
+      { id: 'VALID12', Description: "enhancing Missouri's Instructional Networked Teaching Strategies (eMINTS)", Estimate: 0.13, StdError: 0.06 },
+      { id: 'VALID16', Description: 'Alaska Statewide Mentor Project (ASMP) Urban Growth Opportunity (UGO) Program', Estimate: 0.01, StdError: 0.09 },
+      { id: 'VALID17', Description: 'Child-Parent Center Education Program', Estimate: 0.00, StdError: 0.09 },
+      { id: 'VALID18', Description: 'Accessing Algebra Through Inquiry (a2i)', Estimate: -0.05, StdError: 0.08 },
+      { id: 'VALID21', Description: 'New Teacher Center Induction Model', Estimate: 0.16, StdError: 0.05 },
+      { id: 'VALID23', Description: "New Leaders' Aspiring Principals Program", Estimate: 0.09, StdError: 0.03 },
+      { id: 'VALID32', Description: 'SunBay Digital Mathematics', Estimate: -0.05, StdError: 0.03 },
+      { id: 'VALID34', Description: 'Building Assets Reducing Risks (BARR)', Estimate: 0.01, StdError: 0.02 },
+      { id: 'VALID36', Description: "National Institute for School Leadership's Executive Development Program", Estimate: 0.01, StdError: 0.02 },
+      { id: 'VALID37', Description: 'Higher Achievement', Estimate: 0.60, StdError: 0.73 }
+    ];
+
+    // Prior definitions matching the R code
+    const muPriors = [
+      {
+        short: 'absurdly optimistic (welcome to fantasy land)',
+        long: 'Zero mean effect is about as likely as an effect size of 100',
+        params: { prior_mu_mean_mean: 0, prior_mu_mean_sd: 0, prior_mu_sd_mean: 10000, prior_mu_sd_sd: 0 }
+      },
+      {
+        short: 'very optimistic (highly unrealistic)',
+        long: 'Zero mean effect is somewhat more likely than an effect size of 0.5',
+        params: { prior_mu_mean_mean: 0, prior_mu_mean_sd: 0, prior_mu_sd_mean: 1, prior_mu_sd_sd: 0 }
+      },
+      {
+        short: 'somewhat optimistic (realistic)',
+        long: 'Zero mean effect is about twice as likely as an effect size of 0.5',
+        params: { prior_mu_mean_mean: 0, prior_mu_mean_sd: 0, prior_mu_sd_mean: 0.4, prior_mu_sd_sd: 0 }
+      },
+      {
+        short: 'somewhat cautious (realistic)',
+        long: 'Zero mean effect is about 20× more likely than an effect size of 0.5',
+        params: { prior_mu_mean_mean: 0, prior_mu_mean_sd: 0, prior_mu_sd_mean: 0.2, prior_mu_sd_sd: 0 }
+      },
+      {
+        short: 'very cautious (realistic)',
+        long: 'Zero mean effect is about 20× more likely than an effect size of 0.25',
+        params: { prior_mu_mean_mean: 0, prior_mu_mean_sd: 0, prior_mu_sd_mean: 0.1, prior_mu_sd_sd: 0 }
+      }
+    ];
+    const tauPriors = [
+      {
+        short: 'flat',
+        long: 'No pooling, risk of chasing noise if there are just a few estimates',
+        params: { prior_tau_shape: NaN, prior_tau_rate: NaN }
+      },
+      {
+        short: 'gamma(2,2)',
+        long: 'Some pooling, moderate to high impact variation is expected',
+        params: { prior_tau_shape: 2, prior_tau_rate: 2 }
+      },
+      {
+        short: 'gamma(2,4)',
+        long: 'More pooling, moderate impact variation is expected',
+        params: { prior_tau_shape: 2, prior_tau_rate: 4 }
+      },
+      {
+        short: 'gamma(2,8)',
+        long: 'High pooling, low impact variation is expected',
+        params: { prior_tau_shape: 2, prior_tau_rate: 8 }
+      },
+      {
+        short: 'gamma(2,16)',
+        long: 'Very high pooling, little impact variation is expected',
+        params: { prior_tau_shape: 2, prior_tau_rate: 16 }
+      }
+    ];
+
+    // Global state
+    let dataset = JSON.parse(JSON.stringify(defaultData)); // copy of data
+    // Track whether we're using the pre‑loaded example or manual entry
+    let datasetMode = 'preloaded';
+    // Store manual-entry rows (up to 10); each element will be an object with id, Description, Estimate and StdError
+    let manualData = [];
+    let muPriorChart, tauPriorChart, muPostChart, tauPostChart;
+    let feChart;    // fixed effect scatter chart
+    let forestChart, axisChart; // for tables & plots tab
+    let modelResults = null; // will hold results from Bayesian model
+    let tableInstance = null; // DataTables instance for BASIE table
+    let pipModelResults = null; // Cached model results for the PIP Foundation tab
+    let pipFig1Chart = null;
+    let pipFig2Chart = null;
+
+    // ================================
+    // Prior state (shared across tabs)
+    // ================================
+    const muWidthValues = [0.1, 0.2, 0.4, 1.0];
+    const priorState = { muWidthIndex: 2, tauVariationIndex: 4 };
+
+    function getCurrentMuPriorParams() {
+      return { prior_mu_mean_mean: 0, prior_mu_mean_sd: 0,
+               prior_mu_sd_mean: muWidthValues[priorState.muWidthIndex - 1], prior_mu_sd_sd: 0 };
+    }
+    function getCurrentTauPriorParams() {
+      const shapes = [2, 2, 2, 2, NaN];
+      const rates  = [16, 8, 4, 2, NaN];
+      const i = priorState.tauVariationIndex - 1;
+      return { prior_tau_shape: shapes[i], prior_tau_rate: rates[i] };
+    }
+
+    // ================================
+    // Utility functions
+    // ================================
+    // Random normal using Box-Muller transform
+    function rnorm(mu = 0, sigma = 1) {
+      let u = 0, v = 0;
+      while (u === 0) u = Math.random();
+      while (v === 0) v = Math.random();
+      let z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+      return mu + sigma * z;
+    }
+    // Random gamma using jStat: sample from gamma(shape, rate)
+    function rgamma(shape, rate) {
+      // jStat uses shape and scale; scale = 1/rate
+      const scale = 1 / rate;
+      return jStat.gamma.sample(shape, scale);
+    }
+    // Gamma pdf using jStat: pdf(x; shape, rate)
+    function dgamma(x, shape, rate) {
+      const scale = 1 / rate;
+      return jStat.gamma.pdf(x, shape, scale);
+    }
+
+    // Escape HTML for manual entry table values
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text != null ? text : '';
+      return div.innerHTML;
+    }
+    // Compute quantile of array arr at q (0 <= q <= 1)
+    function quantile(arr, q) {
+      const sorted = arr.slice().sort((a, b) => a - b);
+      const pos = (sorted.length - 1) * q;
+      const base = Math.floor(pos);
+      const rest = pos - base;
+      if (sorted[base + 1] !== undefined) {
+        return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+      } else {
+        return sorted[base];
+      }
+    }
+    // Sum of array
+    function sum(arr) {
+      return arr.reduce((acc, v) => acc + v, 0);
+    }
+    // Mean of array
+    function mean(arr) {
+      return arr.length ? sum(arr) / arr.length : NaN;
+    }
+    // Standard deviation
+    function sd(arr) {
+      const m = mean(arr);
+      const varsum = arr.reduce((acc, v) => acc + Math.pow(v - m, 2), 0);
+      return Math.sqrt(varsum / (arr.length));
+    }
+    // Generate mu prior draws (100k) for summary & bar chart
+    function generateMuPriorDraws(params, n = 50000) {
+      const mu0 = params.prior_mu_mean_mean;
+      const s0 = params.prior_mu_mean_sd;
+      const sbar = params.prior_mu_sd_mean;
+      const ssd = params.prior_mu_sd_sd;
+      // Determine shape/rate for the random sd
+      let draws = new Array(n);
+      let sm;
+      for (let i = 0; i < n; i++) {
+        // Draw prior_mu_mean
+        const m = s0 === 0 ? mu0 : rnorm(mu0, s0);
+        // Draw prior_mu_sd
+        if (ssd === 0) {
+          sm = sbar;
+        } else {
+          const alpha = Math.pow(sbar / ssd, 2);
+          const beta = alpha / sbar;
+          sm = rgamma(alpha, beta);
+        }
+        // Draw mu from Normal(m, sm)
+        draws[i] = rnorm(m, sm);
+      }
+      return draws;
+    }
+    // Generate tau prior draws
+    function generateTauPriorDraws(params, n = 50000) {
+      const shape = params.prior_tau_shape;
+      const rate = params.prior_tau_rate;
+      if (!isFinite(shape) || !isFinite(rate) || shape <= 0 || rate <= 0) {
+        // Flat prior: return uniform draws from [0,10]
+        const draws = new Array(n);
+        for (let i = 0; i < n; i++) {
+          draws[i] = Math.random() * 10;
+        }
+        return draws;
+      }
+      const draws = new Array(n);
+      for (let i = 0; i < n; i++) {
+        draws[i] = rgamma(shape, rate);
+      }
+      return draws;
+    }
+    // Render summary table. For data-summary, renders transposed (headers as columns).
+    function renderSummaryTable(tableId, stats) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
+      table.innerHTML = '';
+      if (tableId === 'data-summary') {
+        // Transposed: one header row + one data row
+        const headers = stats.map(s => `<th style="text-align:center;">${s.Statistic}</th>`).join('');
+        const values  = stats.map(s => `<td style="text-align:center;">${s.Value}</td>`).join('');
+        table.innerHTML = `<thead><tr>${headers}</tr></thead><tbody><tr>${values}</tr></tbody>`;
+      } else {
+        let html = '<thead><tr><th>Statistic</th><th>Value</th></tr></thead><tbody>';
+        for (const s of stats) html += `<tr><td>${s.Statistic}</td><td>${s.Value}</td></tr>`;
+        html += '</tbody>';
+        table.innerHTML = html;
+      }
+    }
+    // Compute summary stats for an array of numbers
+    function computeSummaryStats(arr) {
+      return [
+        { Statistic: 'mean', Value: mean(arr).toFixed(3) },
+        { Statistic: 'sd', Value: sd(arr).toFixed(3) },
+        { Statistic: '10%', Value: quantile(arr, 0.10).toFixed(3) },
+        { Statistic: '25%', Value: quantile(arr, 0.25).toFixed(3) },
+        { Statistic: '50%', Value: quantile(arr, 0.50).toFixed(3) },
+        { Statistic: '75%', Value: quantile(arr, 0.75).toFixed(3) },
+        { Statistic: '90%', Value: quantile(arr, 0.90).toFixed(3) }
+      ];
+    }
+    // Summarize dataset estimate column for Data tab (transposed: one header row, one data row)
+    function computeDataSummary() {
+      const est = dataset.map(row => row.Estimate);
+      const valid = est.filter(v => typeof v === 'number' && !isNaN(v));
+      if (!valid.length) return [];
+      const sorted = valid.slice().sort((a,b) => a - b);
+      return [
+        { Statistic: 'N studies',  Value: valid.length },
+        { Statistic: 'Min',        Value: sorted[0].toFixed(3) },
+        { Statistic: '25th pct',   Value: quantile(sorted, 0.25).toFixed(3) },
+        { Statistic: 'Median',     Value: quantile(sorted, 0.50).toFixed(3) },
+        { Statistic: 'Mean',       Value: mean(sorted).toFixed(3) },
+        { Statistic: '75th pct',   Value: quantile(sorted, 0.75).toFixed(3) },
+        { Statistic: 'Max',        Value: sorted[sorted.length - 1].toFixed(3) }
+      ];
+    }
+    // Render dataset table (read-only)
+    function renderDataTable() {
+      const table = document.getElementById('data-table');
+      if (!table) return;
+      table.innerHTML = '';
+      let html = '<thead><tr><th>ID</th><th>Description</th><th>Estimate</th><th>Std Error</th></tr></thead><tbody>';
+      dataset.forEach(row => {
+        html += `<tr><td>${row.id}</td><td>${row.Description}</td>` +
+                `<td>${(+row.Estimate).toFixed(3)}</td><td>${(+row.StdError).toFixed(3)}</td></tr>`;
+      });
+      html += '</tbody>';
+      table.innerHTML = html;
+    }
+    // Handle updates after data change
+    function updateAfterDataChange() {
+      renderSummaryTable('data-summary', computeDataSummary());
+      drawFixedEffectSummary();  // populates fe-summary pre element
+      if (typeof updateSliderLabels === 'function') updateSliderLabels();
+      drawFreqView();            // renders whichever freq view is selected
+      if (dataset.length >= 2) setTimeout(function() { runModelAndUpdateAll(); }, 0);
+    }
+
+    // ==============================
+    // Manual data entry functions
+    // ==============================
+    // Render the manual-entry table with editable inputs and remove buttons
+    function renderManualTable() {
+      const table = document.getElementById('manual-table');
+      if (!table) return;
+      let html = '<thead><tr><th>ID</th><th>Description</th><th>Estimate</th><th>StdError</th><th></th></tr></thead><tbody>';
+      manualData.forEach((row, index) => {
+        html += `<tr data-index="${index}">`;
+        html += `<td><input type="text" class="manual-id" style="width:100%;" value="${escapeHtml(row.id)}"></td>`;
+        html += `<td><input type="text" class="manual-desc" style="width:100%;" value="${escapeHtml(row.Description)}"></td>`;
+        html += `<td><input type="number" step="any" class="manual-est" style="width:100%;" value="${row.Estimate !== '' && row.Estimate != null ? row.Estimate : ''}"></td>`;
+        html += `<td><input type="number" step="any" class="manual-se" style="width:100%;" value="${row.StdError !== '' && row.StdError != null ? row.StdError : ''}"></td>`;
+        html += `<td><button type="button" class="remove-manual-row" data-index="${index}" style="padding:2px 6px; font-size:0.8rem;">Remove</button></td>`;
+        html += '</tr>';
+      });
+      html += '</tbody>';
+      table.innerHTML = html;
+      // Attach input event handlers to update manualData
+      table.querySelectorAll('.manual-id').forEach(input => {
+        input.addEventListener('input', function() {
+          const idx = parseInt(this.closest('tr').getAttribute('data-index'), 10);
+          manualData[idx].id = this.value;
+          dataset[idx].id = this.value;
+        });
+      });
+      table.querySelectorAll('.manual-desc').forEach(input => {
+        input.addEventListener('input', function() {
+          const idx = parseInt(this.closest('tr').getAttribute('data-index'), 10);
+          manualData[idx].Description = this.value;
+          dataset[idx].Description = this.value;
+        });
+      });
+      table.querySelectorAll('.manual-est').forEach(input => {
+        input.addEventListener('change', function() {
+          const idx = parseInt(this.closest('tr').getAttribute('data-index'), 10);
+          const val = parseFloat(this.value);
+          manualData[idx].Estimate = isNaN(val) ? '' : val;
+          dataset[idx].Estimate = isNaN(val) ? 0 : val;
+          updateAfterDataChange();
+        });
+      });
+      table.querySelectorAll('.manual-se').forEach(input => {
+        input.addEventListener('change', function() {
+          const idx = parseInt(this.closest('tr').getAttribute('data-index'), 10);
+          const val = parseFloat(this.value);
+          manualData[idx].StdError = isNaN(val) ? '' : val;
+          dataset[idx].StdError = isNaN(val) ? 1 : val;
+          updateAfterDataChange();
+        });
+      });
+      table.querySelectorAll('.remove-manual-row').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const idx = parseInt(this.getAttribute('data-index'), 10);
+          manualData.splice(idx, 1);
+          dataset.splice(idx, 1);
+          renderManualTable();
+          updateAfterDataChange();
+        });
+      });
+    }
+
+    // drawFixedEffectPlot removed (replaced by drawFreqView)
+    function drawFixedEffectPlot() { return; }
+    // Draw fixed effect summary in preformatted text
+    function drawFixedEffectSummary() {
+      const est = dataset.map(row => row.Estimate);
+      const se = dataset.map(row => row.StdError);
+      const w = se.map(s => 1 / (s * s));
+      const avgEffect = sum(w.map((wi, i) => wi * est[i])) / sum(w);
+      const seAvg = Math.sqrt(1 / sum(w));
+      // Cochran's Q
+      const Q = sum(w.map((wi, i) => wi * Math.pow(est[i] - avgEffect, 2)));
+      const df = est.length - 1;
+      // p-value using jStat's chi-square cdf complement
+      const pval = 1 - jStat.chisquare.cdf(Q, df);
+      let text = '';
+      text += 'Fixed Effects Meta-Analysis Summary:\n';
+      text += '  Average Effect Size: ' + avgEffect.toFixed(4) + '\n';
+      text += '  Standard Error: ' + seAvg.toFixed(4) + '\n';
+      text += '  Cochran\'s Q: ' + Q.toFixed(4) + ' with ' + df + ' df  (p = ' + pval.toFixed(4) + ')\n\n';
+      if (pval < 0.05) {
+        text += 'Interpretation: The Q test rejects the null of homogeneity at the five percent level, indicating that the observed variation in impact estimates would be unusually large IF WE ASSUME zero variation in true effects.\n';
+        text += 'However, this test does not tell us whether there is likely true variation in effects — we assume there is no variation in order to conduct this test.\n';
+        text += 'To assess the probability that there is true variation, we need the Bayesian posterior distribution.\n';
+      } else {
+        text += 'Interpretation: The Q test does not reject the null of homogeneity at the five percent level, meaning the observed variation in impact estimates is not unusually large IF WE ASSUME zero variation in true effects.\n';
+        text += 'However, this result does not confirm homogeneity. The test begins by assuming there is no true variation, and a high p-value simply means the data are consistent with that assumption.\n';
+        text += 'To assess the probability that there is true variation, we need the Bayesian posterior distribution.\n';
+      }
+      document.getElementById('fe-summary').textContent = text;
+    }
+    // Draw mu/tau prior charts and summaries (no-op: prior UI removed)
+    function updatePriorCharts() {
+      return; // prior chart tab removed; function retained to avoid reference errors
+      const muChoice = document.getElementById('mu-prior-select').value;
+      const muObj = muPriors.find(p => p.short === muChoice);
+      const tauChoice = document.getElementById('tau-prior-select').value;
+      const tauObj = tauPriors.find(p => p.short === tauChoice);
+      // Update descriptions
+      document.getElementById('mu-prior-desc').textContent = muObj.long;
+      document.getElementById('tau-prior-desc').textContent = tauObj.long;
+      // Generate draws for mu
+      const muDraws = generateMuPriorDraws(muObj.params, 20000);
+      // Evaluate relative likelihood at selected effect sizes
+      const xsMu = [0.05, 0.15, 0.25, 0.40, 0.80];
+      // Estimate density using kernel density via jStat (we can approximate using histogram)
+      // We'll compute density by normal distribution smoothing around each x. We'll approximate by computing pdf at x using gaussian kernel from draws.
+      // Determine baseline density at 0 and at xs
+      function estimateDensity(draws, x, bandwidth) {
+        let sumPdf = 0;
+        for (let d of draws) {
+          const z = (x - d) / bandwidth;
+          sumPdf += Math.exp(-0.5 * z * z);
+        }
+        return sumPdf / (draws.length * bandwidth * Math.sqrt(2 * Math.PI));
+      }
+      // bandwidth using Silverman's rule of thumb
+      const sMu = sd(muDraws);
+      const nMu = muDraws.length;
+      const bwMu = 1.06 * sMu * Math.pow(nMu, -1/5);
+      const f0 = estimateDensity(muDraws, 0, bwMu);
+      const relMu = xsMu.map(x => {
+        const fx = estimateDensity(muDraws, x, bwMu);
+        return f0 > 1e-12 ? fx / f0 : NaN;
+      });
+      // Prepare data and options for the mu prior bar chart
+      const muData = {
+        labels: xsMu.map(x => x.toFixed(2)),
+        datasets: [
+          {
+            label: 'Relative prior likelihood vs 0',
+            data: relMu,
+            backgroundColor: 'rgba(4, 107, 92, 0.6)',
+            borderColor: 'rgba(4, 107, 92, 1)',
+            borderWidth: 1
+          }
+        ]
+      };
+      const muOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            // Provide extra headroom for labels; relative prior values are in [0,1]
+            max: 1.05,
+            title: {
+              display: true,
+              text: 'Relative prior likelihood vs 0'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Effect size (\u03BC)'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return ctx.parsed.y.toFixed(2);
+              }
+            }
+          },
+          // Show value labels above bars rounded to two decimals
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            color: '#333333',
+            formatter: function(value) {
+              return value.toFixed(2);
+            },
+            offset: 2,
+            clamp: true
+          },
+          // Enable dashed line plugin for relative density charts
+          relativeLinePlugin: {
+            display: true
+          }
+        }
+      };
+      // Draw or update mu prior chart.  If chart already exists, update its data and options instead of recreating
+      const muCtx = document.getElementById('mu-prior-chart').getContext('2d');
+      if (!muPriorChart) {
+        muPriorChart = new Chart(muCtx, { type: 'bar', data: muData, options: muOptions });
+      } else {
+        muPriorChart.data.labels = muData.labels;
+        muPriorChart.data.datasets[0].data = muData.datasets[0].data;
+        // Deep assign options (for datalabels, scales, etc.)
+        muPriorChart.options.scales = muOptions.scales;
+        muPriorChart.options.plugins = muOptions.plugins;
+        muPriorChart.update();
+      }
+      // Compute summary stats for mu
+      const muStats = computeSummaryStats(muDraws);
+      renderSummaryTable('mu-prior-summary', muStats);
+      // Generate draws for tau prior and compute relative likelihood vs mode
+      const tauDraws = generateTauPriorDraws(tauObj.params, 20000);
+      // For tau prior analytic gamma, evaluate at fixed ticks and compute relative to mode
+      const tauParams = tauObj.params;
+      const shape = tauParams.prior_tau_shape;
+      const rate = tauParams.prior_tau_rate;
+      // Base grid for tau values and compute relative likelihood vs mode
+      const baseTauVals = [0.05, 0.10, 0.20, 0.40, 0.80];
+      let tauVals = baseTauVals.slice();
+      let relVals = [];
+      let modeTau = 0;
+      let fm = 0;
+      if (!isFinite(shape) || !isFinite(rate) || shape <= 0 || rate <= 0) {
+        // Flat prior: uniform relative likelihood
+        relVals = tauVals.map(() => 1);
+      } else {
+        if (shape > 1) {
+          modeTau = (shape - 1) / rate;
+          fm = dgamma(modeTau, shape, rate);
+        } else {
+          // Mode at zero; approximate density near zero
+          const eps = Math.min(1e-6, 0.01 * (shape / rate));
+          modeTau = 0;
+          fm = dgamma(eps, shape, rate);
+        }
+        // Relative likelihood at base values
+        relVals = tauVals.map(x => dgamma(x, shape, rate) / fm);
+        // Insert the mode as a bar when shape > 1
+        if (shape > 1) {
+          let inserted = false;
+          for (let i = 0; i < tauVals.length - 1; i++) {
+            if (tauVals[i] < modeTau && modeTau < tauVals[i + 1]) {
+              tauVals.splice(i + 1, 0, modeTau);
+              relVals.splice(i + 1, 0, 1);
+              inserted = true;
+              break;
+            }
+          }
+          if (!inserted) {
+            tauVals.push(modeTau);
+            relVals.push(1);
+          }
+        }
+      }
+      // Construct labels, marking the mode explicitly
+      const tauLabels = tauVals.map(val => {
+        if (shape > 1 && Math.abs(val - modeTau) < 1e-8) {
+          return 'mode (' + modeTau.toFixed(2) + ')';
+        } else {
+          return val.toFixed(2);
+        }
+      });
+      const tauData = {
+        labels: tauLabels,
+        datasets: [
+          {
+            label: 'Relative prior likelihood vs mode',
+            data: relVals,
+            backgroundColor: 'rgba(11, 41, 73, 0.6)',
+            borderColor: 'rgba(11, 41, 73, 1)',
+            borderWidth: 1
+          }
+        ]
+      };
+      const tauOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            // Provide extra headroom for labels; relative values are in [0,1]
+            max: 1.05,
+            title: {
+              display: true,
+              text: 'Relative prior likelihood vs mode'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: '\u03C4'
+            }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(2) } },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            color: '#333333',
+            formatter: function(value) {
+              return value.toFixed(2);
+            },
+            offset: 2,
+            clamp: true
+          },
+          // Enable dashed line plugin for relative density charts
+          relativeLinePlugin: {
+            display: true
+          }
+        }
+      };
+      // Draw or update tau prior chart.  If chart already exists, update its data and options instead of recreating
+      const tauCtx = document.getElementById('tau-prior-chart').getContext('2d');
+      if (!tauPriorChart) {
+        tauPriorChart = new Chart(tauCtx, { type: 'bar', data: tauData, options: tauOptions });
+      } else {
+        tauPriorChart.data.labels = tauData.labels;
+        tauPriorChart.data.datasets[0].data = tauData.datasets[0].data;
+        tauPriorChart.options.scales = tauOptions.scales;
+        tauPriorChart.options.plugins = tauOptions.plugins;
+        tauPriorChart.update();
+      }
+      // Summary stats for tau
+      const tauStats = computeSummaryStats(tauDraws);
+      renderSummaryTable('tau-prior-summary', tauStats);
+      // Update chart titles
+      // Title for mu prior: always describe relative likelihood at selected effect sizes
+      document.getElementById('mu-chart-title').textContent = 'Prior for \u03BC: likelihood relative to 0 at selected effect sizes';
+      // Title for tau prior: include shape (k), rate (\u03B2), and mode when defined
+      let tauTitle = 'Prior for \u03C4 (Gamma): likelihood relative to the mode';
+      if (isFinite(shape) && isFinite(rate) && shape > 0 && rate > 0) {
+        // Compose approximate parameters; use Greek letter beta for rate
+        const kVal = shape.toFixed(1);
+        const betaVal = rate.toFixed(1);
+        // modeTau is still in scope from above; if shape <= 1, modeTau may be 0
+        tauTitle += ` (k \u2248 ${kVal}, \u03B2 \u2248 ${betaVal}, mode \u03C4 \u2248 ${modeTau.toFixed(2)})`;
+      }
+      document.getElementById('tau-chart-title').textContent = tauTitle;
+    }
+    // Run Bayesian model (port of gen.post.grid)
+    async function runModel() {
+      const muObj = { params: getCurrentMuPriorParams() };
+      const tauObj = { params: getCurrentTauPriorParams() };
+      // y and sigma arrays
+      const y = dataset.map(row => row.Estimate);
+      const sigma = dataset.map(row => row.StdError);
+      const J = y.length;
+      // The number of posterior draws to generate.  The R code uses 10k draws;
+      // we revert to the full 10k here to more closely match the Shiny app.
+      const nSims = 10000;
+      const gridMin = 0.001;
+      const gridMax = 40;
+      // Number of grid points for τ sampling.  The original R implementation
+      // uses 1000 points; we revert to 500 to more closely mirror the Shiny
+      // app's resolution while remaining performant in modern browsers.
+      // Use 1000 grid points for tau, matching the original R Shiny implementation
+      const nGrid = 1000;
+      // Precompute shape/rate for prior_mu_sd
+      const prior_mu_sd_shape = muObj.params.prior_mu_sd_sd === 0 ? Infinity : Math.pow(muObj.params.prior_mu_sd_mean / muObj.params.prior_mu_sd_sd, 2);
+      const prior_mu_sd_rate = prior_mu_sd_shape / muObj.params.prior_mu_sd_mean;
+      // Create tau grid
+      const tauGrid = new Array(nGrid);
+      const step = (gridMax - gridMin) / (nGrid - 1);
+      for (let i = 0; i < nGrid; i++) {
+        tauGrid[i] = gridMin + step * i;
+      }
+      // Precompute sigma^2
+      const sigmaSq = sigma.map(s => s * s);
+      // Functions to compute mu_hat and V_mu for a given tau and prior_mu_sd
+      function muHat(tau, prior_mu_mean, prior_mu_sd) {
+        let denom = 0;
+        let num = 0;
+        for (let j = 0; j < J; j++) {
+          const denom_j = 1 / (sigmaSq[j] + tau * tau);
+          denom += denom_j;
+          num += (y[j] / (sigmaSq[j] + tau * tau));
+        }
+        const tmp1 = num / denom;
+        const P1 = denom;
+        const Pprior = 1 / (prior_mu_sd * prior_mu_sd);
+        return (P1 * tmp1 + Pprior * prior_mu_mean) / (P1 + Pprior);
+      }
+      function VMu(tau, prior_mu_sd) {
+        let denom = 0;
+        for (let j = 0; j < J; j++) {
+          denom += 1 / (tau * tau + sigmaSq[j]);
+        }
+        const Pprior = 1 / (prior_mu_sd * prior_mu_sd);
+        return 1 / (denom + Pprior);
+      }
+      // Compute log posterior of tau (without prior on tau) across grid
+      const logP = new Array(nGrid);
+      for (let i = 0; i < nGrid; i++) {
+        const tau = tauGrid[i];
+        // For prior_mu_mean use constant mean
+        const prior_mu_mean = muObj.params.prior_mu_mean_mean;
+        // For prior_mu_sd use mean if shape infinite else prior_mu_sd_shape/prior_mu_sd_rate
+        let prior_mu_sd;
+        if (!isFinite(prior_mu_sd_shape)) {
+          prior_mu_sd = muObj.params.prior_mu_sd_mean;
+        } else {
+          prior_mu_sd = prior_mu_sd_shape / prior_mu_sd_rate;
+        }
+        const muHatVal = muHat(tau, prior_mu_mean, prior_mu_sd);
+        const V = VMu(tau, prior_mu_sd);
+        // Compute log likelihood part
+        let logPart = 0.5 * Math.log(V);
+        let sumLog = 0;
+        let sumQuad = 0;
+        for (let j = 0; j < J; j++) {
+          const denom = sigmaSq[j] + tau * tau;
+          sumLog += Math.log(denom);
+          sumQuad += Math.pow(y[j] - muHatVal, 2) / denom;
+        }
+        logPart -= 0.5 * sumLog;
+        logPart -= 0.5 * sumQuad;
+        logP[i] = logPart;
+      }
+      // Normalize logP to get probabilities
+      const maxLog = Math.max(...logP);
+      const pTau = new Array(nGrid);
+      let sumPTau = 0;
+      for (let i = 0; i < nGrid; i++) {
+        const val = Math.exp(logP[i] - maxLog);
+        pTau[i] = val;
+        sumPTau += val;
+      }
+      // Include tau prior if finite
+      if (isFinite(tauObj.params.prior_tau_shape) && isFinite(tauObj.params.prior_tau_rate) && tauObj.params.prior_tau_shape > 0 && tauObj.params.prior_tau_rate > 0) {
+        // Compute prior gamma for tauGrid
+        const pPrior = new Array(nGrid);
+        let sumPrior = 0;
+        for (let i = 0; i < nGrid; i++) {
+          const val = dgamma(tauGrid[i], tauObj.params.prior_tau_shape, tauObj.params.prior_tau_rate);
+          pPrior[i] = val;
+          sumPrior += val;
+        }
+        // Normalize
+        for (let i = 0; i < nGrid; i++) {
+          pPrior[i] /= sumPrior;
+          pTau[i] *= pPrior[i];
+        }
+        // Renormalize pTau
+        sumPTau = pTau.reduce((acc, v) => acc + v, 0);
+      }
+      for (let i = 0; i < nGrid; i++) pTau[i] /= sumPTau;
+      // Precompute cumulative probabilities for tau sampling
+      const cumPTau = new Array(nGrid);
+      let cumulative = 0;
+      for (let i = 0; i < nGrid; i++) {
+        cumulative += pTau[i];
+        cumPTau[i] = cumulative;
+      }
+      // Sample tau and mu and theta
+      const muSamples = new Array(nSims);
+      const tauSamples = new Array(nSims);
+      const thetaSamples = new Array(nSims);
+      for (let i = 0; i < nSims; i++) {
+        // Sample tau from tauGrid according to pTau
+        const u = Math.random();
+        let idx = cumPTau.findIndex(c => c >= u);
+        if (idx < 0) idx = nGrid - 1;
+        const tau = tauGrid[idx];
+        tauSamples[i] = tau;
+        // Sample prior_mu_mean from Normal
+        const prior_mu_mean = muObj.params.prior_mu_mean_sd === 0 ? muObj.params.prior_mu_mean_mean : rnorm(muObj.params.prior_mu_mean_mean, muObj.params.prior_mu_mean_sd);
+        // Sample prior_mu_sd
+        let prior_mu_sd;
+        if (!isFinite(prior_mu_sd_shape)) {
+          prior_mu_sd = muObj.params.prior_mu_sd_mean;
+        } else {
+          prior_mu_sd = rgamma(prior_mu_sd_shape, prior_mu_sd_rate);
+        }
+        // mu hat and V
+        const muHatVal = muHat(tau, prior_mu_mean, prior_mu_sd);
+        const V = VMu(tau, prior_mu_sd);
+        // Sample mu
+        const muDraw = rnorm(muHatVal, Math.sqrt(V));
+        muSamples[i] = muDraw;
+        // Sample theta for each j
+        const thetas = new Array(J);
+        for (let j = 0; j < J; j++) {
+          const denom = 1 / (tau * tau) + 1 / sigmaSq[j];
+          const thetaMean = (muDraw / (tau * tau) + y[j] / sigmaSq[j]) / denom;
+          const thetaSd = Math.sqrt(1 / denom);
+          thetas[j] = rnorm(thetaMean, thetaSd);
+        }
+        thetaSamples[i] = thetas;
+      }
+      // Store results in global state
+      modelResults = {
+        mu: muSamples,
+        tau: tauSamples,
+        theta: thetaSamples
+      };
+    }
+    // After model results, update posterior charts and tables
+    function updatePosteriorDisplays() {
+      if (!modelResults) return;
+      // hide model-not-ready, show model-ready
+      document.getElementById('model-not-ready').style.display = 'none';
+      document.getElementById('model-ready').style.display = 'block';
+      // Get references to the title elements for mu and tau posterior displays
+      const muPostTitleEl = document.getElementById('mu-post-title');
+      const tauPostTitleEl = document.getElementById('tau-post-title');
+      // compute mu posterior densities relative to 0 at xs
+      const muPost = modelResults.mu;
+      const xsMu = [0.05, 0.15, 0.25, 0.40, 0.80];
+      const sPostMu = sd(muPost);
+      const nPostMu = muPost.length;
+      const bwPostMu = 1.06 * sPostMu * Math.pow(nPostMu, -1/5);
+      function estimateDensity(arr, x, bw) {
+        let sumPdf = 0;
+        for (const d of arr) {
+          const z = (x - d) / bw;
+          sumPdf += Math.exp(-0.5 * z * z);
+        }
+        return sumPdf / (arr.length * bw * Math.sqrt(2 * Math.PI));
+      }
+      const f0 = estimateDensity(muPost, 0, bwPostMu);
+      const relMu = xsMu.map(x => {
+        const fx = estimateDensity(muPost, x, bwPostMu);
+        return f0 > 1e-12 ? fx / f0 : NaN;
+      });
+      // Chart for mu posterior
+      // Title for mu posterior: relative density vs 0
+      if (muPostTitleEl) {
+        muPostTitleEl.textContent = 'Posterior for \u03BC: likelihood relative to 0 at selected effect sizes';
+      }
+      // Construct Chart.js config for mu posterior chart
+      const muData = {
+        labels: xsMu.map(x => x.toFixed(2)),
+        datasets: [
+          {
+            label: 'Relative posterior density vs 0',
+            data: relMu,
+            backgroundColor: 'rgba(4, 107, 92, 0.6)',
+            borderColor: 'rgba(4, 107, 92, 1)',
+            borderWidth: 1
+          }
+        ]
+      };
+      const muOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 1.05,
+            title: {
+              display: true,
+              text: 'Relative posterior density vs 0'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: '\u03BC'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return ctx.parsed.y.toFixed(2);
+              }
+            }
+          },
+          // Display data labels above bars rounded to two decimals
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            color: '#333333',
+            offset: 2,
+            formatter: function(value) {
+              return (value ?? 0).toFixed(2);
+            },
+            clamp: true
+          },
+          // Enable dashed line plugin for relative density charts
+          relativeLinePlugin: {
+            display: true
+          }
+        }
+      };
+      // If chart already exists, update data and options; otherwise create
+      const muCtx = document.getElementById('mu-post-chart').getContext('2d');
+      if (!muPostChart) {
+        muPostChart = new Chart(muCtx, { type: 'bar', data: muData, options: muOptions });
+      } else {
+        muPostChart.data.labels = muData.labels;
+        muPostChart.data.datasets[0].data = muData.datasets[0].data;
+        muPostChart.options.scales = muOptions.scales;
+        muPostChart.options.plugins = muOptions.plugins;
+        muPostChart.update();
+      }
+      // Mu summary table
+      const muStats = [
+        { Statistic: 'mean', Value: mean(muPost).toFixed(3) },
+        { Statistic: 'sd', Value: sd(muPost).toFixed(3) },
+        { Statistic: '10%', Value: quantile(muPost, 0.10).toFixed(3) },
+        { Statistic: '25%', Value: quantile(muPost, 0.25).toFixed(3) },
+        { Statistic: '50%', Value: quantile(muPost, 0.50).toFixed(3) },
+        { Statistic: '75%', Value: quantile(muPost, 0.75).toFixed(3) },
+        { Statistic: '90%', Value: quantile(muPost, 0.90).toFixed(3) }
+      ];
+      renderSummaryTable('mu-post-summary', muStats);
+      // Tau posterior: fit Gamma by moments
+      const tauPost = modelResults.tau.filter(x => x >= 0 && isFinite(x));
+      const m = mean(tauPost);
+      const s = sd(tauPost);
+      let shape, rate;
+      if (m > 0 && s > 0) {
+        shape = Math.pow(m / s, 2);
+        rate = m / (s * s);
+      } else {
+        shape = NaN;
+        rate = NaN;
+      }
+      // Construct relative density values and labels for tau posterior
+      // Base grid for tau values
+      const baseTauVals = [0.05, 0.10, 0.20, 0.40, 0.80];
+      let tauVals = baseTauVals.slice();
+      let relTau = [];
+      let modeTau = 0;
+      if (isFinite(shape) && isFinite(rate) && shape > 0 && rate > 0) {
+        // Compute mode and maximum density for relative values
+        let fMode;
+        if (shape > 1) {
+          modeTau = (shape - 1) / rate;
+          fMode = dgamma(modeTau, shape, rate);
+        } else {
+          // Mode at zero; approximate by small epsilon
+          modeTau = 0;
+          const eps = Math.min(1e-6, 0.01 * m);
+          fMode = dgamma(eps, shape, rate);
+        }
+        // Compute relative densities at base values
+        relTau = tauVals.map(x => dgamma(x, shape, rate) / fMode);
+        // Insert mode into values list if shape > 1
+        if (shape > 1) {
+          let inserted = false;
+          for (let i = 0; i < tauVals.length - 1; i++) {
+            if (tauVals[i] < modeTau && modeTau < tauVals[i + 1]) {
+              tauVals.splice(i + 1, 0, modeTau);
+              relTau.splice(i + 1, 0, 1);
+              inserted = true;
+              break;
+            }
+          }
+          if (!inserted) {
+            tauVals.push(modeTau);
+            relTau.push(1);
+          }
+        }
+      } else {
+        // In case of degenerate distribution, assign NaN values
+        relTau = tauVals.map(() => NaN);
+      }
+      // Build labels marking the mode explicitly
+      const tauLabels = tauVals.map(val => {
+        if (isFinite(shape) && shape > 1 && Math.abs(val - modeTau) < 1e-8) {
+          return 'mode (' + modeTau.toFixed(3) + ')';
+        } else {
+          return val.toFixed(2);
+        }
+      });
+      // Title for tau posterior: includes approximated mode, shape (k) and rate (β)
+      if (tauPostTitleEl) {
+        let titleText = 'Posterior for \u03C4 (Gamma fit): likelihood relative to the mode';
+        if (isFinite(shape) && isFinite(rate) && shape > 0 && rate > 0) {
+          // Format approximations as shown in original app
+          const approxMode = modeTau.toFixed(4);
+          const kApprox = shape.toFixed(1);
+          const betaApprox = rate.toFixed(0);
+          titleText += ' (mode \u03C4 \u2248 ' + approxMode + ', k \u2248 ' + kApprox + ', \u03B2 \u2248 ' + betaApprox + ')';
+        }
+        tauPostTitleEl.textContent = titleText;
+      }
+      const tauData = {
+        labels: tauLabels,
+        datasets: [
+          {
+            label: 'Relative posterior density vs mode',
+            data: relTau,
+            backgroundColor: 'rgba(11, 41, 73, 0.6)',
+            borderColor: 'rgba(11, 41, 73, 1)',
+            borderWidth: 1
+          }
+        ]
+      };
+      const tauOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 1.05,
+            title: {
+              display: true,
+              text: 'Relative posterior density vs mode'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: '\u03C4'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return (ctx.parsed.y ?? 0).toFixed(2);
+              }
+            }
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'end',
+            color: '#333333',
+            offset: 2,
+            formatter: function(value) {
+              return (value ?? 0).toFixed(2);
+            },
+            clamp: true
+          },
+          // Enable dashed line plugin for relative density charts
+          relativeLinePlugin: {
+            display: true
+          }
+        }
+      };
+      // Create or update the tau posterior chart
+      const tauCtx = document.getElementById('tau-post-chart').getContext('2d');
+      if (!tauPostChart) {
+        tauPostChart = new Chart(tauCtx, { type: 'bar', data: tauData, options: tauOptions });
+      } else {
+        tauPostChart.data.labels = tauData.labels;
+        tauPostChart.data.datasets[0].data = tauData.datasets[0].data;
+        tauPostChart.options.scales = tauOptions.scales;
+        tauPostChart.options.plugins = tauOptions.plugins;
+        tauPostChart.update();
+      }
+      // Tau summary table
+      const tauStatsList = [
+        { Statistic: 'mean', Value: m.toFixed(3) },
+        { Statistic: 'sd', Value: s.toFixed(3) },
+        { Statistic: '10%', Value: quantile(tauPost, 0.10).toFixed(3) },
+        { Statistic: '25%', Value: quantile(tauPost, 0.25).toFixed(3) },
+        { Statistic: '50%', Value: quantile(tauPost, 0.50).toFixed(3) },
+        { Statistic: '75%', Value: quantile(tauPost, 0.75).toFixed(3) },
+        { Statistic: '90%', Value: quantile(tauPost, 0.90).toFixed(3) }
+      ];
+      renderSummaryTable('tau-post-summary', tauStatsList);
+      // After computing posterior, update BASIE table & plots
+      updateBasieTableAndPlot();
+    }
+    // Update BASIE table and forest/bars plot based on modelResults and user settings
+    function updateBasieTableAndPlot() {
+      if (!modelResults) return;
+      // Compute posterior summaries per study
+      const nSims = modelResults.mu.length;
+      const cutoff = parseFloat(document.getElementById('cutoff-input').value);
+      const freqEst = dataset.map(row => row.Estimate);
+      const freqSE  = dataset.map(row => row.StdError);
+      const tstats  = freqEst.map((e,i) => e / freqSE[i]);
+      // Precompute per-study arrays of theta draws
+      const J = dataset.length;
+      const postMean = new Array(J);
+      const postLow = new Array(J);
+      const postHigh = new Array(J);
+      const pGt0 = new Array(J);
+      const pLt0 = new Array(J);
+      const pGtCutoff = new Array(J);
+      for (let j = 0; j < J; j++) {
+        const draws = modelResults.theta.map(row => row[j]);
+        postMean[j] = mean(draws);
+        postLow[j]  = quantile(draws, 0.05);
+        postHigh[j] = quantile(draws, 0.95);
+        let gt0 = 0, lt0 = 0, gtC = 0;
+        for (let d of draws) {
+          if (d > 0) gt0++;
+          if (d < 0) lt0++;
+          if (d > cutoff) gtC++;
+        }
+        pGt0[j] = (gt0 / draws.length);
+        pLt0[j] = (lt0 / draws.length);
+        pGtCutoff[j] = (gtC / draws.length);
+      }
+      // Sorting
+      const sortOption = document.getElementById('sort-option').value;
+      let orderIndices = [...Array(J).keys()];
+      if (sortOption === 'est_desc') {
+        orderIndices.sort((a,b) => freqEst[b] - freqEst[a]);
+      } else if (sortOption === 'est_asc') {
+        orderIndices.sort((a,b) => freqEst[a] - freqEst[b]);
+      } else if (sortOption === 'post_desc') {
+        orderIndices.sort((a,b) => postMean[b] - postMean[a]);
+      } else if (sortOption === 'post_asc') {
+        orderIndices.sort((a,b) => postMean[a] - postMean[b]);
+      }
+      // Filtering
+      const filterMetric = document.getElementById('filter-metric').value;
+      const lower = parseFloat(document.getElementById('filter-lower').value);
+      const upper = parseFloat(document.getElementById('filter-upper').value);
+      const lo = isNaN(lower) ? -Infinity : lower;
+      const hi = isNaN(upper) ? Infinity : upper;
+      function metricVal(j) {
+        return filterMetric === 'freq_est' ? freqEst[j] : postMean[j];
+      }
+      const filteredIndices = orderIndices.filter(j => (metricVal(j) >= lo && metricVal(j) <= hi));
+      // Data for BASIE table (use filteredIndices order)
+      const tableData = filteredIndices.map(j => {
+        return {
+          id: dataset[j].id,
+          Description: dataset[j].Description,
+          Estimate: freqEst[j].toFixed(3),
+          Std_Error: freqSE[j].toFixed(3),
+          tstat: tstats[j].toFixed(3),
+          posterior_mean: postMean[j].toFixed(3),
+          P_gt_0: pGt0[j].toFixed(3),
+          P_lt_0: pLt0[j].toFixed(3),
+          P_gt_cutoff: pGtCutoff[j].toFixed(3)
+        };
+      });
+      // Render a simple HTML table without using DataTables. This avoids plugin
+      // errors when switching visualizations.  Build the table header and body
+      // manually based on the filtered and sorted data.
+      // Build table HTML (shared for both table view and always-visible summary)
+      function buildBasieTableHtml(rows) {
+        const cutoffRaw = document.getElementById('cutoff-input')?.value;
+        const cutoffVal = parseFloat(cutoffRaw);
+        const cutoffLabel = (!isNaN(cutoffVal) && cutoffRaw !== '')
+          ? `P(>${cutoffVal.toFixed(2)})`
+          : 'P(>cutoff)';
+        let h = '<thead><tr>';
+        ['ID','Description','Estimate','Std Error','t-stat','Posterior mean','P(>0)','P(<0)', cutoffLabel].forEach(hd => { h += `<th>${hd}</th>`; });
+        h += '</tr></thead><tbody>';
+        rows.forEach(row => {
+          h += '<tr>' +
+            `<td>${row.id}</td><td>${row.Description}</td>` +
+            `<td>${row.Estimate}</td><td>${row.Std_Error}</td>` +
+            `<td>${row.tstat}</td><td>${row.posterior_mean}</td>` +
+            `<td>${row.P_gt_0}</td><td>${row.P_lt_0}</td><td>${row.P_gt_cutoff}</td></tr>`;
+        });
+        return h + '</tbody>';
+      }
+      const tblHtml = buildBasieTableHtml(tableData);
+      const tbl = document.getElementById('basie-table');
+      if (tbl) tbl.innerHTML = tblHtml;
+
+      // Draw the selected visualization.  If a chart fails to render (e.g., due to
+      // plugin issues), fall back to a simple vertical bar chart and display an
+      // error message for debugging.
+      // Hide any previous error message
+      const errorDiv = document.getElementById('basie-error');
+      if (errorDiv) {
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+      }
+      try {
+        drawForestOrBars(filteredIndices, freqEst, freqSE, postMean, postLow, postHigh, pGt0, pGtCutoff);
+      } catch (e) {
+        console.error('Error rendering forest/bars plot:', e);
+        if (errorDiv) {
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'Error rendering plot: ' + (e && e.message ? e.message : e);
+        }
+        // Use the vertical bar renderer as a fallback when an error occurs
+        drawVerticalBars(filteredIndices, freqEst, freqSE, postMean, pGt0, pGtCutoff);
+      }
+    }
+
+    // Simpler rendering for BASIE tab: draws a bar chart of frequentist vs Bayesian means and populates a summary table.  This serves as a fallback when the more complex
+    // forest plot fails or DataTables errors prevent rendering.  It uses the current sorting/filtering and cutoff settings.
+    function renderBasieTabSimple() {
+      if (!modelResults) return;
+      // Read sorting and filtering selections
+      const sortOption   = document.getElementById('sort-option').value;
+      const filterMetric = document.getElementById('filter-metric').value;
+      const lower        = parseFloat(document.getElementById('filter-lower').value);
+      const upper        = parseFloat(document.getElementById('filter-upper').value);
+      const lo           = isNaN(lower) ? -Infinity : lower;
+      const hi           = isNaN(upper) ?  Infinity : upper;
+      // Gather frequentist data
+      const J        = dataset.length;
+      const freqEst  = dataset.map(r => r.Estimate);
+      const freqSE   = dataset.map(r => r.StdError);
+      // Compute posterior means and probabilities for each study
+      const postMean = new Array(J);
+      const pGt0     = new Array(J);
+      const pLt0     = new Array(J);
+      const pGtCut   = new Array(J);
+      const cutoff   = parseFloat(document.getElementById('cutoff-input').value);
+      for (let j = 0; j < J; j++) {
+        const draws = modelResults.theta.map(row => row[j]);
+        postMean[j] = mean(draws);
+        let gt0 = 0, lt0 = 0, gtC = 0;
+        for (const d of draws) {
+          if (d > 0) gt0++;
+          if (d < 0) lt0++;
+          if (d > cutoff) gtC++;
+        }
+        const N = draws.length;
+        pGt0[j]   = gt0 / N;
+        pLt0[j]   = lt0 / N;
+        pGtCut[j] = gtC / N;
+      }
+      // Determine indices order by sort option
+      let indices = [...Array(J).keys()];
+      if (sortOption === 'est_desc') {
+        indices.sort((a,b) => freqEst[b] - freqEst[a]);
+      } else if (sortOption === 'est_asc') {
+        indices.sort((a,b) => freqEst[a] - freqEst[b]);
+      } else if (sortOption === 'post_desc') {
+        indices.sort((a,b) => postMean[b] - postMean[a]);
+      } else if (sortOption === 'post_asc') {
+        indices.sort((a,b) => postMean[a] - postMean[b]);
+      }
+      // Apply filtering
+      function metricVal(j) { return filterMetric === 'freq_est' ? freqEst[j] : postMean[j]; }
+      indices = indices.filter(j => metricVal(j) >= lo && metricVal(j) <= hi);
+      // Build table rows for DataTable
+      const tableRows = indices.map(j => {
+        return {
+          id: dataset[j].id,
+          Description: dataset[j].Description,
+          Estimate: freqEst[j].toFixed(3),
+          Std_Error: freqSE[j].toFixed(3),
+          tstat: (freqEst[j] / freqSE[j]).toFixed(3),
+          posterior_mean: postMean[j].toFixed(3),
+          P_gt_0: pGt0[j].toFixed(3),
+          P_lt_0: pLt0[j].toFixed(3),
+          P_gt_cutoff: pGtCut[j].toFixed(3)
+        };
+      });
+      // Render or update DataTable
+      try {
+        if (tableInstance) {
+          tableInstance.clear();
+          tableInstance.rows.add(tableRows);
+          tableInstance.draw();
+        } else {
+          tableInstance = $('#basie-table').DataTable({
+            data: tableRows,
+            columns: [
+              { title: 'ID', data: 'id' },
+              { title: 'Description', data: 'Description' },
+              { title: 'Estimate', data: 'Estimate' },
+              { title: 'Std Error', data: 'Std_Error' },
+              { title: 't-stat', data: 'tstat' },
+              { title: 'Posterior mean', data: 'posterior_mean' },
+              { title: 'P(>0)', data: 'P_gt_0' },
+              { title: 'P(<0)', data: 'P_lt_0' },
+              { title: 'P(>cutoff)', data: 'P_gt_cutoff' }
+            ],
+            paging: false,
+            searching: false,
+            info: false,
+            scrollX: true
+          });
+        }
+      } catch (err) {
+        // Fallback: simple HTML table
+        const tbl = document.getElementById('basie-table');
+        tbl.innerHTML = '';
+        let header = '<thead><tr>';
+        const cutoffRawS = document.getElementById('cutoff-input')?.value;
+        const cutoffValS = parseFloat(cutoffRawS);
+        const cutoffLabelS = (!isNaN(cutoffValS) && cutoffRawS !== '') ? `P(>${cutoffValS.toFixed(2)})` : 'P(>cutoff)';
+        ['ID','Description','Estimate','Std Error','t-stat','Posterior mean','P(>0)','P(<0)', cutoffLabelS].forEach(h => { header += `<th>${h}</th>`; });
+        header += '</tr></thead>';
+        let body = '<tbody>';
+        tableRows.forEach(row => {
+          body += '<tr>' +
+            `<td>${row.id}</td>` +
+            `<td>${row.Description}</td>` +
+            `<td>${row.Estimate}</td>` +
+            `<td>${row.Std_Error}</td>` +
+            `<td>${row.tstat}</td>` +
+            `<td>${row.posterior_mean}</td>` +
+            `<td>${row.P_gt_0}</td>` +
+            `<td>${row.P_lt_0}</td>` +
+            `<td>${row.P_gt_cutoff}</td>` +
+            '</tr>';
+        });
+        body += '</tbody>';
+        tbl.innerHTML = header + body;
+      }
+      // Draw a simple bar chart comparing frequentist and Bayesian means. Respect
+      // the bars-show radio setting: only display the requested bar types.
+      if (forestChart) forestChart.destroy();
+      if (axisChart) axisChart.destroy();
+      const labels    = indices.map(j => dataset[j].id);
+      const freqData  = indices.map(j => freqEst[j]);
+      const bayesData = indices.map(j => postMean[j]);
+      // Determine which bars to show: freq, bayes, or both
+      let barsChoice = document.querySelector('input[name="bars-show"]:checked')?.value;
+      if (!barsChoice) barsChoice = 'both';
+      const datasets = [];
+        if (barsChoice === 'freq' || barsChoice === 'both') {
+        // Grey-blue for frequentist bars to match Mathematica palette
+        datasets.push({ label: 'Frequentist', data: freqData,
+          /* Grey-blue for frequentist bars */
+          backgroundColor: 'rgba(200,185,154,0.8)', borderColor: 'rgba(200,185,154,1)', borderWidth: 1 });
+      }
+      if (barsChoice === 'bayes' || barsChoice === 'both') {
+        // Teal accent for Bayesian bars
+        datasets.push({ label: 'Bayesian', data: bayesData,
+          /* Updated teal for Bayesian bars: RGB(4,107,92) */
+          backgroundColor: 'rgba(122,95,67,0.8)', borderColor: 'rgba(122,95,67,1)', borderWidth: 1 });
+      }
+      // Determine y-axis limits based on the visible datasets to ensure bars are visible
+      const allVals = [];
+      if (barsChoice === 'freq' || barsChoice === 'both') allVals.push(...freqData);
+      if (barsChoice === 'bayes' || barsChoice === 'both') allVals.push(...bayesData);
+      let minVal = Math.min(...allVals);
+      let maxVal = Math.max(...allVals);
+      if (minVal === maxVal) {
+        minVal -= 0.1;
+        maxVal += 0.1;
+      }
+      const range = maxVal - minVal;
+      const yMin = minVal - 0.05 * range;
+      const yMax = maxVal + 0.05 * range;
+      const ctx  = document.getElementById('forest-chart').getContext('2d');
+      // Compute significance for frequentist estimates (two-sided p-value < 0.05).  We
+      // will display a star above bars where the frequentist CI does not include zero.
+      const signifArr = indices.map(j => {
+        const t = freqEst[j] / freqSE[j];
+        const pVal = 2 * (1 - jStat.normal.cdf(Math.abs(t), 0, 1));
+        return pVal < 0.05;
+      });
+      forestChart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: labels, datasets: datasets },
+        options: {
+          indexAxis: 'x',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { title: { display: true, text: 'Estimate' }, min: yMin, max: yMax },
+            x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 90 } }
+          },
+          plugins: {
+            legend: { display: datasets.length > 1, position: 'top' },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)}`
+              }
+            },
+            // Use the datalabels plugin to draw stars above significant frequentist bars
+            datalabels: {
+              formatter: function(value, ctx) {
+                // Only show for Frequentist dataset
+                if (ctx.dataset.label !== 'Frequentist') return '';
+                return signifArr[ctx.dataIndex] ? '*' : '';
+              },
+              color: '#000',
+              font: { size: 14 },
+              anchor: 'end',
+              align: 'end',
+              offset: 4,
+              display: function(ctx) {
+                return ctx.dataset.label === 'Frequentist';
+              }
+            }
+          }
+        }
+      });
+      // Hide axis chart in simple mode
+      document.getElementById('forest_axis_wrap').style.visibility = 'hidden';
+    }
+    // Draw forest or bars based on user choice
+    // Draw either vertical bar chart or horizontal forest plot depending on the selected
+    // visualization. This function acts as a dispatcher to the appropriate
+    // renderer. It does not rely on nested helper functions so the logic is
+    // easier to follow and avoids incorrectly falling through to the wrong
+    // branch.  It always cleans up any previous charts or custom forest
+    // elements before drawing a new visualization.
+    function drawForestOrBars(filteredIndices, freqEst, freqSE, postMean, postLow, postHigh, pGt0arr, pGtCutoffArr) {
+      const vizChoice = document.querySelector('input[name="viz-choice"]:checked')?.value || 'bars';
+
+      // Show/hide content panels
+      ['bars','forest','table'].forEach(v => {
+        const el = document.getElementById('interpret-view-' + v);
+        if (el) el.style.display = (v === vizChoice) ? '' : 'none';
+      });
+      // Show cutoff group for table view or probability bars
+      const barsTypeNow = document.querySelector('input[name="bars-type"]:checked')?.value || 'estimate';
+      const showCutoffGrp = vizChoice === 'table' || (vizChoice === 'bars' && barsTypeNow === 'probability');
+      const cutoffGrp = document.getElementById('view-cutoff-group');
+      if (cutoffGrp) cutoffGrp.style.display = showCutoffGrp ? '' : 'none';
+
+      // Destroy old charts
+      if (forestChart) { forestChart.destroy(); forestChart = null; }
+      if (axisChart)   { axisChart.destroy(); axisChart = null; }
+      const existingCustom = document.getElementById('custom-forest');
+      if (existingCustom) existingCustom.remove();
+
+      if (vizChoice === 'bars') {
+        // Show/hide bar sub-option groups
+        const barsType = document.querySelector('input[name="bars-type"]:checked')?.value || 'estimate';
+        const estGrp  = document.getElementById('bars-estimate-group');
+        const probGrp = document.getElementById('bars-prob-group');
+        if (estGrp)  estGrp.style.display  = barsType === 'estimate'    ? '' : 'none';
+        if (probGrp) probGrp.style.display = barsType === 'probability' ? '' : 'none';
+        drawVerticalBars(filteredIndices, freqEst, freqSE, postMean, pGt0arr, pGtCutoffArr);
+      } else if (vizChoice === 'forest') {
+        // Remap forest canvas: use forest-chart-forest in the forest panel
+        const origCanvas = document.getElementById('forest-chart-forest');
+        if (origCanvas) {
+          // drawCustomForest targets forest_plot_container which is inside interpret-view-forest
+          drawCustomForest(filteredIndices, freqEst, freqSE, postMean, postLow, postHigh);
+        }
+      }
+      // 'table' panel: basie-table rendered separately
+    }
+
+    // Draw vertical bars: handles both point-estimate and probability modes.
+    function drawVerticalBars(filteredIndices, freqEst, freqSE, postMean, pGt0arr, pGtCutoffArr) {
+      const barsType = document.querySelector('input[name="bars-type"]:checked')?.value || 'estimate';
+      const labels   = filteredIndices.map(j => dataset[j].id);
+      const ctx      = document.getElementById('forest-chart');
+      if (!ctx) return;
+
+      let datasets = [];
+      let yTitle = 'Effect size';
+      let yMin = undefined, yMax = undefined;
+      let showStars = false;
+      let significance = [];
+      let tooltipFmt = (c2) => `${c2.dataset.label}: ${c2.parsed.y.toFixed(3)}`;
+
+      if (barsType === 'estimate') {
+        const barsShow = document.querySelector('input[name="bars-show"]:checked')?.value || 'freq';
+        significance = filteredIndices.map(j => {
+          const t = freqEst[j] / freqSE[j];
+          return 2 * (1 - jStat.normal.cdf(Math.abs(t), 0, 1)) < 0.05;
+        });
+        showStars = true;
+        if (barsShow === 'freq' || barsShow === 'both') {
+          datasets.push({ label: 'Frequentist', data: filteredIndices.map(j => freqEst[j]),
+            backgroundColor: 'rgba(200,185,154,0.8)', borderColor: 'rgba(200,185,154,1)', borderWidth: 1 });
+        }
+        if (barsShow === 'bayes' || barsShow === 'both') {
+          datasets.push({ label: 'Bayesian (posterior mean)', data: filteredIndices.map(j => postMean[j]),
+            backgroundColor: 'rgba(122,95,67,0.8)', borderColor: 'rgba(122,95,67,1)', borderWidth: 1 });
+        }
+        tooltipFmt = (c2) => `${c2.dataset.label}: ${c2.parsed.y.toFixed(3)}`;
+
+      } else {
+        // Probability mode
+        yTitle = 'Probability (%)';
+        yMin = 0; yMax = 100;
+        const cutoffRaw = document.getElementById('cutoff-input')?.value;
+        const cutoffVal = parseFloat(cutoffRaw);
+        const showCutoff = !isNaN(cutoffVal) && cutoffRaw !== '';
+        datasets.push({ label: 'P(effect > 0)', data: filteredIndices.map(j => (pGt0arr[j] * 100)),
+          backgroundColor: 'rgba(200,185,154,0.8)', borderColor: 'rgba(200,185,154,1)', borderWidth: 1 });
+        if (showCutoff) {
+          datasets.push({ label: `P(effect > ${cutoffVal.toFixed(2)})`,
+            data: filteredIndices.map(j => (pGtCutoffArr[j] * 100)),
+            backgroundColor: 'rgba(122,95,67,0.8)', borderColor: 'rgba(122,95,67,1)', borderWidth: 1 });
+        }
+        tooltipFmt = (c2) => `${c2.dataset.label}: ${c2.parsed.y.toFixed(1)}%`;
+      }
+
+      if (forestChart) { forestChart.destroy(); forestChart = null; }
+      forestChart = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: { labels, datasets },
+        options: {
+          indexAxis: 'x', responsive: true, maintainAspectRatio: false,
+          scales: {
+            y: { title: { display: true, text: yTitle }, grid: { display: true },
+                 ...(yMin !== undefined ? { min: yMin } : {}),
+                 ...(yMax !== undefined ? { max: yMax } : {}) },
+            x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 90 } }
+          },
+          plugins: {
+            legend: { display: datasets.length > 1, position: 'top' },
+            tooltip: { callbacks: { label: tooltipFmt } },
+            datalabels: {
+              formatter: (value, context) => {
+                if (!showStars) return '';
+                if (context.dataset.label !== 'Frequentist') return '';
+                return significance[context.dataIndex] ? '*' : '';
+              },
+              color: '#c8102e', font: { size: 16 }, anchor: 'end', align: 'end', offset: 4,
+              display: (context) => {
+                if (!showStars) return false;
+                if (context.dataset.label !== 'Frequentist') return false;
+                return significance[context.dataIndex];
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Draw a custom horizontal forest plot using plain HTML.  Each study's
+    // frequentist 80% confidence interval and Bayesian 90% credible interval
+    // are displayed as horizontal bars along a shared x-axis. A vertical red
+    // line at zero indicates the null effect.  The x-axis range is determined
+    // from all intervals and expanded slightly to provide padding.
+    function drawCustomForest(filteredIndices, freqEst, freqSE, postMean, postLow, postHigh) {
+      // Compute x-range from all intervals and the zero reference
+      const freqLow  = filteredIndices.map(j => freqEst[j] - 1.64 * freqSE[j]);
+      const freqHigh = filteredIndices.map(j => freqEst[j] + 1.64 * freqSE[j]);
+      const bayesLow  = filteredIndices.map(j => postLow[j]);
+      const bayesHigh = filteredIndices.map(j => postHigh[j]);
+      const combined = [...freqLow, ...freqHigh, ...bayesLow, ...bayesHigh, 0];
+      let xMin = Math.min(...combined);
+      let xMax = Math.max(...combined);
+      const width = xMax - xMin;
+      if (width <= 0) {
+        xMin -= 0.1; xMax += 0.1;
+      } else {
+        xMin -= 0.04 * width;
+        xMax += 0.04 * width;
+      }
+      // Hide Chart.js canvas and axis wrapper while drawing custom plot
+      const canvas = document.getElementById('forest-chart-forest') || document.getElementById('forest-chart');
+      if (canvas) canvas.style.display = 'none';
+      const axisWrap = document.getElementById('forest_axis_wrap');
+      if (axisWrap) {
+        axisWrap.style.display = 'none';
+        axisWrap.style.visibility = 'hidden';
+      }
+      // Remove any existing custom forest div and create a new one
+      const plotContainer = document.getElementById('forest_plot_container');
+      const existing = document.getElementById('custom-forest');
+      if (existing) existing.remove();
+      const forestDiv = document.createElement('div');
+      forestDiv.id = 'custom-forest';
+      plotContainer.appendChild(forestDiv);
+      const range = xMax - xMin;
+      const zeroPct = ((0 - xMin) / range) * 100;
+      // Add zero line
+      const zeroLine = document.createElement('div');
+      zeroLine.className = 'custom-forest-zero-line';
+      zeroLine.style.left = zeroPct + '%';
+      forestDiv.appendChild(zeroLine);
+      // Create rows for each study
+      filteredIndices.forEach((j, idx) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'custom-forest-row';
+        // Label
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'custom-forest-label';
+        labelDiv.textContent = dataset[j].id;
+        rowDiv.appendChild(labelDiv);
+        // Line container
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'custom-forest-line';
+        // Frequentist interval and mean point
+        const fLeftPct  = ((freqLow[idx] - xMin) / range) * 100;
+        const fWidthPct = ((freqHigh[idx] - freqLow[idx]) / range) * 100;
+        const fMeanPct  = ((freqEst[j] - xMin) / range) * 100;
+        const fInterval = document.createElement('div');
+        fInterval.className = 'custom-forest-interval freq';
+        fInterval.style.left = fLeftPct + '%';
+        fInterval.style.width = fWidthPct + '%';
+        lineDiv.appendChild(fInterval);
+        const fPoint = document.createElement('div');
+        fPoint.className = 'custom-forest-point freq';
+        fPoint.style.left = fMeanPct + '%';
+        lineDiv.appendChild(fPoint);
+        // Bayesian interval and mean point
+        const bLeftPct  = ((bayesLow[idx] - xMin) / range) * 100;
+        const bWidthPct = ((bayesHigh[idx] - bayesLow[idx]) / range) * 100;
+        const bMeanPct  = ((postMean[j] - xMin) / range) * 100;
+        const bInterval = document.createElement('div');
+        bInterval.className = 'custom-forest-interval bayes';
+        bInterval.style.left = bLeftPct + '%';
+        bInterval.style.width = bWidthPct + '%';
+        lineDiv.appendChild(bInterval);
+        const bPoint = document.createElement('div');
+        bPoint.className = 'custom-forest-point bayes';
+        bPoint.style.left = bMeanPct + '%';
+        lineDiv.appendChild(bPoint);
+        rowDiv.appendChild(lineDiv);
+        forestDiv.appendChild(rowDiv);
+      });
+      // Add an axis with evenly spaced ticks
+      const axisDiv = document.createElement('div');
+      axisDiv.className = 'custom-forest-axis';
+      const nTicks = 5;
+      for (let i = 0; i < nTicks; i++) {
+        const val  = xMin + (range * i) / (nTicks - 1);
+        const pct  = ((val - xMin) / range) * 100;
+        const tick = document.createElement('div');
+        tick.className = 'custom-forest-axis-tick';
+        tick.style.left = pct + '%';
+        tick.textContent = val.toFixed(2);
+        axisDiv.appendChild(tick);
+      }
+      forestDiv.appendChild(axisDiv);
+      // Debug removed: no UI update for forest rendering
+    }
+    // ================================
+    // Auto-run wrapper and results rendering
+    // ================================
+    async function runModelAndUpdateAll() {
+      if (dataset.length < 2) return;
+      try {
+        await runModel();
+      } catch(e) {
+        console.error('runModel error:', e);
+        return;
+      }
+      // Hide basie-message now that results exist
+      const msg = document.getElementById('basie-message');
+      if (msg && modelResults) msg.style.display = 'none';
+      // Only render into whichever tab is currently visible
+      const activeId = document.querySelector('.tab-content.active')?.id;
+      if (activeId === 'interpret-estimates') {
+        try { updateBasieTableAndPlot(); } catch(e) { try { renderBasieTabSimple(); } catch(e2) {} }
+      } else if (activeId === 'predict') {
+        try { renderPredictTab(); } catch(e) { console.error('predict render error:', e); }
+      }
+      // After first main model run, compute PIP model in background (once only)
+      if (!pipModelResults) {
+        setTimeout(async () => {
+          try {
+            await runPipModel();
+            // Update PIP tab figures/table if it happens to be active, or
+            // queue renders for when user navigates there
+            const aid = document.querySelector('.tab-content.active')?.id;
+            if (aid === 'pip-foundation') renderPipTab();
+            else {
+              // Pre-render figure 2 and table so they're ready
+              try { renderPipFigure2(); } catch(e) {}
+              try { renderPipResultsTable(); } catch(e) {}
+            }
+          } catch(e) { console.error('runPipModel error:', e); }
+        }, 50);
+      }
+    }
+
+    function computePredictiveSamples() {
+      if (!modelResults) return null;
+      return modelResults.mu.map((mu, i) => rnorm(mu, modelResults.tau[i]));
+    }
+
+    // ── Predict tab animation state ─────────────────────────────────────────
+    let predictAnimRAF = null;
+
+    function renderPredictTab() {
+      const noDataDiv = document.getElementById('predict-no-data');
+      const resultsDiv = document.getElementById('predict-results');
+      if (!modelResults) {
+        if (noDataDiv) noDataDiv.style.display = '';
+        if (resultsDiv) resultsDiv.style.display = 'none';
+        return;
+      }
+      if (noDataDiv) noDataDiv.style.display = 'none';
+      if (resultsDiv) resultsDiv.style.display = '';
+
+      const thetaNew = computePredictiveSamples();
+      const cutoffEl = document.getElementById('cutoff-input-predict');
+      const cutoff = cutoffEl ? (parseFloat(cutoffEl.value) || 0.1) : 0.1;
+      const predMean = mean(thetaNew);
+      const predLow  = quantile(thetaNew, 0.05);
+      const predHigh = quantile(thetaNew, 0.95);
+      const pGt0   = thetaNew.filter(x => x > 0).length / thetaNew.length;
+      const pGtCut = thetaNew.filter(x => x > cutoff).length / thetaNew.length;
+
+      const tbl = document.getElementById('predict-summary-table');
+      if (tbl) {
+        tbl.innerHTML = '<thead><tr><th>Statistic</th><th>Value</th></tr></thead><tbody>' +
+          `<tr><td>Predicted mean true effect</td><td>${predMean.toFixed(3)}</td></tr>` +
+          `<tr><td>90% predictive interval</td><td>[${predLow.toFixed(3)}, ${predHigh.toFixed(3)}]</td></tr>` +
+          `<tr><td>P(true effect &gt; 0)</td><td>${(pGt0*100).toFixed(1)}%</td></tr>` +
+          `<tr><td>P(true effect &gt; ${cutoff.toFixed(2)})</td><td>${(pGtCut*100).toFixed(1)}%</td></tr>` +
+          '</tbody>';
+      }
+      drawPredictiveDensity(thetaNew, cutoff);
+      playPredictAnimation(predLow, predMean, predHigh, pGt0, pGtCut, cutoff);
+      const replayBtn = document.getElementById('predict-replay-btn');
+      if (replayBtn) replayBtn.onclick = () => playPredictAnimation(predLow, predMean, predHigh, pGt0, pGtCut, cutoff);
+    }
+
+    function playPredictAnimation(predLow, predMean, predHigh, pGt0, pGtCut, cutoff) {
+      const canvas = document.getElementById('predict-anim-canvas');
+      if (!canvas) return;
+      if (predictAnimRAF) { cancelAnimationFrame(predictAnimRAF); predictAnimRAF = null; }
+
+      const W = canvas.offsetWidth || 700;
+      const H = 220;
+      const DPR = window.devicePixelRatio || 1;
+      canvas.width  = W * DPR;
+      canvas.height = H * DPR;
+      canvas.style.width  = W + 'px';
+      canvas.style.height = H + 'px';
+      const ctx = canvas.getContext('2d');
+      ctx.scale(DPR, DPR);
+
+      // Build study intervals
+      const J = dataset.length;
+      const studyLow = [], studyMid = [], studyHigh = [];
+      for (let j = 0; j < J; j++) {
+        const draws = modelResults.theta.map(r => r[j]);
+        studyLow.push(quantile(draws, 0.05));
+        studyMid.push(mean(draws));
+        studyHigh.push(quantile(draws, 0.95));
+      }
+      const order = [...Array(J).keys()].sort(() => Math.random() - 0.5);
+
+      // Y range
+      const allY = [...studyLow, ...studyHigh, predLow, predHigh, 0];
+      let yMin = Math.min(...allY), yMax = Math.max(...allY);
+      const yPad = (yMax - yMin) * 0.18;
+      yMin -= yPad; yMax += yPad;
+
+      const TEAL = '#7A5F43', NAVY = '#152D32', RED = '#c8102e';
+      const GREY_BG = '#F0EBE0';
+      const PAD_L = 44, PAD_R = 20, PAD_T = 46, PAD_B = 28;
+      const plotW = W - PAD_L - PAD_R;
+      const plotH = H - PAD_T - PAD_B;
+
+      function toY(v) { return PAD_T + plotH * (1 - (v - yMin) / (yMax - yMin)); }
+      const zeroY = toY(0);
+
+      // Window: 5 studies visible, each gets equal slot
+      const WINDOW = 5;
+      const slotW  = plotW / (WINDOW + 1);   // +1 to leave room for prediction on right
+      // The prediction slot centre (right side)
+      const predX  = PAD_L + plotW * 0.82;
+
+      // Scroll: total distance = J * slotW (one slot per study)
+      // We want scroll to finish in <= 3s
+      const SCROLL_MS   = Math.min(3000, Math.max(800, J * 80));
+      const CURTAIN_MS  = 800;
+      const HOLD_MS     = 2000;
+      const ZOOM_MS     = 800;
+      const TOTAL_MS    = SCROLL_MS + CURTAIN_MS + HOLD_MS + ZOOM_MS;
+
+      // Scroll offset: at t=SCROLL_MS, offset = J * slotW so last study is at left edge + (WINDOW-1)*slotW
+      // i.e. last few studies are parked on the left
+      const finalOffset = Math.max(0, (J - WINDOW + 1)) * slotW;
+
+      function easeOut(t) { return 1 - Math.pow(1 - t, 2); }
+      function easeInOut(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2; }
+
+      function drawYAxis() {
+        ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1; ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(PAD_L, PAD_T); ctx.lineTo(PAD_L, PAD_T + plotH); ctx.stroke();
+        // Zero line
+        ctx.strokeStyle = RED; ctx.lineWidth = 1; ctx.setLineDash([4,3]);
+        ctx.beginPath(); ctx.moveTo(PAD_L, zeroY); ctx.lineTo(PAD_L + plotW, zeroY); ctx.stroke();
+        ctx.setLineDash([]);
+        // Ticks
+        const range = yMax - yMin;
+        const step = range > 1.5 ? 0.5 : range > 0.6 ? 0.25 : 0.1;
+        const tStart = Math.ceil(yMin / step) * step;
+        ctx.fillStyle = '#aaa'; ctx.font = '9px Helvetica,Arial,sans-serif'; ctx.textAlign = 'right';
+        for (let t = tStart; t <= yMax + 1e-9; t += step) {
+          const ty = toY(t);
+          if (ty < PAD_T - 2 || ty > PAD_T + plotH + 2) continue;
+          ctx.beginPath(); ctx.moveTo(PAD_L - 4, ty); ctx.lineTo(PAD_L, ty);
+          ctx.strokeStyle = '#ddd'; ctx.lineWidth = 1; ctx.stroke();
+          ctx.fillText(t.toFixed(2), PAD_L - 6, ty + 3);
+        }
+        // Y label
+        ctx.save();
+        ctx.translate(12, PAD_T + plotH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = 'center'; ctx.font = '10px Helvetica,Arial,sans-serif'; ctx.fillStyle = '#888';
+        ctx.fillText('Effect size', 0, 0);
+        ctx.restore();
+      }
+
+      function drawStudyInterval(xCenter, jIdx, alpha) {
+        if (xCenter < PAD_L - slotW * 0.5 || xCenter > PAD_L + plotW + slotW * 0.5) return;
+        const yLo = toY(studyHigh[jIdx]);
+        const yHi = toY(studyLow[jIdx]);
+        const yM  = toY(studyMid[jIdx]);
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = 'rgba(80,100,120,0.6)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(xCenter, yLo); ctx.lineTo(xCenter, yHi); ctx.stroke();
+        ctx.strokeStyle = 'rgba(80,100,120,0.5)'; ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(xCenter - 3, yLo); ctx.lineTo(xCenter + 3, yLo);
+        ctx.moveTo(xCenter - 3, yHi); ctx.lineTo(xCenter + 3, yHi);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(60,80,100,0.9)';
+        ctx.beginPath(); ctx.arc(xCenter, yM, 2.5, 0, Math.PI*2); ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      function drawPredInterval(xCenter, lo, mi, hi, alpha) {
+        const yLo = toY(hi);  // hi value = low y pixel
+        const yHi = toY(lo);
+        const yM  = toY(mi);
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = TEAL; ctx.lineWidth = 6; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(xCenter, yLo); ctx.lineTo(xCenter, yHi); ctx.stroke();
+        ctx.lineCap = 'butt';
+        ctx.strokeStyle = TEAL; ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(xCenter - 8, yLo); ctx.lineTo(xCenter + 8, yLo);
+        ctx.moveTo(xCenter - 8, yHi); ctx.lineTo(xCenter + 8, yHi);
+        ctx.stroke();
+        ctx.fillStyle = NAVY;
+        ctx.beginPath(); ctx.arc(xCenter, yM, 5, 0, Math.PI*2); ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      const startTime = performance.now();
+
+      function frame(ts) {
+        const elapsed = ts - startTime;
+        ctx.clearRect(0, 0, W, H);
+
+        if (elapsed < SCROLL_MS) {
+          // ── Phase 1: scrolling ──────────────────────────────────────────────
+          const frac = easeOut(elapsed / SCROLL_MS);
+          const offset = frac * finalOffset;
+          const nArrived = Math.floor(offset / slotW) + WINDOW;
+
+          // Grey background
+          ctx.fillStyle = GREY_BG; ctx.fillRect(0, 0, W, H);
+          ctx.save(); ctx.beginPath(); ctx.rect(PAD_L, PAD_T, plotW, plotH); ctx.clip();
+
+          for (let k = 0; k < Math.min(nArrived + 1, J); k++) {
+            const xCenter = PAD_L + k * slotW - offset + slotW * 0.5;
+            // Fade out studies that are near the left edge
+            const fadeDist = slotW * 0.8;
+            const distFromLeft = xCenter - PAD_L;
+            const alpha = distFromLeft < fadeDist ? Math.max(0, distFromLeft / fadeDist) : 1;
+            drawStudyInterval(xCenter, order[k], alpha);
+          }
+          ctx.restore();
+          drawYAxis();
+          ctx.fillStyle = '#888'; ctx.font = '10px Helvetica,Arial,sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText(`Bayesian 90% credible intervals: ${J} past studies`, PAD_L + 4, PAD_T - 10);
+
+        } else if (elapsed < SCROLL_MS + CURTAIN_MS) {
+          // ── Phase 2a: white curtain slides in from right ────────────────────
+          const frac = easeInOut((elapsed - SCROLL_MS) / CURTAIN_MS);
+          // Curtain left edge moves from right to ~70% of plot
+          const curtainX = PAD_L + plotW - frac * (plotW - (predX - PAD_L - slotW));
+
+          // Grey left section
+          ctx.fillStyle = GREY_BG; ctx.fillRect(0, 0, W, H);
+          // White right section
+          ctx.fillStyle = '#F9F9F1'; ctx.fillRect(curtainX, 0, W - curtainX, H);
+
+          ctx.save(); ctx.beginPath(); ctx.rect(PAD_L, PAD_T, plotW, plotH); ctx.clip();
+          // Parked studies on left
+          for (let k = Math.max(0, J - WINDOW); k < J; k++) {
+            const xCenter = PAD_L + (k - (J - WINDOW)) * slotW + slotW * 0.5;
+            if (xCenter >= curtainX) continue;
+            const fadeDist = slotW * 0.8;
+            const distFromLeft = xCenter - PAD_L;
+            const alpha = distFromLeft < fadeDist ? Math.max(0, distFromLeft / fadeDist) : 1;
+            drawStudyInterval(xCenter, order[k], alpha);
+          }
+          // Prediction grows in white zone
+          const predAlpha = Math.max(0, (curtainX < predX) ? (predX - curtainX) / (slotW * 2) : 0);
+          const growEase  = Math.max(0, (frac - 0.3) / 0.7);
+          const curLo = predMean - (predMean - predLow)  * growEase;
+          const curHi = predMean + (predHigh - predMean) * growEase;
+          if (growEase > 0) drawPredInterval(predX, curLo, predMean, curHi, Math.min(predAlpha * 3, 1));
+          ctx.restore();
+          drawYAxis();
+          ctx.fillStyle = '#888'; ctx.font = '10px Helvetica,Arial,sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText(`Bayesian 90% credible intervals: ${J} past studies`, PAD_L + 4, PAD_T - 10);
+
+        } else if (elapsed < SCROLL_MS + CURTAIN_MS + HOLD_MS) {
+          // ── Phase 2b: hold — both in view ──────────────────────────────────
+          const splitX = predX - slotW * 1.2;
+          ctx.fillStyle = GREY_BG; ctx.fillRect(0, 0, splitX, H);
+          ctx.fillStyle = '#F9F9F1';  ctx.fillRect(splitX, 0, W - splitX, H);
+
+          ctx.save(); ctx.beginPath(); ctx.rect(PAD_L, PAD_T, plotW, plotH); ctx.clip();
+          const splitX2b = predX - slotW * 1.2;
+          for (let k = Math.max(0, J - WINDOW); k < J; k++) {
+            const xCenter = PAD_L + (k - (J - WINDOW)) * slotW + slotW * 0.5;
+            if (xCenter >= splitX2b) continue;
+            const fadeDist = slotW * 0.8;
+            const alpha = (xCenter - PAD_L) < fadeDist
+              ? Math.max(0, (xCenter - PAD_L) / fadeDist) : 1;
+            drawStudyInterval(xCenter, order[k], alpha);
+          }
+          drawPredInterval(predX, predLow, predMean, predHigh, 1);
+          ctx.restore();
+          drawYAxis();
+          ctx.fillStyle = '#888'; ctx.font = '10px Helvetica,Arial,sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText(`Past studies (${J})`, PAD_L + 4, PAD_T - 10);
+          ctx.fillStyle = NAVY; ctx.font = 'bold 10px Helvetica,Arial,sans-serif'; ctx.textAlign = 'right';
+          ctx.fillText('New study →', PAD_L + plotW, PAD_T - 10);
+
+        } else {
+          // ── Phase 3: zoom in — old fades, pred moves to centre, labels appear
+          const t = Math.min((elapsed - SCROLL_MS - CURTAIN_MS - HOLD_MS) / ZOOM_MS, 1);
+          const ease = easeInOut(t);
+
+          // Fade grey to white
+          ctx.fillStyle = '#F9F9F1'; ctx.fillRect(0, 0, W, H);
+          if (ease < 1) {
+            ctx.globalAlpha = (1 - ease) * 0.4;
+            ctx.fillStyle = GREY_BG; ctx.fillRect(0, 0, W, H);
+            ctx.globalAlpha = 1;
+          }
+
+          ctx.save(); ctx.beginPath(); ctx.rect(PAD_L, PAD_T, plotW, plotH); ctx.clip();
+
+          // Old studies fade out — only draw those in the left (grey) half
+          if (ease < 1) {
+            const studyAlpha = 1 - ease;
+            const splitX = predX - slotW * 1.2;
+            for (let k = Math.max(0, J - WINDOW); k < J; k++) {
+              const xCenter = PAD_L + (k - (J - WINDOW)) * slotW + slotW * 0.5;
+              if (xCenter >= splitX) continue;  // skip any that landed in the white zone
+              drawStudyInterval(xCenter, order[k], studyAlpha * 0.8);
+            }
+          }
+
+          // Pred interval moves from predX to centre
+          const centreX = PAD_L + plotW * 0.5;
+          const curX = predX + (centreX - predX) * ease;
+          drawPredInterval(curX, predLow, predMean, predHigh, 1);
+
+          ctx.restore();
+          drawYAxis();
+
+          // Labels fade in
+          ctx.globalAlpha = ease;
+          const lx = curX;
+          ctx.fillStyle = NAVY; ctx.font = 'bold 10px Helvetica,Arial,sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText(predHigh.toFixed(2), lx + 12, toY(predHigh) + 4);
+          ctx.fillText(predMean.toFixed(2), lx + 12, toY(predMean) + 4);
+          ctx.fillText(predLow.toFixed(2),  lx + 12, toY(predLow)  + 4);
+
+          ctx.font = 'bold 11px Helvetica,Arial,sans-serif'; ctx.textAlign = 'center';
+          ctx.fillStyle = NAVY;
+          ctx.fillText('True effect in a new study  —  90% credible interval', PAD_L + plotW / 2, PAD_T - 22);
+          ctx.font = '10px Helvetica,Arial,sans-serif'; ctx.fillStyle = '#555';
+          ctx.fillText(
+            `P(true effect > 0) = ${(pGt0*100).toFixed(0)}%   ·   P(true effect > ${cutoff.toFixed(2)}) = ${(pGtCut*100).toFixed(0)}%`,
+            PAD_L + plotW / 2, PAD_T - 10);
+          ctx.globalAlpha = 1;
+        }
+
+        if (elapsed < TOTAL_MS) predictAnimRAF = requestAnimationFrame(frame);
+      }
+
+      predictAnimRAF = requestAnimationFrame(frame);
+    }
+
+
+    function drawPredictiveDensity(thetaNew, cutoff) {
+      const n  = thetaNew.length;
+      const s  = sd(thetaNew);
+      const bw = 1.06 * s * Math.pow(n, -0.2);
+      const xLo = quantile(thetaNew, 0.001) - 2.5 * bw;
+      const xHi = quantile(thetaNew, 0.999) + 2.5 * bw;
+      const nPts = 200;
+      const mainData = [], posData = [];
+      for (let i = 0; i < nPts; i++) {
+        const x = xLo + (xHi - xLo) * i / (nPts - 1);
+        let dens = 0;
+        for (const xi of thetaNew) { const z = (x - xi) / bw; dens += Math.exp(-0.5*z*z); }
+        dens /= (n * bw * Math.sqrt(2 * Math.PI));
+        mainData.push({ x, y: dens });
+        posData.push({ x, y: x >= 0 ? dens : 0 });
+      }
+      const ctx = document.getElementById('predict-density-chart');
+      if (!ctx) return;
+      if (window.predictChart) { window.predictChart.destroy(); window.predictChart = null; }
+      window.predictChart = new Chart(ctx.getContext('2d'), {
+        type: 'scatter',
+        data: {
+          datasets: [
+            { label: 'Positive effects', data: posData, showLine: true, fill: 'origin',
+              backgroundColor: 'rgba(122,95,67,0.18)', borderColor: 'transparent',
+              borderWidth: 0, pointRadius: 0, tension: 0.3 },
+            { label: 'Predictive distribution', data: mainData, showLine: true, fill: false,
+              borderColor: 'rgba(21,45,50,0.85)', borderWidth: 2, pointRadius: 0, tension: 0.3 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }, datalabels: { display: false },
+            predictVLines: { zero: 0, cutoff }
+          },
+          scales: {
+            x: { type: 'linear', title: { display: true, text: 'Effect size' }, ticks: { maxTicksLimit: 8 } },
+            y: { title: { display: true, text: 'Probability density' }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // ================================
+    // Frequentist-only visualizations for tab 1
+    // ================================
+    let freqBarsChart = null;
+
+    function drawFreqView() {
+      const choice = document.querySelector('input[name="freq-view"]:checked')?.value || 'bars';
+      // Show/hide panels
+      ['bars','forest','table','fe'].forEach(v => {
+        const el = document.getElementById('freq-view-' + v);
+        if (el) el.style.display = v === choice ? '' : 'none';
+      });
+      if (choice === 'bars') drawFreqBars();
+      else if (choice === 'forest') drawFreqForestCustom();
+      else if (choice === 'table') renderDataTable();
+      // 'fe' panel just shows the pre element already populated
+    }
+
+    function drawFreqBars() {
+      if (freqBarsChart) { freqBarsChart.destroy(); freqBarsChart = null; }
+      const ids    = dataset.map(r => r.id);
+      const ests   = dataset.map(r => r.Estimate);
+      const ses    = dataset.map(r => r.StdError);
+      const signif = ests.map((e,i) => {
+        const t = e / ses[i];
+        return 2 * (1 - jStat.normal.cdf(Math.abs(t), 0, 1)) < 0.05;
+      });
+      const ctx = document.getElementById('freq-bars-chart');
+      if (!ctx) return;
+      freqBarsChart = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ids,
+          datasets: [{
+            label: 'Estimate',
+            data: ests,
+            backgroundColor: 'rgba(200,185,154,0.85)',
+            borderColor: 'rgba(185,168,140,1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'x', responsive: true, maintainAspectRatio: false,
+          scales: {
+            y: { title: { display: true, text: 'Effect estimate' },
+                 grid: { display: true } },
+            x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 90 } }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => `Estimate: ${ctx.parsed.y.toFixed(3)}` } },
+            datalabels: {
+              formatter: (v, ctx) => signif[ctx.dataIndex] ? '*' : '',
+              color: '#c8102e', font: { size: 14 }, anchor: 'end', align: 'end', offset: 2,
+              display: (ctx) => signif[ctx.dataIndex]
+            }
+          }
+        }
+      });
+    }
+
+    function drawFreqForestCustom() {
+      const container = document.getElementById('freq-forest-plot-container');
+      const axisWrap  = document.getElementById('freq-forest-axis-wrap');
+      if (!container) return;
+      // Clear previous
+      container.innerHTML = '';
+      if (axisWrap) axisWrap.innerHTML = '';
+      const ests = dataset.map(r => r.Estimate);
+      const ses  = dataset.map(r => r.StdError);
+      const lows = ests.map((e,i) => e - 1.64 * ses[i]);
+      const highs = ests.map((e,i) => e + 1.64 * ses[i]);
+      const combined = [...lows, ...highs, 0];
+      let xMin = Math.min(...combined), xMax = Math.max(...combined);
+      const width = xMax - xMin;
+      xMin -= 0.04 * width; xMax += 0.04 * width;
+      const range = xMax - xMin;
+      const zeroPct = ((0 - xMin) / range) * 100;
+      // Create forest div
+      const forestDiv = document.createElement('div');
+      forestDiv.id = 'freq-custom-forest';
+      forestDiv.style.cssText = 'width:100%; font-size:12px; position:relative;';
+      container.appendChild(forestDiv);
+      // Zero line
+      const zeroLine = document.createElement('div');
+      zeroLine.style.cssText = `position:absolute; top:0; bottom:0; width:1px; background:#d00; opacity:0.7; left:${zeroPct}%;`;
+      forestDiv.appendChild(zeroLine);
+      // Rows
+      dataset.forEach((row, j) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.style.cssText = 'display:flex; align-items:center; height:24px; position:relative;';
+        const label = document.createElement('div');
+        label.style.cssText = 'width:80px; text-align:right; margin-right:6px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;';
+        label.textContent = row.id;
+        rowDiv.appendChild(label);
+        const lineDiv = document.createElement('div');
+        lineDiv.style.cssText = 'flex:1; position:relative; height:10px;';
+        const lPct = ((lows[j] - xMin) / range) * 100;
+        const wPct = ((highs[j] - lows[j]) / range) * 100;
+        const mPct = ((ests[j] - xMin) / range) * 100;
+        const interval = document.createElement('div');
+        interval.style.cssText = `position:absolute; height:2px; border-radius:1px; background:rgba(185,168,140,1); top:4px; left:${lPct}%; width:${wPct}%;`;
+        lineDiv.appendChild(interval);
+        const point = document.createElement('div');
+        point.style.cssText = `position:absolute; width:6px; height:6px; border-radius:50%; background:rgba(185,168,140,1); transform:translate(-50%,-50%); top:5px; left:${mPct}%;`;
+        lineDiv.appendChild(point);
+        rowDiv.appendChild(lineDiv);
+        forestDiv.appendChild(rowDiv);
+      });
+      // Axis
+      const axisDiv = document.createElement('div');
+      axisDiv.style.cssText = 'position:relative; height:20px; margin-top:4px; font-size:11px;';
+      for (let i = 0; i < 5; i++) {
+        const val = xMin + (range * i) / 4;
+        const tick = document.createElement('div');
+        tick.style.cssText = `position:absolute; top:0; transform:translateX(-50%); white-space:nowrap; left:${((val-xMin)/range)*100}%;`;
+        tick.textContent = val.toFixed(2);
+        axisDiv.appendChild(tick);
+      }
+      if (axisWrap) axisWrap.appendChild(axisDiv);
+    }
+
+    // ================================
+    // PIP Foundation tab functions
+    // ================================
+
+    // Identify PIP "winners": positive, two-sided p < 0.05, estimate > 0.10
+    function getPipWinners() {
+      return defaultData.filter(row => {
+        const t = Math.abs(row.Estimate / row.StdError);
+        const p = 2 * (1 - jStat.normal.cdf(t, 0, 1));
+        return p < 0.05 && row.Estimate > 0.10;
+      }).sort((a, b) => b.Estimate - a.Estimate);
+    }
+
+    // Run model with default data + default priors, cache in pipModelResults
+    async function runPipModel() {
+      const savedDataset = dataset;
+      const savedResults = modelResults;
+      const savedMuIdx  = priorState.muWidthIndex;
+      const savedTauIdx = priorState.tauVariationIndex;
+      try {
+        dataset = JSON.parse(JSON.stringify(defaultData));
+        priorState.muWidthIndex    = 2;  // somewhat cautious (0.2 SD)
+        priorState.tauVariationIndex = 4; // gamma(2,2)
+        await runModel();
+        pipModelResults = modelResults;
+      } catch(e) {
+        console.error('runPipModel error:', e);
+      } finally {
+        dataset = savedDataset;
+        modelResults = savedResults;
+        priorState.muWidthIndex    = savedMuIdx;
+        priorState.tauVariationIndex = savedTauIdx;
+      }
+    }
+
+    function renderPipFigure1() {
+      if (pipFig1Chart) { pipFig1Chart.destroy(); pipFig1Chart = null; }
+      const ctx = document.getElementById('pip-fig1-chart');
+      if (!ctx) return;
+      const winnerIds = new Set(getPipWinners().map(r => r.id));
+      const sorted = [...defaultData].sort((a, b) => b.Estimate - a.Estimate);
+      const labels   = sorted.map(r => r.id);
+      const ests     = sorted.map(r => r.Estimate);
+      const ses      = sorted.map(r => r.StdError);
+      const colors   = sorted.map(r => winnerIds.has(r.id) ? 'rgba(195,155,30,0.85)' : 'rgba(200,185,154,0.75)');
+      const borders  = sorted.map(r => winnerIds.has(r.id) ? 'rgba(160,120,10,1)'    : 'rgba(185,168,140,1)');
+      const signif   = sorted.map(r => {
+        const t = Math.abs(r.Estimate / r.StdError);
+        return 2 * (1 - jStat.normal.cdf(t, 0, 1)) < 0.05;
+      });
+      pipFig1Chart = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: { labels, datasets: [{ data: ests, backgroundColor: colors, borderColor: borders, borderWidth: 1 }] },
+        options: {
+          indexAxis: 'x', responsive: true, maintainAspectRatio: false,
+          scales: {
+            y: { title: { display: true, text: 'Effect size (SD)' } },
+            x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 90, font: { size: 8 } } }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx2 => `Estimate: ${ctx2.parsed.y.toFixed(3)} (SE: ${ses[ctx2.dataIndex].toFixed(3)})` } },
+            datalabels: {
+              formatter: (v, ctx2) => signif[ctx2.dataIndex] ? '*' : '',
+              color: '#c8102e', font: { size: 11 }, anchor: 'end', align: 'end', offset: 1,
+              display: ctx2 => signif[ctx2.dataIndex]
+            }
+          }
+        }
+      });
+    }
+
+    function renderPipFigure2() {
+      if (pipFig2Chart) { pipFig2Chart.destroy(); pipFig2Chart = null; }
+      const ctx = document.getElementById('pip-fig2-chart');
+      if (!ctx || !pipModelResults) return;
+      const winners  = getPipWinners();
+      const labels   = winners.map(r => r.id);
+      const freqData = winners.map(r => r.Estimate);
+      const bayesData = winners.map(row => {
+        const idx = defaultData.findIndex(r => r.id === row.id);
+        if (idx < 0) return 0;
+        const draws = pipModelResults.theta.map(t => t[idx]);
+        return mean(draws);
+      });
+      pipFig2Chart = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: { labels, datasets: [
+          { label: 'Frequentist estimate', data: freqData,
+            backgroundColor: 'rgba(200,185,154,0.85)', borderColor: 'rgba(185,168,140,1)', borderWidth: 1 },
+          { label: 'Bayesian estimate',    data: bayesData,
+            backgroundColor: 'rgba(122,95,67,0.8)',   borderColor: 'rgba(122,95,67,1)',   borderWidth: 1 }
+        ]},
+        options: {
+          indexAxis: 'x', responsive: true, maintainAspectRatio: false,
+          scales: {
+            y: { title: { display: true, text: 'Effect size (SD)' }, beginAtZero: true },
+            x: {}
+          },
+          plugins: {
+            legend: { display: true, position: 'top' },
+            tooltip: { callbacks: { label: ctx2 => `${ctx2.dataset.label}: ${ctx2.parsed.y.toFixed(3)} SD` } },
+            datalabels: { display: false }
+          }
+        }
+      });
+    }
+
+    function renderPipResultsTable() {
+      const loading   = document.getElementById('pip-results-loading');
+      const container = document.getElementById('pip-results-container');
+      const table     = document.getElementById('pip-results-table');
+      if (!pipModelResults || !table) return;
+      const winners = getPipWinners();
+      const cutoff  = 0.10;
+      let html = '<thead><tr><th>Program ID</th><th>Frequentist estimate</th>'
+               + '<th>Bayesian estimate</th><th>P(effect &gt; 0.10 SD)</th></tr></thead><tbody>';
+      winners.forEach(row => {
+        const idx = defaultData.findIndex(r => r.id === row.id);
+        if (idx < 0) return;
+        const draws = pipModelResults.theta.map(t => t[idx]);
+        const bMean = mean(draws);
+        const pGt   = draws.filter(d => d > cutoff).length / draws.length;
+        const pStr  = (pGt * 100).toFixed(0) + '%';
+        const pStyle = pGt >= 0.50
+          ? 'color:#7A5F43; font-weight:600; text-align:center;'
+          : 'color:#c8102e; text-align:center;';
+        html += `<tr>
+          <td>${row.id}</td>
+          <td style="text-align:center;">${row.Estimate.toFixed(2)}</td>
+          <td style="text-align:center;">${bMean.toFixed(2)}</td>
+          <td style="${pStyle}">${pStr}</td>
+        </tr>`;
+      });
+      html += '</tbody>';
+      table.innerHTML = html;
+      if (loading)   loading.style.display   = 'none';
+      if (container) container.style.display = '';
+    }
+
+    function renderPipTab() {
+      renderPipFigure1();
+      if (pipModelResults) {
+        renderPipFigure2();
+        renderPipResultsTable();
+      }
+      // If pipModelResults not ready yet, Figure 2 and table will render
+      // once runPipModel() completes (triggered from runModelAndUpdateAll)
+    }
+
+    // ================================
+    // Welcome tab fade animation
+    // ================================
+    function initWelcomeFade() {
+      const questions = Array.from(document.querySelectorAll('[data-fade-group="welcome-q"]'))
+        .sort((a, b) => +a.dataset.fadeIndex - +b.dataset.fadeIndex);
+      if (!questions.length) return;
+
+      const total  = questions.length;
+      const holdMs = 2500;
+      const fadeMs = 700;
+      let current  = 0;
+
+      // Show first question immediately
+      questions[0].classList.add('fade-visible');
+
+      setInterval(() => {
+        const next = (current + 1) % total;
+        questions[current].classList.remove('fade-visible');
+        setTimeout(() => {
+          questions[next].classList.add('fade-visible');
+          current = next;
+        }, fadeMs);
+      }, holdMs + fadeMs);
+    }
+
+    // Handle CSV upload
+    function handleCsvUpload(file) {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          const rows = results.data;
+          if (!rows || rows.length === 0) {
+            alert('Could not read CSV or it is empty.');
+            return;
+          }
+          // Find columns (case-insensitive)
+          const lowerNames = results.meta.fields.map(f => f.toLowerCase());
+          let estIdx = lowerNames.findIndex(n => ['estimate','est','effect','beta','b'].includes(n));
+          let seIdx  = lowerNames.findIndex(n => ['stderr','std_error','std. error','std error','se','stderror','stddev','std_dev'].includes(n));
+          if (estIdx < 0 || seIdx < 0) {
+            alert('Upload must include columns Estimate and StdError (case-insensitive).');
+            return;
+          }
+          const descIdx = lowerNames.findIndex(n => ['description','desc','label','name','study','title'].includes(n));
+          const idIdx   = lowerNames.findIndex(n => ['id','study_id','index'].includes(n));
+          const newData = [];
+          let dropped = 0;
+          rows.forEach((row, rowIdx) => {
+            const estVal = parseFloat(row[results.meta.fields[estIdx]]);
+            const seVal  = parseFloat(row[results.meta.fields[seIdx]]);
+            const descVal = descIdx >= 0 ? row[results.meta.fields[descIdx]] : '';
+            const idVal   = idIdx >= 0 ? row[results.meta.fields[idIdx]] : '';
+            if (!isFinite(estVal) || !isFinite(seVal) || seVal <= 0) {
+              dropped++;
+              return;
+            }
+            newData.push({ id: idVal || '', Description: descVal || '', Estimate: estVal, StdError: seVal });
+          });
+          // Auto-create id if missing or blank
+          newData.forEach((row, idx) => {
+            if (!row.id || row.id.trim() === '') {
+              row.id = String(idx + 1);
+            }
+            if (!row.Description || row.Description.trim() === '') {
+              row.Description = 'Study ' + row.id;
+            }
+          });
+          if (dropped > 0) {
+            alert(`Dropped ${dropped} row(s) with invalid Estimate/StdError.`);
+          }
+          dataset = newData;
+          renderDataTable();
+          updateAfterDataChange();
+          // Clear previous model results
+          modelResults = null;
+          // Auto-run model with uploaded data
+          runModelAndUpdateAll();
+        }
+      });
+    }
+    // Download template CSV for dataset
+    function downloadTemplateCsv() {
+      // Build CSV string from defaultData
+      const header = ['id','Description','Estimate','StdError'];
+      const rows = defaultData.map(row => [row.id, row.Description, row.Estimate, row.StdError]);
+      let csvContent = header.join(',') + '\n';
+      rows.forEach(r => {
+        csvContent += r.map(val => '"' + String(val).replace(/"/g,'""') + '"').join(',') + '\n';
+      });
+      // Create blob and download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'meta_analysis_template.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    // Tab switching
+    function setupTabs() {
+      document.querySelectorAll('.tab-container button').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const target = this.getAttribute('data-tab');
+          // Activate button
+          document.querySelectorAll('.tab-container button').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          // Show corresponding content
+          document.querySelectorAll('.tab-content').forEach(div => div.classList.remove('active'));
+          document.getElementById(target).classList.add('active');
+          // Re-render active tab content when switching
+          if (target === 'welcome') {
+            // static content, nothing to render
+          } else if (target === 'pip-foundation') {
+            try { renderPipTab(); } catch(e) { console.error('pip tab error:', e); }
+          } else if (target === 'interpret-estimates') {
+            const msg = document.getElementById('basie-message');
+            if (!modelResults) {
+              if (msg) msg.style.display = 'block';
+            } else {
+              if (msg) msg.style.display = 'none';
+              try { updateBasieTableAndPlot(); } catch(e) { try { renderBasieTabSimple(); } catch(e2) {} }
+            }
+          } else if (target === 'predict') {
+            try { renderPredictTab(); } catch(e) { console.error('predict tab render error:', e); }
+          }
+        });
+      });
+    }
+    // Event listeners setup
+    function setupEventListeners() {
+      // CSV upload and template download
+      const csvEl = document.getElementById('csv-upload');
+      if (csvEl) csvEl.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) handleCsvUpload(file);
+        e.target.value = '';
+      });
+      const dlBtn = document.getElementById('download-template');
+      if (dlBtn) dlBtn.addEventListener('click', downloadTemplateCsv);
+      // Freq-view radio buttons
+      document.querySelectorAll('input[name="freq-view"]').forEach(r => {
+        r.addEventListener('change', drawFreqView);
+      });
+
+      // Cutoff inputs: sync both and refresh both result tabs
+      function onCutoffChange() {
+        const val = this.value;
+        document.querySelectorAll('.cutoff-sync').forEach(el => { el.value = val; });
+        if (modelResults) {
+          try { updateBasieTableAndPlot(); } catch(e) {}
+          try { renderPredictTab(); } catch(e) {}
+        }
+      }
+      document.querySelectorAll('.cutoff-sync').forEach(el => {
+        el.addEventListener('change', onCutoffChange);
+        el.addEventListener('input', onCutoffChange);
+      });
+
+      // Prior sliders: sync all instances and re-run model
+      const MU_AXIS_MIN = -1.5, MU_AXIS_MAX = 1.5;
+      const TAU_AXIS_MAX = 2.5;
+      const SVG_W = 260, SVG_H = 72, PAD_L = 28, PAD_R = 10, PAD_T = 6, PAD_B = 22;
+      const PLOT_W = SVG_W - PAD_L - PAD_R;
+      const PLOT_H = SVG_H - PAD_T - PAD_B;
+
+      function xPx(val, xMin, xMax) { return PAD_L + ((val - xMin) / (xMax - xMin)) * PLOT_W; }
+      function normalPdf(x, sd) { return Math.exp(-0.5*(x/sd)**2) / (sd * Math.sqrt(2*Math.PI)); }
+      function gammaPdfLocal(x, shape, rate) {
+        if (x <= 0) return 0;
+        const scale = 1/rate;
+        return (Math.pow(x/scale, shape-1) * Math.exp(-x/scale)) / (scale * jStat.gammafn(shape));
+      }
+
+      function buildPriorSvg(type, params) {
+        const TEAL = '#7A5F43', NAVY = '#152D32';
+        const isFlat = type === 'tau' && (!isFinite(params.shape) || !isFinite(params.rate));
+        if (isFlat) return '<div style="font-size:0.82rem;color:#666;font-style:italic;padding:6px 0;">Prior places no constraint on \u03c4 \u2014 the degree of shrinkage is determined entirely by the data.</div>';
+        const xMin = type === 'mu' ? MU_AXIS_MIN : 0;
+        const xMax = type === 'mu' ? MU_AXIS_MAX : TAU_AXIS_MAX;
+        const nPts = 200;
+        const xs = [], ys = [];
+        for (let i = 0; i <= nPts; i++) {
+          const x = xMin + (xMax - xMin) * i / nPts;
+          xs.push(x);
+          ys.push(type === 'mu' ? normalPdf(x, params.sd) : gammaPdfLocal(x, params.shape, params.rate));
+        }
+        const yMax = Math.max(...ys) || 1;
+        function yPx(y) { return PAD_T + PLOT_H * (1 - y / yMax); }
+        const pts = xs.map((x,i) => `${xPx(x,xMin,xMax).toFixed(1)},${yPx(ys[i]).toFixed(1)}`).join(' ');
+        const fillPts = `${xPx(xs[0],xMin,xMax)},${yPx(0)} ${pts} ${xPx(xs[nPts],xMin,xMax)},${yPx(0)}`;
+
+        // 10th / 90th quantiles
+        const q10 = type === 'mu' ? jStat.normal.inv(0.10, 0, params.sd) : jStat.gamma.inv(0.10, params.shape, 1/params.rate);
+        const q90 = type === 'mu' ? jStat.normal.inv(0.90, 0, params.sd) : jStat.gamma.inv(0.90, params.shape, 1/params.rate);
+        const y10 = type === 'mu' ? normalPdf(q10, params.sd) : gammaPdfLocal(q10, params.shape, params.rate);
+        const y90 = type === 'mu' ? normalPdf(q90, params.sd) : gammaPdfLocal(q90, params.shape, params.rate);
+        const x10px = xPx(q10, xMin, xMax), x90px = xPx(q90, xMin, xMax);
+        const y10px = yPx(y10), y90px = yPx(y90);
+        const axisY = PAD_T + PLOT_H;
+
+        // Mode
+        let modeStr;
+        if (type === 'mu') {
+          modeStr = '0.00';
+        } else {
+          const mode = params.shape > 1 ? ((params.shape - 1) / params.rate) : 0;
+          modeStr = mode.toFixed(2);
+        }
+
+        // Regular axis ticks (filter out positions too close to q10/q90 labels)
+        const ticks = type === 'mu' ? [-1, -0.5, 0, 0.5, 1] : [0, 0.5, 1, 1.5, 2, 2.5];
+        const tickSvg = ticks.map(t => {
+          const tx = xPx(t, xMin, xMax);
+          // Suppress tick label if within 18px of a quantile label
+          const tooClose = Math.abs(tx - x10px) < 18 || Math.abs(tx - x90px) < 18;
+          const lbl = type === 'mu' ? (t > 0 ? '+' + t : String(t)) : String(t);
+          return `<line x1="${tx}" y1="${axisY}" x2="${tx}" y2="${axisY+3}" stroke="#bbb" stroke-width="1"/>` +
+                 (!tooClose ? `<text x="${tx}" y="${SVG_H-3}" text-anchor="middle" font-size="8.5" fill="#aaa">${lbl}</text>` : '');
+        }).join('');
+
+        const zeroLine = type === 'mu'
+          ? `<line x1="${xPx(0,xMin,xMax)}" y1="${PAD_T}" x2="${xPx(0,xMin,xMax)}" y2="${axisY}" stroke="#ddd" stroke-width="1" stroke-dasharray="3,2"/>`
+          : '';
+
+        // Vertical dashed lines at q10, q90 dropping from curve to axis
+        const vlines =
+          `<line x1="${x10px}" y1="${y10px}" x2="${x10px}" y2="${axisY}" stroke="${NAVY}" stroke-width="1.2" stroke-dasharray="3,2"/>` +
+          `<line x1="${x90px}" y1="${y90px}" x2="${x90px}" y2="${axisY}" stroke="${NAVY}" stroke-width="1.2" stroke-dasharray="3,2"/>`;
+
+        // Dots on the curve
+        const dots =
+          `<circle cx="${x10px}" cy="${y10px}" r="3" fill="${NAVY}"/>` +
+          `<circle cx="${x90px}" cy="${y90px}" r="3" fill="${NAVY}"/>`;
+
+        // Quantile labels just below axis
+        const qLabels =
+          `<text x="${x10px}" y="${SVG_H-3}" text-anchor="middle" font-size="8.5" font-weight="600" fill="${NAVY}">${q10.toFixed(2)}</text>` +
+          `<text x="${x90px}" y="${SVG_H-3}" text-anchor="middle" font-size="8.5" font-weight="600" fill="${NAVY}">${q90.toFixed(2)}</text>`;
+
+        const svg = `<svg width="${SVG_W}" height="${SVG_H}" style="display:block;max-width:100%;">` +
+          `<polygon points="${fillPts}" fill="${TEAL}" fill-opacity="0.15"/>` +
+          `<polyline points="${pts}" fill="none" stroke="${TEAL}" stroke-width="1.8"/>` +
+          `<line x1="${PAD_L}" y1="${axisY}" x2="${PAD_L+PLOT_W}" y2="${axisY}" stroke="#bbb" stroke-width="1"/>` +
+          zeroLine + vlines + dots + tickSvg + qLabels +
+          `</svg>`;
+
+        const caption = `<div style="font-size:0.78rem;color:#666;margin-top:2px;">` +
+          `Middle 80% indicated. Mode\u202f=\u202f${modeStr}</div>`;
+
+        return svg + caption;
+      }
+
+      function updateSliderLabels() {
+        const n = dataset.length;
+        const muSd = muWidthValues[priorState.muWidthIndex - 1];
+        const tauI = priorState.tauVariationIndex - 1;
+        const shapes = [2,2,2,2,NaN], rates = [16,8,4,2,NaN];
+        const muSvg  = buildPriorSvg('mu',  { sd: muSd });
+        const tauSvg = buildPriorSvg('tau', { shape: shapes[tauI], rate: rates[tauI] });
+        document.querySelectorAll('[id^="mu-slider-label-"]').forEach(el => { el.innerHTML = muSvg; });
+        document.querySelectorAll('[id^="tau-slider-label-"]').forEach(el => { el.innerHTML = tauSvg; });
+        document.querySelectorAll('.prior-panel-mu-label').forEach(el => {
+          el.textContent = `Prior distribution for the mean of the ${n} true effects`;
+        });
+        document.querySelectorAll('.prior-panel-tau-label').forEach(el => {
+          el.textContent = `Prior distribution for the SD of the ${n} true effects`;
+        });
+      }
+      document.querySelectorAll('.mu-width-slider').forEach(slider => {
+        slider.value = priorState.muWidthIndex;
+        slider.addEventListener('input', function() {
+          priorState.muWidthIndex = parseInt(this.value);
+          document.querySelectorAll('.mu-width-slider').forEach(s => { s.value = this.value; });
+          updateSliderLabels();
+          runModelAndUpdateAll();
+        });
+      });
+      document.querySelectorAll('.tau-variation-slider').forEach(slider => {
+        slider.value = priorState.tauVariationIndex;
+        slider.addEventListener('input', function() {
+          priorState.tauVariationIndex = parseInt(this.value);
+          document.querySelectorAll('.tau-variation-slider').forEach(s => { s.value = this.value; });
+          updateSliderLabels();
+          runModelAndUpdateAll();
+        });
+      });
+      updateSliderLabels();
+
+      // Sort / filter / viz controls on interpret-estimates tab
+      function refreshInterpretTab() {
+        if (!modelResults) return;
+        try { updateBasieTableAndPlot(); } catch(e) { try { renderBasieTabSimple(); } catch(e2) {} }
+      }
+      ['sort-option','filter-metric'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', refreshInterpretTab);
+      });
+      ['filter-lower','filter-upper'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', refreshInterpretTab);
+      });
+      document.querySelectorAll('input[name="viz-choice"]').forEach(r => {
+        r.addEventListener('change', function() {
+          const grp = document.getElementById('bars-options-group');
+          if (grp) grp.style.display = this.value === 'bars' ? '' : 'none';
+          refreshInterpretTab();
+        });
+      });
+      document.querySelectorAll('input[name="bars-show"]').forEach(r => {
+        r.addEventListener('change', refreshInterpretTab);
+      });
+      document.querySelectorAll('input[name="bars-type"]').forEach(r => {
+        r.addEventListener('change', function() {
+          const estGrp  = document.getElementById('bars-estimate-group');
+          const probGrp = document.getElementById('bars-prob-group');
+          if (estGrp)  estGrp.style.display  = this.value === 'estimate'    ? '' : 'none';
+          if (probGrp) probGrp.style.display = this.value === 'probability' ? '' : 'none';
+          const cutoffGrp2 = document.getElementById('view-cutoff-group');
+          if (cutoffGrp2) cutoffGrp2.style.display = this.value === 'probability' ? '' : 'none';
+          refreshInterpretTab();
+        });
+      });
+      // Delegate listener on interpret-estimates section for robustness
+      const interpSection = document.getElementById('interpret-estimates');
+      if (interpSection) {
+        interpSection.addEventListener('change', function(ev) {
+          const id = ev.target.id, name = ev.target.name;
+          if (['sort-option','filter-metric','cutoff-input','filter-lower','filter-upper'].includes(id)
+              || name === 'viz-choice' || name === 'bars-show') refreshInterpretTab();
+        });
+        interpSection.addEventListener('input', function(ev) {
+          if (['filter-lower','filter-upper'].includes(ev.target.id)) refreshInterpretTab();
+        });
+      }
+    }
+    // Initialization on page load
+    function init() {
+      setupTabs();
+      setupEventListeners();
+      renderDataTable();
+      updateAfterDataChange();
+      initWelcomeFade();
+      // Defer model run so the page renders fully before the computation starts
+      setTimeout(function() { runModelAndUpdateAll(); }, 0);
+    }
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+  </script>
+</body>
+</html>
