@@ -693,7 +693,7 @@
         <div style="text-align:center; font-size:1.1rem; font-weight:600; color:#7A5F43; letter-spacing:0.04em; margin:0.75rem 0 1.25rem;">
           Evidence &nbsp;&rarr;&nbsp; BASIE &nbsp;&rarr;&nbsp; Decision Making
         </div>
-        <p>Decision makers need to know whether a program truly works &mdash; not just what was found in a study, but what it means for their decisions. They need to know how confident they can be, whether the evidence is strong enough to act on, and what they should realistically expect if they invest in a program or scale it to a new context. <strong>BASIE (Bayesian Interpretation of Estimates)</strong> was designed to answer these questions directly, in plain terms that support a yes, no, or not-yet decision.</p>
+        <p>Decision makers need more than just a description of evidence &ndash; they need to know what the evidence means for their decisions. They need to know how confident they can be, whether the evidence is strong enough to act on, and what they should realistically expect if they invest in a program or scale it to a new context. <strong>BASIE (Bayesian Interpretation of Estimates)</strong> was designed to answer these questions directly, using criteria relevant to the decision maker&rsquo;s goals, in plain terms that support a yes, no, or not-yet decision.</p>
         <p>BASIE answers questions like:</p>
         <div class="fade-box">
           <span class="fade-item" data-fade-group="welcome-q" data-fade-index="0">&ldquo;Did the program really work?&rdquo;</span>
@@ -1013,7 +1013,7 @@
         <div id="view-cutoff-group" style="display:none; margin-top:0.6rem; padding-top:0.6rem; border-top:1px solid #D4C4B0;">
           <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
             <label style="font-weight:600; font-size:0.88rem; white-space:nowrap; margin-bottom:0;">Cutoff (optional):</label>
-            <input type="number" id="cutoff-input" class="cutoff-sync" value="0.1" step="0.01" style="width:80px; margin-bottom:0;">
+            <input type="text" inputmode="decimal" id="cutoff-input" class="cutoff-sync" value="0.1" style="width:80px; margin-bottom:0;">
             <span class="help-text">Leave blank to show only P(&gt;0).</span>
           </div>
         </div>
@@ -1024,23 +1024,23 @@
         <div style="flex:1; min-width:140px;">
           <label for="sort-option" style="font-weight:600; display:block; margin-bottom:0.25rem;">Sort by:</label>
           <select id="sort-option" style="width:100%;">
-            <option value="est_desc">Estimate ↓</option>
-            <option value="est_asc">Estimate ↑</option>
-            <option value="post_desc">Posterior mean ↓</option>
-            <option value="post_asc">Posterior mean ↑</option>
+            <option value="est_desc">Frequentist Estimate ↓</option>
+            <option value="est_asc">Frequentist Estimate ↑</option>
+            <option value="post_desc">Bayesian Estimate ↓</option>
+            <option value="post_asc">Bayesian Estimate ↑</option>
           </select>
         </div>
         <div style="flex:1; min-width:200px;">
           <label for="filter-metric" style="font-weight:600; display:block; margin-bottom:0.25rem;">Filter by:</label>
           <select id="filter-metric" style="width:100%; margin-bottom:0.3rem;">
-            <option value="freq_est">Frequentist estimate</option>
-            <option value="post_mean">Posterior mean</option>
+            <option value="freq_est">Frequentist Estimate</option>
+            <option value="post_mean">Bayesian Estimate</option>
           </select>
           <div style="display:flex; gap:0.5rem;">
-            <input type="number" id="filter-lower" placeholder="Lower bound" style="flex:1;">
-            <input type="number" id="filter-upper" placeholder="Upper bound" style="flex:1;">
+            <input type="text" inputmode="decimal" id="filter-lower" placeholder="Lower bound" style="flex:1;">
+            <input type="text" inputmode="decimal" id="filter-upper" placeholder="Upper bound" style="flex:1;">
           </div>
-          <div class="help-text" style="margin-top:0.2rem;">Leave bounds blank for no limit.</div>
+          <div class="help-text" id="filter-bounds-help" style="margin-top:0.2rem;">Leave bounds blank for no limit.</div>
         </div>
       </div>
     </div>
@@ -1080,7 +1080,7 @@
     <p style="font-size:0.95rem; color:#555; margin-top:0; margin-bottom:0.75rem;">Studies measure program impacts with error. This prediction sets that measurement error aside and asks: if we could observe the true effect in a comparable study—not just one study’s noisy estimate of it—what would we expect to find?</p>
   <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; flex-wrap:wrap; padding:0.5rem 0;">
     <label style="font-weight:600; white-space:nowrap; margin-bottom:0;">Cutoff of interest:</label>
-    <input type="number" id="cutoff-input-predict" class="cutoff-sync" value="0.1" step="0.01" style="width:90px; margin-bottom:0; display:inline-block;">
+    <input type="text" inputmode="decimal" id="cutoff-input-predict" class="cutoff-sync" value="0.1" style="width:90px; margin-bottom:0; display:inline-block;">
     <span class="help-text">The probability the next effect exceeds this value will be calculated.</span>
   </div>
   <details class="prior-sensitivity-panel" style="margin-bottom:1rem; border:1px solid #D4C4B0; border-radius:4px; padding:0.5rem 1rem; background:#F5F0E8;">
@@ -1643,8 +1643,8 @@
         html += `<tr data-index="${index}">`;
         html += `<td><input type="text" class="manual-id" style="width:100%;" value="${escapeHtml(row.id)}"></td>`;
         html += `<td><input type="text" class="manual-desc" style="width:100%;" value="${escapeHtml(row.Description)}"></td>`;
-        html += `<td><input type="number" step="any" class="manual-est" style="width:100%;" value="${row.Estimate !== '' && row.Estimate != null ? row.Estimate : ''}"></td>`;
-        html += `<td><input type="number" step="any" class="manual-se" style="width:100%;" value="${row.StdError !== '' && row.StdError != null ? row.StdError : ''}"></td>`;
+        html += `<td><input type="text" inputmode="decimal" class="manual-est" style="width:100%;" value="${row.Estimate !== '' && row.Estimate != null ? row.Estimate : ''}"></td>`;
+        html += `<td><input type="text" inputmode="decimal" class="manual-se" style="width:100%;" value="${row.StdError !== '' && row.StdError != null ? row.StdError : ''}"></td>`;
         html += `<td><button type="button" class="remove-manual-row" data-index="${index}" style="padding:2px 6px; font-size:0.8rem;">Remove</button></td>`;
         html += '</tr>';
       });
@@ -2435,6 +2435,14 @@
         orderIndices.sort((a,b) => postMean[b] - postMean[a]);
       } else if (sortOption === 'post_asc') {
         orderIndices.sort((a,b) => postMean[a] - postMean[b]);
+      } else if (sortOption === 'pgt0_desc') {
+        orderIndices.sort((a,b) => pGt0[b] - pGt0[a]);
+      } else if (sortOption === 'pgt0_asc') {
+        orderIndices.sort((a,b) => pGt0[a] - pGt0[b]);
+      } else if (sortOption === 'pgtc_desc') {
+        orderIndices.sort((a,b) => pGtCutoff[b] - pGtCutoff[a]);
+      } else if (sortOption === 'pgtc_asc') {
+        orderIndices.sort((a,b) => pGtCutoff[a] - pGtCutoff[b]);
       }
       // Filtering
       const filterMetric = document.getElementById('filter-metric').value;
@@ -2443,7 +2451,11 @@
       const lo = isNaN(lower) ? -Infinity : lower;
       const hi = isNaN(upper) ? Infinity : upper;
       function metricVal(j) {
-        return filterMetric === 'freq_est' ? freqEst[j] : postMean[j];
+        if (filterMetric === 'freq_est')  return freqEst[j];
+        if (filterMetric === 'post_mean') return postMean[j];
+        if (filterMetric === 'pgt0')      return pGt0[j];
+        if (filterMetric === 'pgtc')      return pGtCutoff[j];
+        return freqEst[j];
       }
       const filteredIndices = orderIndices.filter(j => (metricVal(j) >= lo && metricVal(j) <= hi));
       // Data for BASIE table (use filteredIndices order)
@@ -2553,9 +2565,23 @@
         indices.sort((a,b) => postMean[b] - postMean[a]);
       } else if (sortOption === 'post_asc') {
         indices.sort((a,b) => postMean[a] - postMean[b]);
+      } else if (sortOption === 'pgt0_desc') {
+        indices.sort((a,b) => pGt0[b] - pGt0[a]);
+      } else if (sortOption === 'pgt0_asc') {
+        indices.sort((a,b) => pGt0[a] - pGt0[b]);
+      } else if (sortOption === 'pgtc_desc') {
+        indices.sort((a,b) => pGtCut[b] - pGtCut[a]);
+      } else if (sortOption === 'pgtc_asc') {
+        indices.sort((a,b) => pGtCut[a] - pGtCut[b]);
       }
       // Apply filtering
-      function metricVal(j) { return filterMetric === 'freq_est' ? freqEst[j] : postMean[j]; }
+      function metricVal(j) {
+        if (filterMetric === 'freq_est')  return freqEst[j];
+        if (filterMetric === 'post_mean') return postMean[j];
+        if (filterMetric === 'pgt0')      return pGt0[j];
+        if (filterMetric === 'pgtc')      return pGtCut[j];
+        return freqEst[j];
+      }
       indices = indices.filter(j => metricVal(j) >= lo && metricVal(j) <= hi);
       // Build table rows for DataTable
       const tableRows = indices.map(j => {
@@ -3766,6 +3792,73 @@
         el.addEventListener('input', onCutoffChange);
       });
 
+      // Update sort/filter options based on estimate vs probability mode
+      // Uses option replacement (not display:none) for cross-browser compatibility
+      const SORT_EST_OPTS = [
+        { value: 'est_desc',  label: 'Frequentist Estimate ↓' },
+        { value: 'est_asc',   label: 'Frequentist Estimate ↑' },
+        { value: 'post_desc', label: 'Bayesian Estimate ↓' },
+        { value: 'post_asc',  label: 'Bayesian Estimate ↑' },
+      ];
+      function getSortProbOpts(cutoffLabel, hasCutoff) {
+        const opts = [
+          { value: 'pgt0_desc', label: 'P(>0) ↓' },
+          { value: 'pgt0_asc',  label: 'P(>0) ↑' },
+        ];
+        if (hasCutoff) {
+          opts.push({ value: 'pgtc_desc', label: 'P(>' + cutoffLabel + ') ↓' });
+          opts.push({ value: 'pgtc_asc',  label: 'P(>' + cutoffLabel + ') ↑' });
+        }
+        return opts;
+      }
+      const FILTER_EST_OPTS = [
+        { value: 'freq_est',  label: 'Frequentist Estimate' },
+        { value: 'post_mean', label: 'Bayesian Estimate' },
+      ];
+      function getFilterProbOpts(cutoffLabel, hasCutoff) {
+        const opts = [{ value: 'pgt0', label: 'P(>0)' }];
+        if (hasCutoff) opts.push({ value: 'pgtc', label: 'P(>' + cutoffLabel + ')' });
+        return opts;
+      }
+
+      function rebuildSelect(sel, opts) {
+        const prev = sel.value;
+        sel.innerHTML = '';
+        opts.forEach(o => {
+          const el = document.createElement('option');
+          el.value = o.value; el.textContent = o.label;
+          sel.appendChild(el);
+        });
+        // Restore previous value if still valid, else default to first
+        if (opts.some(o => o.value === prev)) sel.value = prev;
+        else sel.value = opts[0].value;
+      }
+
+      function updateSortFilterForMode(isProbability) {
+        const cutoffEl = document.getElementById('cutoff-input');
+        const cutoff   = cutoffEl ? parseFloat(cutoffEl.value) : NaN;
+        const hasCutoff = !isNaN(cutoff);
+        const cutoffLabel = hasCutoff ? cutoff.toFixed(2) : '';
+
+        const sortSel = document.getElementById('sort-option');
+        const filtSel = document.getElementById('filter-metric');
+        if (sortSel) rebuildSelect(sortSel, isProbability ? getSortProbOpts(cutoffLabel, hasCutoff) : SORT_EST_OPTS);
+        if (filtSel) rebuildSelect(filtSel, isProbability ? getFilterProbOpts(cutoffLabel, hasCutoff) : FILTER_EST_OPTS);
+
+        const help = document.getElementById('filter-bounds-help');
+        if (help) help.textContent = isProbability
+          ? 'Bounds are probabilities (0 to 1). Leave blank for no limit.'
+          : 'Leave bounds blank for no limit.';
+      }
+
+      // Also update cutoff labels when cutoff value changes in probability mode
+      document.querySelectorAll('.cutoff-sync').forEach(el => {
+        el.addEventListener('input', function() {
+          const barsType = document.querySelector('input[name="bars-type"]:checked')?.value;
+          if (barsType === 'probability') updateSortFilterForMode(true);
+        });
+      });
+
       // Prior sliders: sync all instances and re-run model
       const MU_AXIS_MIN = -1.5, MU_AXIS_MAX = 1.5;
       const TAU_AXIS_MAX = 2.5;
@@ -3927,6 +4020,7 @@
           if (probGrp) probGrp.style.display = this.value === 'probability' ? '' : 'none';
           const cutoffGrp2 = document.getElementById('view-cutoff-group');
           if (cutoffGrp2) cutoffGrp2.style.display = this.value === 'probability' ? '' : 'none';
+          updateSortFilterForMode(this.value === 'probability');
           refreshInterpretTab();
         });
       });
