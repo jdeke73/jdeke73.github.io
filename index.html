@@ -221,7 +221,8 @@
   <span class="nav-brand" onclick="showPage('home')">John Deke</span>
   <div class="nav-links">
     <button id="nav-home"   onclick="showPage('home')">Home</button>
-    <button id="nav-tool"   onclick="showPage('tool')">BASIE Workbench</button>
+    <button id="nav-services" onclick="showPage('services')">Services</button>
+    <button id="nav-tool"   onclick="showPage('tool')">BASIE</button>
     <button id="nav-pubs"   onclick="showPage('pubs')">Publications</button>
     <button id="nav-contact" onclick="showPage('contact')">Contact</button>
   </div>
@@ -236,7 +237,7 @@
       <div class="home-text">
         <div class="home-badge">Independent Consultant</div>
         <h1 class="home-name">John Deke, PhD</h1>
-        <p class="home-bio">I am an economist and nationally recognized expert in experimental and non-experimental impact evaluation methodology, Bayesian inference, and the interpretation of impact and descriptive findings. I bring more than two decades of experience designing and analyzing experimental, quasi-experimental, and descriptive evaluations for OPRE, IES, CMS, and OPA.</p>
+        <p class="home-bio">I am an economist and nationally recognized expert in experimental and non-experimental impact evaluation methodology, Bayesian inference, and the interpretation of impact and descriptive findings. I bring more than two decades of experience designing and analyzing experimental, quasi-experimental, and descriptive evaluations for federal agencies and foundations.</p>
         <p class="home-bio">As a Senior Fellow at Mathematica, I co-led the development of <strong>BASIE (Bayesian Interpretation of Estimates)</strong>, an approach now used across federal agencies to provide transparent, probability-based interpretation of both impact estimates and descriptive differences between groups or across time. BASIE empowers more useful, comprehensive, and integrated interpretation of heterogeneous research findings.</p>
 
         <div class="tag-label">Areas of Expertise</div>
@@ -247,11 +248,11 @@
           <span class="tag">Impact evaluation</span>
           <span class="tag">Applied statistics</span>
           <span class="tag">Education research</span>
-          <span class="tag">Health policy</span>
         </div>
 
         <div class="home-buttons">
-          <button class="btn-primary" onclick="showPage('tool')">BASIE Workbench &rarr;</button>
+          <button class="btn-primary" onclick="showPage('services')">Services &rarr;</button>
+          <button class="btn-outline" onclick="showPage('tool')">BASIE</button>
           <button class="btn-outline" onclick="showPage('pubs')">Publications</button>
           <button class="btn-outline" onclick="showPage('contact')">Get in Touch</button>
         </div>
@@ -268,9 +269,22 @@
 ════════════════════════════════════════════ -->
 <div id="page-tool" class="page">
   <div class="container">
-    <div class="page-header">
-      <h1>BASIE Workbench</h1>
-      <p>An interactive tool for Bayesian interpretation of impact evaluation findings</p>
+    <div style="margin-bottom:1.5rem;">
+      <h2 style="font-size:1.9rem; font-weight:700; color:#152D32; margin-bottom:0.5rem;">BASIE bridges the gap from evidence to decision making</h2>
+      <div style="text-align:center; font-size:1.1rem; font-weight:600; color:#7A5F43; letter-spacing:0.04em; margin:0.5rem 0 0;">
+        Evidence &nbsp;&rarr;&nbsp; BASIE &nbsp;&rarr;&nbsp; Decision Making
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <h2>About BASIE</h2>
+      <p>Decision makers need more than just a description of evidence &ndash; they need to know what the evidence means for their decisions. They need to know how confident they can be, whether the evidence is strong enough to act on, and what they should realistically expect if they invest in a program or scale it to a new context. <strong>BASIE (Bayesian Interpretation of Estimates)</strong> was designed to answer these questions directly, using criteria relevant to the decision maker&rsquo;s goals, in plain terms that support a yes, no, or not-yet decision. Given all the evidence, BASIE produces probability statements &mdash; how likely is it that this program truly works? how likely is the true effect to exceed a meaningful threshold? &mdash; that map directly onto your decision criteria.</p>
+      <p>BASIE is described in detail in the resources below and has been applied across evaluations sponsored by federal agencies and foundations.</p>
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <a class="btn-outline" href="https://acf.gov/opre/report/moving-beyond-statistical-significance-basie-bayesian-interpretation-estimates" target="_blank">OPRE Report &rarr;</a>
+        <a class="btn-outline" href="https://ies.ed.gov/use-work/resource-library/resource/tooltoolkit/basie-bayesian-interpretation-estimates-framework-interpreting-findings-impact-evaluations-practical" target="_blank">IES Toolkit &rarr;</a>
+        <a class="btn-outline" href="https://statmodeling.stat.columbia.edu/2022/04/27/hey-check-this-out-its-really-cool-a-bayesian-framework-for-interpreting-findings-from-impact-evaluations/" target="_blank">Gelman Blog &rarr;</a>
+      </div>
     </div>
 
     <div class="tool-card">
@@ -280,17 +294,6 @@
       <a class="btn-primary" href="BASIE_Workbench_demo.html" target="_blank">Open BASIE Workbench &rarr;</a>
       <div class="tool-meta">
         Built with Chart.js &middot; Runs entirely in your browser &middot; No data is uploaded or stored
-      </div>
-    </div>
-
-    <div class="tool-card">
-      <h2>About BASIE</h2>
-      <p>BASIE (Bayesian Interpretation of Estimates) replaces the question <em>"Is this statistically significant?"</em> with decision-relevant questions: What is the probability this program truly works? What is the probability the effect exceeds a meaningful threshold? BASIE combines prior knowledge about the plausible range of effects with the current study's estimates to produce probability statements that map directly onto decision criteria.</p>
-      <p>BASIE is described in detail in the resources below and has been applied across evaluations sponsored by IES, OPRE, CMS, and other federal agencies.</p>
-      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-        <a class="btn-outline" href="https://acf.gov/opre/report/moving-beyond-statistical-significance-basie-bayesian-interpretation-estimates" target="_blank">OPRE Report &rarr;</a>
-        <a class="btn-outline" href="https://ies.ed.gov/use-work/resource-library/resource/tooltoolkit/basie-bayesian-interpretation-estimates-framework-interpreting-findings-impact-evaluations-practical" target="_blank">IES Toolkit &rarr;</a>
-        <a class="btn-outline" href="https://statmodeling.stat.columbia.edu/2022/04/27/hey-check-this-out-its-really-cool-a-bayesian-framework-for-interpreting-findings-from-impact-evaluations/" target="_blank">Gelman Blog &rarr;</a>
       </div>
     </div>
   </div>
@@ -409,6 +412,90 @@
       <h3>Study of the Impact of Public School Spending on Postsecondary Educational Attainment Using Statewide School District Refinancing in Kansas</h3>
       <div class="pub-authors">Deke, John</div>
       <div class="pub-venue">Economics of Education Review, 22(3), 275–284</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SERVICES
+════════════════════════════════════════════ -->
+<div id="page-services" class="page">
+  <div class="container">
+    <div class="page-header">
+      <h1>Services</h1>
+      <p>I offer consulting, technical assistance, and training across a range of evaluation methodology topics</p>
+    </div>
+
+    <!-- BASIE -->
+    <div class="tool-card" style="margin-bottom:1rem;">
+      <div class="pub-meta"><span class="pub-type">Signature Service</span></div>
+      <h2 style="margin-top:0.5rem;">BASIE Implementation and Tools</h2>
+      <p>I co-developed the BASIE (Bayesian Interpretation of Estimates) framework and can help organizations apply it to their evaluation portfolios. Services include:</p>
+      <ul style="line-height:1.8; padding-left:1.3rem; color:#5a5244;">
+        <li>Reinterpretation of existing impact findings using BASIE</li>
+        <li>Development of empirically grounded prior distributions from existing evidence bases</li>
+        <li>Custom BASIE tools and interactive dashboards tailored to a specific portfolio or decision context</li>
+        <li>Training workshops on BASIE for researchers, program staff, and funders</li>
+        <li>Guides and materials to help grantees interpret their own evaluation findings</li>
+      </ul>
+    </div>
+
+    <!-- Evaluation TA -->
+    <div class="tool-card" style="margin-bottom:1rem;">
+      <div class="pub-meta"><span class="pub-type">Evaluation Methodology</span></div>
+      <h2 style="margin-top:0.5rem;">Evaluation Technical Assistance</h2>
+      <p>I provide methodological guidance across the full evaluation lifecycle, including:</p>
+      <ul style="line-height:1.8; padding-left:1.3rem; color:#5a5244;">
+        <li>Design and analysis of randomized controlled trials and quasi-experimental studies</li>
+        <li>Regression discontinuity design — implementation, standards review, and adaptation to new contexts</li>
+        <li>Statistical power analysis for clustered and non-clustered designs</li>
+        <li>Difference-in-differences and other non-experimental methods</li>
+        <li>Subgroup analysis and heterogeneity of treatment effects</li>
+      </ul>
+    </div>
+
+    <!-- Evidence synthesis -->
+    <div class="tool-card" style="margin-bottom:1rem;">
+      <div class="pub-meta"><span class="pub-type">Evidence Synthesis</span></div>
+      <h2 style="margin-top:0.5rem;">Bayesian Meta-Analysis and Evidence Synthesis</h2>
+      <p>I bring deep expertise in synthesizing evidence across studies, including:</p>
+      <ul style="line-height:1.8; padding-left:1.3rem; color:#5a5244;">
+        <li>Bayesian meta-analysis to characterize the distribution of effects across a portfolio</li>
+        <li>Development of prior distributions for use in future evaluations</li>
+        <li>Systematic review support — standards development, study screening, and quality assessment</li>
+        <li>Interpretation of heterogeneous findings across sites, populations, and contexts</li>
+      </ul>
+    </div>
+
+    <!-- Review and QA -->
+    <div class="tool-card" style="margin-bottom:1rem;">
+      <div class="pub-meta"><span class="pub-type">Review and Oversight</span></div>
+      <h2 style="margin-top:0.5rem;">Quality Assurance and Expert Review</h2>
+      <ul style="line-height:1.8; padding-left:1.3rem; color:#5a5244;">
+        <li>Quality assurance review of evaluation design plans, analysis plans, and final reports</li>
+        <li>Service on technical working groups and expert panels</li>
+        <li>Independent methodological review for funders and federal agencies</li>
+        <li>Peer review of evaluation proposals and research designs</li>
+      </ul>
+    </div>
+
+    <!-- Communication -->
+    <div class="tool-card" style="margin-bottom:1rem;">
+      <div class="pub-meta"><span class="pub-type">Communication and Training</span></div>
+      <h2 style="margin-top:0.5rem;">Training and Knowledge Translation</h2>
+      <ul style="line-height:1.8; padding-left:1.3rem; color:#5a5244;">
+        <li>Workshops on Bayesian inference and BASIE for applied researchers</li>
+        <li>Training on interpreting evaluation findings for non-technical audiences — funders, program staff, and policymakers</li>
+        <li>Methods appendices and statistical sections for evaluation reports</li>
+        <li>Translating technical findings into plain language for practitioner and funder audiences</li>
+      </ul>
+    </div>
+
+    <div style="background:#152D32; color:#F9F9F1; border-radius:10px; padding:1.75rem 2rem; margin-top:0.5rem;">
+      <h3 style="color:#F9F9F1; margin-bottom:0.5rem;">Interested in working together?</h3>
+      <p style="margin-bottom:1rem; color:#d4c4b0; line-height:1.65;">Whether you need a one-time review, ongoing technical assistance, or a full evaluation framework built around Bayesian reasoning, I can design something that fits your team, your data, and your decisions.</p>
+      <button class="btn-primary" onclick="showPage('contact')" style="background:#7A5F43;">Get in Touch &rarr;</button>
     </div>
 
   </div>
