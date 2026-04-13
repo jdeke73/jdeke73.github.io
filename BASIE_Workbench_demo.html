@@ -1112,7 +1112,6 @@
       <!-- Animation canvas -->
       <div style="position:relative; margin-bottom:0.5rem;">
         <canvas id="predict-anim-canvas" style="width:100%; height:220px; display:block; border-radius:4px; background:#f0f2f5;"></canvas>
-        <button id="predict-replay-btn" style="position:absolute; top:8px; right:8px; background:rgba(21,45,50,0.75); color:white; border:none; border-radius:3px; padding:4px 10px; font-size:0.8rem; cursor:pointer; font-family:inherit;">&#9654; Replay</button>
       </div>
 
       <!-- Predictive distribution and summary (always visible) -->
@@ -3041,8 +3040,28 @@
       }
       drawPredictiveDensity(thetaNew, cutoff);
       playPredictAnimation(predLow, predMean, predHigh, pGt0, pGtCut, cutoff);
-      const replayBtn = document.getElementById('predict-replay-btn');
-      if (replayBtn) replayBtn.onclick = () => playPredictAnimation(predLow, predMean, predHigh, pGt0, pGtCut, cutoff);
+      // Canvas click/hover for inline replay link
+      const animCanvas = document.getElementById('predict-anim-canvas');
+      if (animCanvas) {
+        animCanvas.onclick = function(e) {
+          if (this._replayX1 === undefined) return;
+          const rect = this.getBoundingClientRect();
+          const dpr = window.devicePixelRatio || 1;
+          const x = (e.clientX - rect.left) * (this.width / dpr / rect.width);
+          const y = (e.clientY - rect.top)  * (this.height / dpr / rect.height);
+          if (x >= this._replayX1 && x <= this._replayX2 && y >= this._replayY1 && y <= this._replayY2)
+            playPredictAnimation(predLow, predMean, predHigh, pGt0, pGtCut, cutoff);
+        };
+        animCanvas.onmousemove = function(e) {
+          if (this._replayX1 === undefined) { this.style.cursor='default'; return; }
+          const rect = this.getBoundingClientRect();
+          const dpr = window.devicePixelRatio || 1;
+          const x = (e.clientX - rect.left) * (this.width / dpr / rect.width);
+          const y = (e.clientY - rect.top)  * (this.height / dpr / rect.height);
+          this.style.cursor = (x >= this._replayX1 && x <= this._replayX2 && y >= this._replayY1 && y <= this._replayY2)
+            ? 'pointer' : 'default';
+        };
+      }
     }
 
     function playPredictAnimation(predLow, predMean, predHigh, pGt0, pGtCut, cutoff) {
@@ -3300,7 +3319,33 @@
 
           ctx.font = 'bold 11px Helvetica,Arial,sans-serif'; ctx.textAlign = 'center';
           ctx.fillStyle = NAVY;
-          ctx.fillText('True effect in a new study  —  90% credible interval', PAD_L + plotW / 2, PAD_T - 22);
+          const titleStr = 'True effect in a new study  —  90% credible interval';
+          const titleCX = PAD_L + plotW / 2;
+          ctx.fillText(titleStr, titleCX, PAD_T - 22);
+          // Replay button inline after title
+          const titleHalfW = ctx.measureText(titleStr).width / 2;
+          ctx.font = '10px Helvetica,Arial,sans-serif';
+          const replayLabel = '↺ Replay';
+          const replayLabelW = ctx.measureText(replayLabel).width;
+          const btnPadX = 7, btnPadY = 4;
+          const btnW = replayLabelW + btnPadX * 2;
+          const btnH = 16;
+          const btnX = titleCX + titleHalfW + 8;
+          const btnY = PAD_T - 30;
+          // Draw button background
+          ctx.fillStyle = NAVY;
+          ctx.beginPath();
+          ctx.roundRect(btnX, btnY, btnW, btnH, 3);
+          ctx.fill();
+          // Draw button text
+          ctx.fillStyle = '#F9F9F1';
+          ctx.textAlign = 'left';
+          ctx.fillText(replayLabel, btnX + btnPadX, btnY + btnH - btnPadY - 1);
+          ctx.textAlign = 'center';
+          canvas._replayX1 = btnX;
+          canvas._replayX2 = btnX + btnW;
+          canvas._replayY1 = btnY;
+          canvas._replayY2 = btnY + btnH;
           ctx.font = '10px Helvetica,Arial,sans-serif'; ctx.fillStyle = '#555';
           ctx.fillText(
             `P(true effect > 0) = ${(pGt0*100).toFixed(0)}%   ·   P(true effect > ${cutoff.toFixed(2)}) = ${(pGtCut*100).toFixed(0)}%`,
@@ -3572,7 +3617,7 @@
           { label: 'Frequentist estimate', data: freqData,
             backgroundColor: 'rgba(200,185,154,0.85)', borderColor: 'rgba(185,168,140,1)', borderWidth: 1 },
           { label: 'Bayesian estimate',    data: bayesData,
-            backgroundColor: 'rgba(122,95,67,0.8)',   borderColor: 'rgba(122,95,67,1)',   borderWidth: 1 }
+            backgroundColor: 'rgba(195,155,30,0.85)', borderColor: 'rgba(160,120,10,1)',  borderWidth: 1 }
         ]},
         options: {
           indexAxis: 'x', responsive: true, maintainAspectRatio: false,
