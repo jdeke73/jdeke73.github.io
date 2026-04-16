@@ -113,11 +113,11 @@
     .home-name {
       font-size: 2.8rem; font-weight: 700;
       color: var(--dark); line-height: 1.15;
-      margin-bottom: 1.1rem;
+      margin-bottom: 0.2rem;
     }
-    .home-bio { color: var(--text); line-height: 1.7; margin-bottom: 0.9rem; }
+    .home-bio { color: var(--text); line-height: 1.7; margin-bottom: 0.9rem; font-size: 1.35rem; }
     .home-photo {
-      flex-shrink: 0; width: 240px;
+      flex-shrink: 0; width: 280px;
     }
     .home-photo img {
       width: 100%; border-radius: 10px;
@@ -224,7 +224,6 @@
     <button id="nav-services" onclick="showPage('services')">Services</button>
     <button id="nav-tool"   onclick="showPage('tool')">BASIE</button>
     <button id="nav-pubs"   onclick="showPage('pubs')">Publications</button>
-    <button id="nav-contact" onclick="showPage('contact')">Contact</button>
   </div>
 </nav>
 
@@ -236,29 +235,34 @@
     <div class="home-hero">
       <div class="home-text">
         <div class="home-badge">Independent Consultant</div>
-        <h1 class="home-name">John Deke, PhD</h1>
-        <p class="home-bio">I am an economist and nationally recognized expert in experimental and non-experimental impact evaluation methodology, Bayesian inference, and the interpretation of impact and descriptive findings. I bring more than two decades of experience designing and analyzing experimental, quasi-experimental, and descriptive evaluations for federal agencies and foundations. I have recently found that good research skills transfer directly to effective use of AI &mdash; both are fundamentally about forming precise questions and interrogating the answers.</p>
-        <p class="home-bio">As a Senior Fellow at Mathematica, I co-led the development of <strong>BASIE (Bayesian Interpretation of Estimates)</strong>, an approach now used across federal agencies to provide transparent, probability-based interpretation of both impact estimates and descriptive differences between groups or across time. BASIE empowers more useful, comprehensive, and integrated interpretation of heterogeneous research findings. Effective use of AI empowers the cost-effective development of tailored BASIE toolkits and learning systems.</p>
-
-        <div class="tag-label">Areas of Expertise</div>
-        <div>
-          <span class="tag">Bayesian inference</span>
-          <span class="tag">Program evaluation</span>
-          <span class="tag">Causal inference</span>
-          <span class="tag">Impact evaluation</span>
-          <span class="tag">Applied statistics</span>
-          <span class="tag">Education research</span>
-        </div>
+        <h1 class="home-name">John Deke</h1>
+        <p style="font-size:1.1rem; color:var(--muted); margin-bottom:0.4rem; font-weight:400;">PhD in Economics</p>
+        <p style="font-size:1.1rem; color:var(--muted); margin-bottom:1.1rem; font-weight:400;">
+          <a href="mailto:jdeke73@gmail.com" style="color:var(--muted);">jdeke73@gmail.com</a>
+          &nbsp;&middot;&nbsp;
+          <a href="https://www.linkedin.com/in/john-deke-b622b1108/" target="_blank" style="color:var(--muted);">LinkedIn</a>
+        </p>
+        <p style="font-size:1.5rem; font-weight:600; color:var(--gold); line-height:1.4; margin-bottom:1.1rem; border-left:4px solid var(--gold); padding-left:0.75rem;">I help organizations create, interpret, and use evidence to improve decision making.</p>
+        <p class="home-bio">I bring more than two decades of experience designing and analyzing experimental, quasi-experimental, and descriptive evaluations for federal agencies and foundations.</p>
+        <p class="home-bio">With support from federal agencies, I co-led the development of <strong>BASIE (Bayesian Interpretation of Estimates)</strong>, an approach now used across federal agencies to provide transparent, probability-based interpretation of both impact estimates and descriptive differences between groups or across time. BASIE empowers more useful, comprehensive, and integrated interpretation of heterogeneous research findings.</p>
 
         <div class="home-buttons">
           <button class="btn-primary" onclick="showPage('services')">Services &rarr;</button>
           <button class="btn-outline" onclick="showPage('tool')">BASIE</button>
           <button class="btn-outline" onclick="showPage('pubs')">Publications</button>
-          <button class="btn-outline" onclick="showPage('contact')">Get in Touch</button>
         </div>
       </div>
       <div class="home-photo">
         <img src="photo.jpeg" alt="John Deke">
+        <div class="tag-label" style="margin-top:1rem;">Areas of Expertise Spanning Health and Human Services Research</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0.35rem; margin-top:0.4rem;">
+          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Bayesian inference</span>
+          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Program evaluation</span>
+          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Causal inference</span>
+          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Impact evaluation</span>
+          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Applied statistics</span>
+          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Experimental design</span>
+        </div>
       </div>
     </div>
   </div>
@@ -288,10 +292,10 @@
     </div>
 
     <div class="tool-card">
-      <h2>BASIE Workbench</h2>
-      <p>BASIE Workbench is a free, browser-based tool that applies the BASIE framework to a portfolio of impact estimates. Upload your own estimates — or explore the pre-loaded example — to see how Bayesian reinterpretation changes the picture. The tool produces posterior probabilities, credible intervals, and a predictive distribution for the true effect in a comparable future study.</p>
-      <p>The pre-loaded example illustrates the PIP Foundation: a fictional grant-making organization that discovers how the standard significance-based approach to picking winners is systematically misleading — and how BASIE provides a better path forward.</p>
-      <a class="btn-primary" href="BASIE_Workbench_demo.html" target="_blank">Open BASIE Workbench &rarr;</a>
+      <h2>BASIE Demo</h2>
+      <p>BASIE Demo is a browser-based demonstration of the BASIE framework applied to a portfolio of estimates. Explore the pre-loaded example to see how Bayesian reinterpretation changes the picture. The demo produces posterior probabilities and credible intervals for each estimate in the portfolio.</p>
+      <p>The pre-loaded example illustrates a local foundation facing a common challenge: how the standard significance-based approach to picking grant winners is systematically misleading &mdash; and how BASIE provides a better path forward.</p>
+      <a class="btn-primary" href="BASIE_Demo.html" target="_blank">Open BASIE Demo &rarr;</a>
       <div class="tool-meta">
         Built with Chart.js &middot; Runs entirely in your browser &middot; No data is uploaded or stored
       </div>
@@ -427,6 +431,12 @@
       <p>I offer consulting, technical assistance, and training across a range of evaluation methodology topics</p>
     </div>
 
+    <div style="background:#152D32; color:#F9F9F1; border-radius:10px; padding:1.75rem 2rem; margin-bottom:1.5rem;">
+      <h3 style="color:#F9F9F1; margin-bottom:0.5rem;">Interested in working together?</h3>
+      <p style="margin-bottom:1rem; color:#d4c4b0; line-height:1.65;">Whether you need a one-time review, ongoing technical assistance, or a full evaluation framework built around Bayesian reasoning, I can design something that fits your team, your data, and your decisions.</p>
+      <a href="mailto:jdeke73@gmail.com" class="btn-primary" style="background:#7A5F43; display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none;">Get in Touch &rarr;</a>
+    </div>
+
     <!-- BASIE -->
     <div class="tool-card" style="margin-bottom:1rem;">
       <div class="pub-meta"><span class="pub-type">Signature Service</span></div>
@@ -438,7 +448,7 @@
         <li>Custom BASIE tools and interactive dashboards tailored to a specific portfolio or decision context</li>
         <li>Training workshops on BASIE for researchers, program staff, and funders</li>
         <li>Guides and materials to help grantees interpret their own evaluation findings</li>
-        <li>Development of custom analytical tools and interactive dashboards using AI — at a fraction of traditional development cost (for example, <a href="BASIE_Workbench_demo.html" target="_blank" style="color:#7A5F43;">BASIE Workbench</a>)</li>
+        <li>Development of custom analytical tools and interactive dashboards using AI — at a fraction of traditional development cost (for example, <a href="BASIE_Demo.html" target="_blank" style="color:#7A5F43;">BASIE Demo</a>)</li>
       </ul>
     </div>
 
@@ -491,56 +501,6 @@
         <li>Methods appendices and statistical sections for evaluation reports</li>
         <li>Translating technical findings into plain language for practitioner and funder audiences</li>
       </ul>
-    </div>
-
-    <div style="background:#152D32; color:#F9F9F1; border-radius:10px; padding:1.75rem 2rem; margin-top:0.5rem;">
-      <h3 style="color:#F9F9F1; margin-bottom:0.5rem;">Interested in working together?</h3>
-      <p style="margin-bottom:1rem; color:#d4c4b0; line-height:1.65;">Whether you need a one-time review, ongoing technical assistance, or a full evaluation framework built around Bayesian reasoning, I can design something that fits your team, your data, and your decisions.</p>
-      <button class="btn-primary" onclick="showPage('contact')" style="background:#7A5F43;">Get in Touch &rarr;</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     CONTACT
-════════════════════════════════════════════ -->
-<div id="page-contact" class="page">
-  <div class="container" style="max-width:700px;">
-    <div class="page-header">
-      <h1>Get in Touch</h1>
-      <p>I welcome inquiries about consulting engagements, research collaborations, and other professional opportunities.</p>
-    </div>
-
-    <div class="contact-grid">
-      <div class="contact-card">
-        <div class="contact-icon">&#9993;</div>
-        <div>
-          <label>Email</label>
-          <a href="mailto:jdeke73@gmail.com">jdeke73@gmail.com</a>
-        </div>
-      </div>
-      <div class="contact-card">
-        <div class="contact-icon">in</div>
-        <div>
-          <label>LinkedIn</label>
-          <a href="https://www.linkedin.com/in/john-deke-b622b1108/" target="_blank">linkedin.com/in/john-deke</a>
-        </div>
-      </div>
-      <div class="contact-card">
-        <div class="contact-icon">&#128205;</div>
-        <div>
-          <label>Location</label>
-          <span>Overland Park, Kansas</span>
-        </div>
-      </div>
-      <div class="contact-card">
-        <div class="contact-icon">&#128196;</div>
-        <div>
-          <label>BASIE Tool</label>
-          <a href="BASIE_Workbench_demo.html" target="_blank">BASIE Workbench</a>
-        </div>
-      </div>
     </div>
 
   </div>
