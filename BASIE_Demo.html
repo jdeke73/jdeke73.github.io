@@ -3258,6 +3258,7 @@
         if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 50);
     }
+    window.navigateToPriorSection = navigateToPriorSection;
 
     function navigateBackFromPrior() {
       const returnTab = _priorReturnTab;
@@ -3281,6 +3282,7 @@
       if (subDiv) subDiv.classList.add('active');
       window.scrollTo(0, 0);
     }
+    window.navigateBackFromPrior = navigateBackFromPrior;
 
     // Tab switching
     function setupTabs() {
