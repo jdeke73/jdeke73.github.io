@@ -130,10 +130,34 @@
     /* ── TOOL PAGE ── */
     .tool-card {
       background: #fff; border: 1px solid var(--border);
-      border-radius: 10px; padding: 2rem;
-      margin-bottom: 1.5rem;
+      border-radius: 10px; padding: 0;
+      margin-bottom: 1.5rem; overflow: hidden;
     }
-    .tool-card h2 {
+    .tool-card details { width: 100%; }
+    .tool-card summary {
+      padding: 1.5rem 2rem;
+      cursor: pointer;
+      list-style: none;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+    }
+    .tool-card summary::-webkit-details-marker { display: none; }
+    .tool-card summary::after {
+      content: '+';
+      font-size: 1.4rem; font-weight: 300;
+      color: var(--muted); flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .tool-card details[open] summary::after {
+      content: '−';
+    }
+    .tool-card summary h2 {
+      font-size: 1.4rem; color: var(--dark); margin: 0;
+    }
+    .tool-card-body {
+      padding: 0 2rem 2rem;
+    }
+    .tool-card h2 { /* fallback for non-details usage */
       font-size: 1.4rem; color: var(--dark); margin-bottom: 0.5rem;
     }
     .tool-card p { color: var(--muted); line-height: 1.65; margin-bottom: 1.25rem; }
@@ -281,24 +305,96 @@
     </div>
 
     <div class="tool-card">
-      <h2>About BASIE</h2>
-      <p>Decision makers need more than just a description of evidence &ndash; they need to know what the evidence means for their decisions. They need to know how confident they can be, whether the evidence is strong enough to act on, and what they should realistically expect if they invest in a program or scale it to a new context. <strong>BASIE (Bayesian Interpretation of Estimates)</strong> was designed to answer these questions directly, using criteria relevant to the decision maker&rsquo;s goals, in plain terms that support a yes, no, or not-yet decision. Given all the evidence, BASIE produces probability statements &mdash; how likely is it that this program truly works? how likely is the true effect to exceed a meaningful threshold? &mdash; that map directly onto your decision criteria.</p>
-      <p>BASIE is described in detail in the resources below and has been applied across evaluations sponsored by federal agencies and foundations.</p>
-      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-        <a class="btn-outline" href="https://acf.gov/opre/report/moving-beyond-statistical-significance-basie-bayesian-interpretation-estimates" target="_blank">OPRE Report &rarr;</a>
-        <a class="btn-outline" href="https://ies.ed.gov/use-work/resource-library/resource/tooltoolkit/basie-bayesian-interpretation-estimates-framework-interpreting-findings-impact-evaluations-practical" target="_blank">IES Toolkit &rarr;</a>
-        <a class="btn-outline" href="https://statmodeling.stat.columbia.edu/2022/04/27/hey-check-this-out-its-really-cool-a-bayesian-framework-for-interpreting-findings-from-impact-evaluations/" target="_blank">Gelman Blog &rarr;</a>
-      </div>
+      <details open>
+        <summary><h2>About BASIE</h2></summary>
+        <div class="tool-card-body">
+          <p>Decision makers need more than just a description of evidence &ndash; they need to know what the evidence means for their decisions. They need to know how confident they can be, whether the evidence is strong enough to act on, and what they should realistically expect if they invest in a program or scale it to a new context. <strong>BASIE (Bayesian Interpretation of Estimates)</strong> was designed to answer these questions directly, using criteria relevant to the decision maker&rsquo;s goals, in plain terms that support a yes, no, or not-yet decision. Given all the evidence, BASIE produces probability statements &mdash; how likely is it that this program truly works? how likely is the true effect to exceed a meaningful threshold? &mdash; that map directly onto your decision criteria.</p>
+          <p>BASIE is described in detail in the resources below and has been applied across evaluations sponsored by federal agencies and foundations.</p>
+          <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <a class="btn-outline" href="https://acf.gov/opre/report/moving-beyond-statistical-significance-basie-bayesian-interpretation-estimates" target="_blank">OPRE Report &rarr;</a>
+            <a class="btn-outline" href="https://ies.ed.gov/use-work/resource-library/resource/tooltoolkit/basie-bayesian-interpretation-estimates-framework-interpreting-findings-impact-evaluations-practical" target="_blank">IES Toolkit &rarr;</a>
+            <a class="btn-outline" href="https://statmodeling.stat.columbia.edu/2022/04/27/hey-check-this-out-its-really-cool-a-bayesian-framework-for-interpreting-findings-from-impact-evaluations/" target="_blank">Gelman Blog &rarr;</a>
+          </div>
+        </div>
+      </details>
     </div>
 
     <div class="tool-card">
-      <h2>BASIE Demo</h2>
-      <p>BASIE Demo is a browser-based demonstration of the BASIE framework applied to a portfolio of estimates. Explore the pre-loaded example to see how Bayesian reinterpretation changes the picture. The demo produces posterior probabilities and credible intervals for each estimate in the portfolio.</p>
-      <p>The pre-loaded example illustrates a local foundation facing a common challenge: how the standard significance-based approach to picking grant winners is systematically misleading &mdash; and how BASIE provides a better path forward.</p>
-      <a class="btn-primary" href="BASIE_Demo.html" target="_blank">Open BASIE Demo &rarr;</a>
-      <div class="tool-meta">
-        Built with Chart.js &middot; Runs entirely in your browser &middot; No data is uploaded or stored
+      <details>
+        <summary><h2>BASIE Demo</h2></summary>
+        <div class="tool-card-body">
+          <p>BASIE Demo is a browser-based demonstration of the BASIE framework applied to a portfolio of estimates. Explore the pre-loaded example to see how Bayesian reinterpretation changes the picture. The demo produces posterior probabilities and credible intervals for each estimate in the portfolio.</p>
+          <p>The pre-loaded example illustrates a local foundation facing a common challenge: how the standard significance-based approach to picking grant winners is systematically misleading &mdash; and how BASIE provides a better path forward.</p>
+          <a class="btn-primary" href="BASIE_Demo.html" target="_blank">Open BASIE Demo &rarr;</a>
+          <div class="tool-meta">
+            Built with Chart.js &middot; Runs entirely in your browser &middot; No data is uploaded or stored
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="tool-card">
+      <details>
+        <summary><h2>Better with BASIE</h2></summary>
+        <div class="tool-card-body">
+          <p>BASIE has been applied across a wide range of federal evaluation portfolios &mdash; spanning health, education, and economic self-sufficiency &mdash; demonstrating that its core approach to honest uncertainty is relevant wherever rigorous evidence is used to inform decisions.</p>
+
+      <div class="pub-card" style="border:none; padding:0.75rem 0; border-bottom:1px solid var(--border);">
+        <div class="pub-meta">
+          <span class="pub-type">Teen Pregnancy Prevention</span>
+          <span class="pub-year">2022</span>
+        </div>
+        <h3>The Impact of the Making Proud Choices! Teen Pregnancy Prevention Curriculum</h3>
+        <div class="pub-authors">Office of Population Affairs, U.S. Department of Health and Human Services</div>
+        <div class="pub-venue">A large randomized trial of a widely implemented teen pregnancy prevention curriculum, delivered across four U.S. cities to adolescents in school settings. BASIE was used to interpret the curriculum&rsquo;s impact on sexual behavior outcomes.</div>
+        <a class="pub-link" href="https://opa.hhs.gov/sites/default/files/2022-06/making-proud-choices-evaluation-may-2022.pdf" target="_blank" rel="noopener">View Report &rarr;</a>
       </div>
+
+      <div class="pub-card" style="border:none; padding:0.75rem 0; border-bottom:1px solid var(--border);">
+        <div class="pub-meta">
+          <span class="pub-type">Education Leadership</span>
+          <span class="pub-year">2019</span>
+        </div>
+        <h3>The Effects of a Principal Professional Development Program Focused on Instructional Leadership</h3>
+        <div class="pub-authors">National Center for Education Evaluation, Institute of Education Sciences</div>
+        <div class="pub-venue">A randomized trial of an intensive principal professional development program designed to improve instructional leadership practices and student achievement. BASIE was applied to interpret program effects on principal behavior and student outcomes.</div>
+        <a class="pub-link" href="https://ies.ed.gov/use-work/resource-library/report/evaluation-report/effects-principal-professional-development-program-focused-instructional-leadership" target="_blank" rel="noopener">View Report &rarr;</a>
+      </div>
+
+      <div class="pub-card" style="border:none; padding:0.75rem 0; border-bottom:1px solid var(--border);">
+        <div class="pub-meta">
+          <span class="pub-type">Maternal &amp; Child Health</span>
+          <span class="pub-year">2020</span>
+        </div>
+        <h3>Impacts of a Home Visiting Program Enhanced with Content on Healthy Birth Spacing</h3>
+        <div class="pub-authors">Zief, S., Deke, J., Burkander, P., Langan, A., and Asheer, S. &mdash; <em>Maternal and Child Health Journal</em>, 24(S2), 105&ndash;118</div>
+        <div class="pub-venue">Examined the impacts of a home visiting program with an added module on healthy birth spacing for low-income mothers. BASIE was used to provide probability-based interpretation of program effects on birth spacing and related outcomes.</div>
+      </div>
+
+      <div class="pub-card" style="border:none; padding:0.75rem 0; border-bottom:1px solid var(--border);">
+        <div class="pub-meta">
+          <span class="pub-type">Adolescent Sexual Health</span>
+          <span class="pub-year">2023</span>
+        </div>
+        <h3>Evaluating the Efficacy of an Online, Family-Based Intervention to Promote Adolescent Sexual Health</h3>
+        <div class="pub-authors">Guilamo-Ramos, V., Benzekri, A., and Thimm-Kaiser, M. &mdash; <em>Trials</em>, 24:181</div>
+        <div class="pub-venue">A registered randomized trial protocol for Families Talking Together Plus (FTT+), an online parent-based intervention targeting adolescent sexual risk behavior among Latino and Black youth in the South Bronx. The analysis plan explicitly commits to using BASIE alongside traditional hypothesis testing.</div>
+        <a class="pub-link" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10008101/" target="_blank" rel="noopener">View Protocol &rarr;</a>
+      </div>
+
+      <div class="pub-card" style="border:none; padding:0.75rem 0;">
+        <div class="pub-meta">
+          <span class="pub-type">Employment &amp; Economic Self-Sufficiency</span>
+          <span class="pub-year">2024</span>
+        </div>
+        <h3>Using Bayesian Methods to Conduct Subgroup Analysis in Evaluations of Employment Programs</h3>
+        <div class="pub-authors">Office of Planning, Research, and Evaluation, Administration for Children and Families, U.S. Department of Health and Human Services</div>
+        <div class="pub-venue">Applied Bayesian hierarchical models to reinterpret subgroup impact estimates from four randomized evaluations of employment coaching programs for TANF populations. Demonstrates how BASIE-style methods can extract more nuanced and decision-relevant conclusions from subgroup analyses.</div>
+        <a class="pub-link" href="https://acf.gov/opre/report/using-bayesian-methods-conduct-subgroup-analysis-evaluations-employment-programs" target="_blank" rel="noopener">View Report &rarr;</a>
+      </div>
+
+        </div><!-- end tool-card-body -->
+      </details>
     </div>
   </div>
 </div>
