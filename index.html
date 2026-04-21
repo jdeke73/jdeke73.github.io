@@ -36,9 +36,9 @@
       height: 56px;
     }
     .nav-brand {
-      font-size: 1.05rem; font-weight: 600;
+      font-size: 1.5rem; font-weight: 600;
       color: var(--dark); text-decoration: none;
-      cursor: pointer;
+      cursor: pointer; line-height: 1;
     }
     .nav-links { display: flex; gap: 0.25rem; }
     .nav-links button {
@@ -242,12 +242,13 @@
 
 <!-- ── NAV ── -->
 <nav>
-  <span class="nav-brand" onclick="showPage('home')">John Deke</span>
+  <span class="nav-brand" onclick="showPage('home')" title="Home">&#8962;</span>
   <div class="nav-links">
     <button id="nav-home"   onclick="showPage('home')">Home</button>
     <button id="nav-services" onclick="showPage('services')">Services</button>
     <button id="nav-tool"   onclick="showPage('tool')">BASIE</button>
     <button id="nav-pubs"   onclick="showPage('pubs')">Publications</button>
+    <button id="nav-exp"    onclick="showPage('exp')">Experience</button>
   </div>
 </nav>
 
@@ -258,15 +259,8 @@
   <div class="container">
     <div class="home-hero">
       <div class="home-text">
-        <div class="home-badge">Independent Consultant</div>
         <h1 class="home-name">John Deke</h1>
-        <p style="font-size:1.1rem; color:var(--muted); margin-bottom:0.4rem; font-weight:400;">PhD in Economics</p>
-        <p style="font-size:1.1rem; color:var(--muted); margin-bottom:1.1rem; font-weight:400;">
-          <a href="mailto:jdeke73@gmail.com" style="color:var(--muted);">jdeke73@gmail.com</a>
-          &nbsp;&middot;&nbsp;
-          <a href="https://www.linkedin.com/in/john-deke-b622b1108/" target="_blank" style="color:var(--muted);">LinkedIn</a>
-        </p>
-        <p style="font-size:1.2rem; font-weight:600; color:var(--gold); line-height:1.4; margin-bottom:1.1rem; border-left:4px solid var(--gold); padding-left:0.75rem;">I help organizations create, interpret, and use evidence to improve decision making.</p>
+        <p style="font-size:1.2rem; font-weight:600; color:var(--gold); line-height:1.4; margin-bottom:1.1rem; border-left:4px solid var(--gold); padding-left:0.75rem;">Helping organizations create, interpret, and use evidence to improve decision making.</p>
         <p class="home-bio">I bring more than two decades of experience designing and analyzing experimental, quasi-experimental, and descriptive evaluations for federal agencies and foundations.</p>
         <p class="home-bio">With support from federal agencies, I co-led the development of <strong>BASIE (Bayesian Interpretation of Estimates)</strong>, an approach now used across federal agencies to provide transparent, probability-based interpretation of both impact estimates and descriptive differences between groups or across time. BASIE empowers more useful, comprehensive, and integrated interpretation of heterogeneous research findings.</p>
 
@@ -278,15 +272,6 @@
       </div>
       <div class="home-photo">
         <img src="photo.jpeg" alt="John Deke">
-        <div class="tag-label" style="margin-top:1rem;">Areas of Expertise Spanning Health and Human Services Research</div>
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0.35rem; margin-top:0.4rem;">
-          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Bayesian inference</span>
-          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Program evaluation</span>
-          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Causal inference</span>
-          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Impact evaluation</span>
-          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Applied statistics</span>
-          <span class="tag" style="display:block; text-align:center; padding:4px 5px; font-size:0.72rem; margin:0;">Experimental design</span>
-        </div>
       </div>
     </div>
   </div>
@@ -427,6 +412,7 @@
       <h3>Bayesian Interpretation of Cluster-Robust Subgroup Impact Estimates: The Best of Both Worlds</h3>
       <div class="pub-authors">Lipman, Erin R., Deke, John, and Finucane, Mariel M.</div>
       <div class="pub-venue">Journal of Policy Analysis and Management, 41(4), 1204–1224</div>
+      <a class="pub-link" href="https://doi.org/10.1002/pam.22413" target="_blank">doi.org/10.1002/pam.22413 &rarr;</a>
     </div>
 
     <div class="pub-card">
@@ -437,6 +423,7 @@
       <h3>Asymdystopia: The Threat of Small Biases in Evaluations of Education Interventions That Need to Be Powered to Detect Small Impacts</h3>
       <div class="pub-authors">Deke, John, Thomas Wei, and Tim Kautz</div>
       <div class="pub-venue">Journal of Research on Educational Effectiveness, 14(1), 207–240</div>
+      <a class="pub-link" href="https://ies.ed.gov/ncee/pubs/20184002/" target="_blank">IES Report &rarr;</a>
     </div>
 
     <div class="pub-card">
@@ -481,6 +468,7 @@
       <h3>The WWC Attrition Standard: Sensitivity to Assumptions and Opportunities for Refining and Adapting to New Contexts</h3>
       <div class="pub-authors">Deke, John, and Hanley Chiang</div>
       <div class="pub-venue">Evaluation Review, 41(2), 130–154</div>
+      <a class="pub-link" href="https://doi.org/10.1177/0193841X16670047" target="_blank">doi.org/10.1177/0193841X16670047 &rarr;</a>
     </div>
 
     <div class="pub-card">
@@ -491,6 +479,7 @@
       <h3>Design and Analysis Considerations for Cluster Randomized Controlled Trials That Have a Small Number of Clusters</h3>
       <div class="pub-authors">Deke, John</div>
       <div class="pub-venue">Evaluation Review, 40(5), 444–486</div>
+      <a class="pub-link" href="https://doi.org/10.1177/0193841X16671680" target="_blank">doi.org/10.1177/0193841X16671680 &rarr;</a>
     </div>
 
     <div class="pub-card">
@@ -501,6 +490,7 @@
       <h3>Preview of Regression Discontinuity Designs Standards</h3>
       <div class="pub-authors">Deke, J., Cook, T., Dragoset, L., Reardon, S., Titiunik, R., Todd, P., Van der Klaauw, W., and Waddell, G.</div>
       <div class="pub-venue">Institute of Education Sciences, U.S. Department of Education</div>
+      <a class="pub-link" href="https://ies.ed.gov/ncee/wwc/Docs/ReferenceResources/wwc_rdd_standards_122315.pdf" target="_blank">Download PDF &rarr;</a>
     </div>
 
     <div class="pub-card">
@@ -511,6 +501,7 @@
       <h3>Study of the Impact of Public School Spending on Postsecondary Educational Attainment Using Statewide School District Refinancing in Kansas</h3>
       <div class="pub-authors">Deke, John</div>
       <div class="pub-venue">Economics of Education Review, 22(3), 275–284</div>
+      <a class="pub-link" href="https://doi.org/10.1016/S0272-7757(02)00025-0" target="_blank">doi.org/10.1016/S0272-7757(02)00025-0 &rarr;</a>
     </div>
 
   </div>
@@ -601,9 +592,68 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════
+     EXPERIENCE
+════════════════════════════════════════════ -->
+<div id="page-exp" class="page">
+  <div class="container" style="max-width:700px;">
+    <div class="page-header">
+      <h1>Experience</h1>
+    </div>
+
+    <h2 style="font-size:1.3rem; font-weight:700; color:var(--dark); margin-bottom:1.25rem; padding-bottom:0.4rem; border-bottom:2px solid var(--border);">Education</h2>
+
+    <div style="display:flex; gap:2rem; margin-bottom:1.1rem; align-items:baseline;">
+      <span style="font-size:0.95rem; font-weight:600; color:var(--muted); flex-shrink:0; width:3rem;">2000</span>
+      <div>
+        <div style="font-weight:600; color:var(--dark);">Ph.D., Economics</div>
+        <div style="color:var(--muted); font-size:0.95rem;">University of Illinois at Urbana-Champaign</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:2rem; margin-bottom:2rem; align-items:baseline;">
+      <span style="font-size:0.95rem; font-weight:600; color:var(--muted); flex-shrink:0; width:3rem;">1995</span>
+      <div>
+        <div style="font-weight:600; color:var(--dark);">B.S., Economics and Mathematics, with distinction</div>
+        <div style="color:var(--muted); font-size:0.95rem;">University of Kansas</div>
+      </div>
+    </div>
+
+    <h2 style="font-size:1.3rem; font-weight:700; color:var(--dark); margin-bottom:1.25rem; padding-bottom:0.4rem; border-bottom:2px solid var(--border);">Work Experience</h2>
+
+    <div style="display:flex; gap:2rem; margin-bottom:1.5rem; align-items:baseline;">
+      <span style="font-size:0.95rem; font-weight:600; color:var(--muted); flex-shrink:0; width:3rem;">2025&ndash;</span>
+      <div>
+        <div style="font-weight:600; color:var(--dark);">Independent Consultant</div>
+        <div style="color:var(--muted); font-size:0.95rem;">Evaluation methodology, Bayesian inference, and evidence interpretation</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:2rem; margin-bottom:0.6rem; align-items:baseline;">
+      <span style="font-size:0.95rem; font-weight:600; color:var(--muted); flex-shrink:0; width:3rem;">2000&ndash;<br>2025</span>
+      <div style="font-weight:600; color:var(--dark);">Mathematica</div>
+    </div>
+
+    <div style="display:flex; gap:2rem; margin-bottom:0.5rem; align-items:baseline; padding-left:1rem;">
+      <span style="font-size:0.9rem; color:var(--muted); flex-shrink:0; width:5rem;">2021&ndash;2025</span>
+      <div style="color:var(--dark); font-size:0.95rem;">Senior Fellow</div>
+    </div>
+    <div style="display:flex; gap:2rem; margin-bottom:0.5rem; align-items:baseline; padding-left:1rem;">
+      <span style="font-size:0.9rem; color:var(--muted); flex-shrink:0; width:5rem;">2005&ndash;2021</span>
+      <div style="color:var(--dark); font-size:0.95rem;">Senior Researcher</div>
+    </div>
+    <div style="display:flex; gap:2rem; margin-bottom:2rem; align-items:baseline; padding-left:1rem;">
+      <span style="font-size:0.9rem; color:var(--muted); flex-shrink:0; width:5rem;">2000&ndash;2005</span>
+      <div style="color:var(--dark); font-size:0.95rem;">Researcher</div>
+    </div>
+
+  </div>
+</div>
+
 <!-- ── FOOTER ── -->
 <footer>
   <span>John Deke, PhD &middot; Independent Consultant</span>
+  <a href="mailto:jdeke73@gmail.com" class="btn-primary" style="background:#7A5F43; display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none; font-size:0.85rem; padding:0.4rem 1rem;">Get in Touch &rarr;</a>
   <span>&copy; 2026 John Deke. All rights reserved.</span>
 </footer>
 
