@@ -2931,7 +2931,8 @@
       if (msg && modelResults) msg.style.display = 'none';
       // Only render into whichever tab is currently visible
       const activeId = document.querySelector('.tab-content.active')?.id;
-      if (activeId === 'interpret-estimates') {
+      const activeSubId = document.querySelector('.sub-tab-content.active')?.id;
+      if (activeId === 'try-it' && activeSubId === 'interpret-estimates') {
         try { updateBasieTableAndPlot(); } catch(e) { try { renderBasieTabSimple(); } catch(e2) {} }
       }
       // After first main model run, compute Picking Winners model in background (once only)
