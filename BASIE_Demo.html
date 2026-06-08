@@ -946,7 +946,7 @@
 
         </div>
 
-        <!-- Bar sub-options (shown only when bars selected) -->
+        <!-- Sub-options: shown for bars and table views -->
         <div id="bars-options-group" style="margin-top:0.5rem; padding-top:0.5rem; border-top:1px solid #D4C4B0;">
           <div style="display:flex; flex-wrap:wrap; gap:0.5rem 1.5rem; align-items:flex-start;">
             <div>
@@ -963,7 +963,7 @@
             </div>
             <!-- Probability sub-options -->
             <div id="bars-prob-group" style="display:none;">
-              <div class="help-text">Always shows P(&gt;0). Also shows P(&gt;cutoff) if filled.</div>
+              <div class="help-text">Shows P(&gt;0) and P(&gt;cutoff) for each study.</div>
             </div>
           </div>
         </div>
@@ -2429,22 +2429,32 @@
       // Render a simple HTML table without using DataTables. This avoids plugin
       // errors when switching visualizations.  Build the table header and body
       // manually based on the filtered and sorted data.
-      // Build table HTML (shared for both table view and always-visible summary)
+      // Build table HTML — columns mirror the current Show/Which estimate selections
       function buildBasieTableHtml(rows) {
         const cutoffRaw = document.getElementById('cutoff-input')?.value;
         const cutoffVal = parseFloat(cutoffRaw);
         const cutoffLabel = (!isNaN(cutoffVal) && cutoffRaw !== '')
           ? `P(>${cutoffVal.toFixed(2)})`
           : 'P(>cutoff)';
-        let h = '<thead><tr>';
-        ['ID','Description','Estimate','Std Error','t-stat','Posterior mean','P(>0)','P(<0)', cutoffLabel].forEach(hd => { h += `<th>${hd}</th>`; });
-        h += '</tr></thead><tbody>';
+        const barsType = document.querySelector('input[name="bars-type"]:checked')?.value || 'estimate';
+        const barsShow = document.querySelector('input[name="bars-show"]:checked')?.value || 'freq';
+        const showFreq  = barsType === 'estimate' && (barsShow === 'freq'  || barsShow === 'both');
+        const showBayes = barsType === 'estimate' && (barsShow === 'bayes' || barsShow === 'both');
+        const showProb  = barsType === 'probability';
+
+        // Build header
+        const headers = ['ID', 'Description'];
+        if (showFreq)  headers.push('Estimate', 'Std Error', 't-stat');
+        if (showBayes) headers.push('Posterior mean');
+        if (showProb)  headers.push('P(>0)', 'P(<0)', cutoffLabel);
+        let h = '<thead><tr>' + headers.map(hd => `<th>${hd}</th>`).join('') + '</tr></thead><tbody>';
+
         rows.forEach(row => {
-          h += '<tr>' +
-            `<td>${row.id}</td><td>${row.Description}</td>` +
-            `<td>${row.Estimate}</td><td>${row.Std_Error}</td>` +
-            `<td>${row.tstat}</td><td>${row.posterior_mean}</td>` +
-            `<td>${row.P_gt_0}</td><td>${row.P_lt_0}</td><td>${row.P_gt_cutoff}</td></tr>`;
+          let r = `<td>${row.id}</td><td>${row.Description}</td>`;
+          if (showFreq)  r += `<td>${row.Estimate}</td><td>${row.Std_Error}</td><td>${row.tstat}</td>`;
+          if (showBayes) r += `<td>${row.posterior_mean}</td>`;
+          if (showProb)  r += `<td>${row.P_gt_0}</td><td>${row.P_lt_0}</td><td>${row.P_gt_cutoff}</td>`;
+          h += `<tr>${r}</tr>`;
         });
         return h + '</tbody>';
       }
@@ -2551,58 +2561,30 @@
           P_gt_cutoff: pGtCut[j].toFixed(3)
         };
       });
-      // Render or update DataTable
+      // Render table using the shared builder so Show mode is respected
       try {
-        if (tableInstance) {
-          tableInstance.clear();
-          tableInstance.rows.add(tableRows);
-          tableInstance.draw();
-        } else {
-          tableInstance = $('#basie-table').DataTable({
-            data: tableRows,
-            columns: [
-              { title: 'ID', data: 'id' },
-              { title: 'Description', data: 'Description' },
-              { title: 'Estimate', data: 'Estimate' },
-              { title: 'Std Error', data: 'Std_Error' },
-              { title: 't-stat', data: 'tstat' },
-              { title: 'Posterior mean', data: 'posterior_mean' },
-              { title: 'P(>0)', data: 'P_gt_0' },
-              { title: 'P(<0)', data: 'P_lt_0' },
-              { title: 'P(>cutoff)', data: 'P_gt_cutoff' }
-            ],
-            paging: false,
-            searching: false,
-            info: false,
-            scrollX: true
-          });
-        }
-      } catch (err) {
-        // Fallback: simple HTML table
         const tbl = document.getElementById('basie-table');
-        tbl.innerHTML = '';
-        let header = '<thead><tr>';
-        const cutoffRawS = document.getElementById('cutoff-input')?.value;
-        const cutoffValS = parseFloat(cutoffRawS);
-        const cutoffLabelS = (!isNaN(cutoffValS) && cutoffRawS !== '') ? `P(>${cutoffValS.toFixed(2)})` : 'P(>cutoff)';
-        ['ID','Description','Estimate','Std Error','t-stat','Posterior mean','P(>0)','P(<0)', cutoffLabelS].forEach(h => { header += `<th>${h}</th>`; });
-        header += '</tr></thead>';
-        let body = '<tbody>';
-        tableRows.forEach(row => {
-          body += '<tr>' +
-            `<td>${row.id}</td>` +
-            `<td>${row.Description}</td>` +
-            `<td>${row.Estimate}</td>` +
-            `<td>${row.Std_Error}</td>` +
-            `<td>${row.tstat}</td>` +
-            `<td>${row.posterior_mean}</td>` +
-            `<td>${row.P_gt_0}</td>` +
-            `<td>${row.P_lt_0}</td>` +
-            `<td>${row.P_gt_cutoff}</td>` +
-            '</tr>';
-        });
-        body += '</tbody>';
-        tbl.innerHTML = header + body;
+        if (tbl) tbl.innerHTML = buildBasieTableHtml(tableRows);
+      } catch (err) {
+        // Last-resort plain table with all columns
+        const tbl = document.getElementById('basie-table');
+        if (tbl) {
+          const cutoffRawS = document.getElementById('cutoff-input')?.value;
+          const cutoffValS = parseFloat(cutoffRawS);
+          const cutoffLabelS = (!isNaN(cutoffValS) && cutoffRawS !== '') ? `P(>${cutoffValS.toFixed(2)})` : 'P(>cutoff)';
+          let header = '<thead><tr>';
+          ['ID','Description','Estimate','Std Error','t-stat','Posterior mean','P(>0)','P(<0)', cutoffLabelS].forEach(h => { header += `<th>${h}</th>`; });
+          header += '</tr></thead>';
+          let body = '<tbody>';
+          tableRows.forEach(row => {
+            body += '<tr>' +
+              `<td>${row.id}</td><td>${row.Description}</td>` +
+              `<td>${row.Estimate}</td><td>${row.Std_Error}</td>` +
+              `<td>${row.tstat}</td><td>${row.posterior_mean}</td>` +
+              `<td>${row.P_gt_0}</td><td>${row.P_lt_0}</td><td>${row.P_gt_cutoff}</td></tr>`;
+          });
+          tbl.innerHTML = header + body + '</tbody>';
+        }
       }
       // Draw a simple bar chart comparing frequentist and Bayesian means. Respect
       // the bars-show radio setting: only display the requested bar types.
@@ -2703,12 +2685,6 @@
         const el = document.getElementById('interpret-view-' + v);
         if (el) el.style.display = (v === vizChoice) ? '' : 'none';
       });
-      // Show cutoff group for table view or probability bars
-      const barsTypeNow = document.querySelector('input[name="bars-type"]:checked')?.value || 'estimate';
-      const showCutoffGrp = vizChoice === 'table' || (vizChoice === 'bars' && barsTypeNow === 'probability');
-      const cutoffGrp = document.getElementById('view-cutoff-group');
-      if (cutoffGrp) cutoffGrp.style.display = showCutoffGrp ? '' : 'none';
-
       // Destroy old charts
       if (forestChart) { forestChart.destroy(); forestChart = null; }
       if (axisChart)   { axisChart.destroy(); axisChart = null; }
@@ -3281,6 +3257,10 @@
       const subDiv = document.getElementById(returnTab);
       if (subBtn) subBtn.classList.add('active');
       if (subDiv) subDiv.classList.add('active');
+      // Re-render in case model ran while user was in Methods tab
+      if (returnTab === 'interpret-estimates') {
+        setTimeout(() => { try { refreshInterpretTab(); } catch(e) {} }, 0);
+      }
       window.scrollTo(0, 0);
     }
     window.navigateBackFromPrior = navigateBackFromPrior;
@@ -3357,6 +3337,9 @@
       // Cutoff input: refresh interpret tab on change
       function onCutoffChange() {
         if (modelResults) {
+          // If in probability mode, update sort/filter labels to reflect new cutoff value
+          const barsType = document.querySelector('input[name="bars-type"]:checked')?.value;
+          if (barsType === 'probability') updateSortFilterForMode(true);
           try { refreshInterpretTab(); } catch(e) {}
         }
       }
@@ -3424,14 +3407,6 @@
           ? 'Bounds are probabilities (0 to 1). Leave blank for no limit.'
           : 'Leave bounds blank for no limit.';
       }
-
-      // Also update cutoff labels when cutoff value changes in probability mode
-      document.querySelectorAll('.cutoff-sync').forEach(el => {
-        el.addEventListener('input', function() {
-          const barsType = document.querySelector('input[name="bars-type"]:checked')?.value;
-          if (barsType === 'probability') updateSortFilterForMode(true);
-        });
-      });
 
       // Prior sliders: sync all instances and re-run model
       const MU_AXIS_MIN = -1.5, MU_AXIS_MAX = 1.5;
@@ -3579,7 +3554,15 @@
       document.querySelectorAll('input[name="viz-choice"]').forEach(r => {
         r.addEventListener('change', function() {
           const grp = document.getElementById('bars-options-group');
-          if (grp) grp.style.display = this.value === 'bars' ? '' : 'none';
+          if (grp) grp.style.display = (this.value === 'bars' || this.value === 'table') ? '' : 'none';
+          if (this.value === 'forest') {
+            // Forest plot only works with point estimates — reset sort/filter
+            updateSortFilterForMode(false);
+          } else if (this.value === 'bars' || this.value === 'table') {
+            // Sync sort/filter with the current Show selection
+            const barsType = document.querySelector('input[name="bars-type"]:checked')?.value || 'estimate';
+            updateSortFilterForMode(barsType === 'probability');
+          }
           refreshInterpretTab();
         });
       });
@@ -3592,8 +3575,6 @@
           const probGrp = document.getElementById('bars-prob-group');
           if (estGrp)  estGrp.style.display  = this.value === 'estimate'    ? '' : 'none';
           if (probGrp) probGrp.style.display = this.value === 'probability' ? '' : 'none';
-          const cutoffGrp2 = document.getElementById('view-cutoff-group');
-          if (cutoffGrp2) cutoffGrp2.style.display = this.value === 'probability' ? '' : 'none';
           updateSortFilterForMode(this.value === 'probability');
           refreshInterpretTab();
         });
@@ -3603,8 +3584,7 @@
       if (interpSection) {
         interpSection.addEventListener('change', function(ev) {
           const id = ev.target.id, name = ev.target.name;
-          if (['sort-option','filter-metric','cutoff-input','filter-lower','filter-upper'].includes(id)
-              || name === 'viz-choice' || name === 'bars-show') refreshInterpretTab();
+          if (['sort-option','filter-metric','cutoff-input','filter-lower','filter-upper'].includes(id)) refreshInterpretTab();
         });
         interpSection.addEventListener('input', function(ev) {
           if (['filter-lower','filter-upper','cutoff-input'].includes(ev.target.id)) refreshInterpretTab();
