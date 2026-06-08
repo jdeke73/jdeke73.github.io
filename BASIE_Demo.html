@@ -3357,7 +3357,7 @@
       // Cutoff input: refresh interpret tab on change
       function onCutoffChange() {
         if (modelResults) {
-          try { updateBasieTableAndPlot(); } catch(e) {}
+          try { refreshInterpretTab(); } catch(e) {}
         }
       }
       const cutoffEl = document.getElementById('cutoff-input');
@@ -3607,7 +3607,7 @@
               || name === 'viz-choice' || name === 'bars-show') refreshInterpretTab();
         });
         interpSection.addEventListener('input', function(ev) {
-          if (['filter-lower','filter-upper'].includes(ev.target.id)) refreshInterpretTab();
+          if (['filter-lower','filter-upper','cutoff-input'].includes(ev.target.id)) refreshInterpretTab();
         });
       }
     }
