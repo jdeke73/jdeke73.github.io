@@ -1026,11 +1026,182 @@
     <!-- Apply BASIE to Your Work Sub-tab -->
     <div id="apply-basie" class="sub-tab-content">
       <div class="welcome-narrative" style="padding-top:0.5rem;">
-        <h2 style="color:#152D32; margin-bottom:0.5rem;">Bringing BASIE to Your Organization</h2>
+        <h2 style="color:#152D32; margin-bottom:0.5rem;">Try BASIE With Your Own Estimates</h2>
 
-      <p style="font-size:1.0rem; line-height:1.65; color:#333; margin-bottom:1.25rem;">What you&rsquo;ve just seen is a simplified demonstration using published i3 evaluation data. A custom BASIE implementation is built around your organization&rsquo;s own evidence &mdash; your data, your decision criteria, your stakeholders &mdash; whether your evidence comes from impact evaluations, descriptive comparisons, or trend analyses over time.</p>
+      <p style="font-size:1.0rem; line-height:1.65; color:#333; margin-bottom:1.25rem;">You can upload your own estimates (no more than 200) to our on-premises server and a model will be run to interpret those estimates using BASIE. Note that the results of the analysis and the estimates will be retained on the server.</p>
 
-      <h3 class="welcome-section-header">What a custom implementation can include</h3>
+      <!-- Access gate: shown until a valid per-client code has been entered.
+           This is purely to avoid confusing visitors without a code -- the
+           real enforcement happens server-side on /api/analyze and
+           /api/jobs/{id}, not here. -->
+      <div id="basie-tool-gate" style="margin-bottom:1rem; border:1px solid #D4C4B0; border-radius:4px; padding:1rem 1.25rem; background:#F5F0E8;">
+        <div style="font-weight:600; color:#152D32; margin-bottom:0.5rem;">Have an access code?</div>
+        <p class="help-text" style="margin:0 0 0.6rem 0;">This interactive tool is available to organizations we're working with directly. Enter your access code to unlock it.</p>
+        <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+          <input type="text" id="basie-tool-access-code" placeholder="Access code" style="padding:0.45rem 0.6rem; border:1px solid #D4C4B0; border-radius:4px; font-family:inherit; font-size:0.95rem;">
+          <button id="basie-tool-unlock-btn" style="background:#152D32; color:white; border:none; border-radius:4px; padding:0.55rem 1.2rem; font-size:0.9rem; font-weight:600; cursor:pointer; font-family:inherit;">Unlock</button>
+        </div>
+        <div id="basie-tool-gate-status" class="help-text" style="margin-top:0.5rem;"></div>
+      </div>
+
+      <div id="basie-tool-unlocked" style="display:none;">
+
+      <!-- Upload card -->
+      <div style="margin-bottom:1rem; border:1px solid #D4C4B0; border-radius:4px; padding:1rem 1.25rem; background:#F5F0E8;">
+        <div style="font-weight:600; color:#152D32; margin-bottom:0.5rem;">1. Upload your data</div>
+        <p class="help-text" style="margin:0 0 0.6rem 0;">CSV with columns <code>y</code> (standardized effect size, e.g. Cohen's d) and <code>se</code> (its standard error). An optional <code>label</code> column names each study. At least 2 studies, up to 200.</p>
+        <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+          <input type="file" id="basie-tool-file" accept=".csv">
+          <a href="i3_template.csv" download style="color:#7A5F43; font-weight:600; font-size:0.9rem;">Download an example (the i3 estimates) &rarr;</a>
+        </div>
+        <div id="basie-tool-file-status" class="help-text" style="margin-top:0.5rem;"></div>
+      </div>
+
+      <!-- Prior settings card -->
+      <div style="margin-bottom:1rem; border:1px solid #D4C4B0; border-radius:4px; padding:1rem 1.25rem; background:#F5F0E8;">
+        <div style="font-weight:600; color:#152D32; margin-bottom:0.5rem;">2. Specify the mean and standard deviation of the prior distribution for the average true effect corresponding to your estimates, or use the provided default.</div>
+        <p class="help-text" style="margin:0 0 0.6rem 0;">This is the average effect size you'd expect before seeing your data &mdash; BASIE will update it based on what you upload.</p>
+        <div style="display:flex; gap:1.5rem; flex-wrap:wrap;">
+          <div>
+            <label for="basie-tool-prior-mean" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:0.3rem;">Prior mean</label>
+            <input type="text" inputmode="decimal" id="basie-tool-prior-mean" value="0" style="width:100px;">
+          </div>
+          <div>
+            <label for="basie-tool-prior-sd" style="display:block; font-weight:600; font-size:0.9rem; margin-bottom:0.3rem;">Prior SD</label>
+            <input type="text" inputmode="decimal" id="basie-tool-prior-sd" value="1" style="width:100px;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Run button + status -->
+      <div style="margin-bottom:1.25rem;">
+        <button id="basie-tool-run-btn" style="background:#152D32; color:white; border:none; border-radius:4px; padding:0.7rem 1.5rem; font-size:1rem; font-weight:600; cursor:pointer; font-family:inherit;">Run analysis</button>
+        <div id="basie-tool-status" style="margin-top:0.6rem; font-size:0.9rem;"></div>
+      </div>
+
+      <!-- Results -->
+      <div id="basie-tool-results" style="display:none;">
+
+        <div id="basie-tool-warnings" style="display:none; margin:0.75rem 0; padding:0.6rem 1rem; background:#FBF3E0; border:1px solid #F0DFA8; border-radius:4px; font-size:0.88rem; color:#7a5f1a;"></div>
+
+        <h4 style="margin-top:0;">Prediction for a new study</h4>
+        <p class="help-text" style="margin-bottom:0.5rem;">If BASIE were applied to one more study drawn from the same population as your uploaded estimates, here's what the model predicts for that study's true effect.</p>
+
+        <div class="pip-stat-strip">
+          <div class="pip-stat-box">
+            <div class="pip-stat-num" id="basie-tool-thetanew-val">&ndash;</div>
+            <div class="pip-stat-label">Predicted effect, new study</div>
+          </div>
+          <div class="pip-stat-box">
+            <div class="pip-stat-num" id="basie-tool-thetanew-posprob-val">&ndash;</div>
+            <div class="pip-stat-label">Probability the effect is positive</div>
+          </div>
+          <div class="pip-stat-box">
+            <div class="pip-stat-num" id="basie-tool-thetanew-sd-val">&ndash;</div>
+            <div class="pip-stat-label">SD of the predicted effect</div>
+          </div>
+        </div>
+
+        <div id="basie-tool-density-plot" style="margin-top:0.5rem;"></div>
+
+        <h4 style="margin-top:1.75rem;">Interpret each estimate</h4>
+        <p class="help-text" style="margin-bottom:0.5rem;">"Your estimate" is what you uploaded. "BASIE estimate" is the shrunk posterior estimate &mdash; pulled toward the overall average, by an amount that depends on how precise each individual estimate is.</p>
+
+        <!-- Meaningful threshold: a live viewing control, not a model input.
+             Changing it re-counts the already-fetched posterior quantiles
+             client-side -- no re-run needed. -->
+        <div style="margin-bottom:1rem; border:1px solid #D4C4B0; border-radius:4px; padding:0.65rem 0.9rem; background:#F2EDE3;">
+          <label for="basie-tool-cutoff-input" style="font-weight:600; display:block; margin-bottom:0.25rem;">Meaningful threshold (effect size)</label>
+          <input type="text" inputmode="decimal" id="basie-tool-cutoff-input" placeholder="e.g. 0.1 (optional)" style="width:140px; padding:0.35rem 0.5rem; border:1px solid #D4C4B0; border-radius:4px; font-family:inherit;">
+          <p class="help-text" style="margin:0.4rem 0 0 0;">Sets the P(&gt;threshold) statistics below. Leave blank to see only P(&gt;0) / P(&lt;0). Changing this updates the view instantly &mdash; no need to re-run the analysis.</p>
+        </div>
+
+        <!-- Controls row: view options on left, sort/filter on right -->
+        <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:0.75rem; align-items:flex-start;">
+
+          <!-- View options -->
+          <div style="flex:1; min-width:280px; background:#F2EDE3; border:1px solid #D4C4B0; border-radius:4px; padding:0.65rem 0.9rem;">
+            <div style="font-weight:600; margin-bottom:0.4rem;">View as:</div>
+            <div style="display:flex; flex-wrap:wrap; gap:0.5rem 1.25rem; margin-bottom:0.4rem;">
+              <label><input type="radio" name="basie-tool-viz-choice" value="bars" checked> Vertical bars</label>
+              <label><input type="radio" name="basie-tool-viz-choice" value="forest"> Forest plot</label>
+              <label><input type="radio" name="basie-tool-viz-choice" value="table"> Table</label>
+            </div>
+
+            <!-- Sub-options: shown for bars and table views -->
+            <div id="basie-tool-bars-options-group" style="margin-top:0.5rem; padding-top:0.5rem; border-top:1px solid #D4C4B0;">
+              <div style="display:flex; flex-wrap:wrap; gap:0.5rem 1.5rem; align-items:flex-start;">
+                <div>
+                  <div style="font-weight:600; font-size:0.88rem; margin-bottom:0.25rem;">Show:</div>
+                  <label style="display:block;"><input type="radio" name="basie-tool-bars-type" value="estimate" checked> Point estimate</label>
+                  <label style="display:block;"><input type="radio" name="basie-tool-bars-type" value="probability"> Probability</label>
+                </div>
+                <!-- Point estimate sub-options -->
+                <div id="basie-tool-bars-estimate-group">
+                  <div style="font-weight:600; font-size:0.88rem; margin-bottom:0.25rem;">Which estimate:</div>
+                  <label style="display:block;"><input type="radio" name="basie-tool-bars-show" value="freq" checked> Your estimate</label>
+                  <label style="display:block;"><input type="radio" name="basie-tool-bars-show" value="bayes"> BASIE estimate</label>
+                  <label style="display:block;"><input type="radio" name="basie-tool-bars-show" value="both"> Both</label>
+                </div>
+                <!-- Probability sub-options -->
+                <div id="basie-tool-bars-prob-group" style="display:none;">
+                  <div class="help-text">Shows P(&gt;0) and P(&gt;threshold) for each study.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sort + Filter -->
+          <div style="flex:2; min-width:260px; display:flex; flex-wrap:wrap; gap:1rem;">
+            <div style="flex:1; min-width:140px;">
+              <label for="basie-tool-sort-option" style="font-weight:600; display:block; margin-bottom:0.25rem;">Sort by:</label>
+              <select id="basie-tool-sort-option" style="width:100%;">
+                <option value="est_desc">Your Estimate &darr;</option>
+                <option value="est_asc">Your Estimate &uarr;</option>
+                <option value="post_desc">BASIE Estimate &darr;</option>
+                <option value="post_asc">BASIE Estimate &uarr;</option>
+              </select>
+            </div>
+            <div style="flex:1; min-width:200px;">
+              <label for="basie-tool-filter-metric" style="font-weight:600; display:block; margin-bottom:0.25rem;">Filter by:</label>
+              <select id="basie-tool-filter-metric" style="width:100%; margin-bottom:0.3rem;">
+                <option value="freq_est">Your Estimate</option>
+                <option value="post_mean">BASIE Estimate</option>
+              </select>
+              <div style="display:flex; gap:0.5rem;">
+                <input type="text" inputmode="decimal" id="basie-tool-filter-lower" placeholder="Lower bound" style="flex:1;">
+                <input type="text" inputmode="decimal" id="basie-tool-filter-upper" placeholder="Upper bound" style="flex:1;">
+              </div>
+              <div class="help-text" id="basie-tool-filter-bounds-help" style="margin-top:0.2rem;">Leave bounds blank for no limit.</div>
+            </div>
+          </div>
+        </div><!-- end controls row -->
+
+        <!-- Content panels -->
+        <div id="basie-tool-view-bars">
+          <div style="height:520px; position:relative;">
+            <canvas id="basie-tool-forest-chart" width="100%"></canvas>
+          </div>
+        </div>
+        <div id="basie-tool-view-forest" style="display:none;">
+          <div id="basie-tool-forest-container"></div>
+        </div>
+        <div id="basie-tool-view-table" style="display:none;">
+          <div class="table-responsive">
+            <table id="basie-tool-table" class="display" style="width:100%"></table>
+          </div>
+        </div>
+
+        <div id="basie-tool-error" style="display:none; color:red; margin-top:0.5rem;"></div>
+
+        <div style="margin-top:1rem; font-size:0.8rem; color:#888;">
+          Diagnostics: <span id="basie-tool-diagnostics"></span>
+        </div>
+      </div>
+
+      </div><!-- end basie-tool-unlocked -->
+
+      <h3 class="welcome-section-header" style="margin-top:2.5rem;">What a custom implementation can include</h3>
 
       <ul style="line-height:1.9; padding-left:1.3rem; margin-bottom:1.5rem;">
         <li style="margin-bottom:0.6rem;"><strong>Models calibrated to your domain.</strong> Prior distributions and threshold criteria are set to reflect what&rsquo;s known about effect sizes in your specific program area &mdash; whether the evidence base comes from experimental, quasi-experimental, or descriptive studies.</li>
@@ -3265,6 +3436,23 @@
     }
     window.navigateBackFromPrior = navigateBackFromPrior;
 
+    // Keep the URL hash in sync with whichever tab/sub-tab is visible, so the
+    // address bar is always a shareable direct link to the current view.
+    // Uses replaceState (not location.hash) to avoid the browser's native
+    // jump-to-anchor scroll and to avoid spamming browser history per click.
+    function updateHashForCurrentState() {
+      const activeTabBtn = document.querySelector('.tab-container button.active');
+      if (!activeTabBtn) return;
+      let hashId = activeTabBtn.getAttribute('data-tab');
+      if (hashId === 'try-it') {
+        const activeSubBtn = document.querySelector('.sub-tab-btn.active');
+        if (activeSubBtn) hashId = activeSubBtn.getAttribute('data-subtab');
+      }
+      if (hashId && location.hash !== '#/' + hashId) {
+        history.replaceState(null, '', '#/' + hashId);
+      }
+    }
+
     // Tab switching
     function setupTabs() {
       document.querySelectorAll('.tab-container button').forEach(btn => {
@@ -3299,6 +3487,7 @@
               }
             }
           }
+          updateHashForCurrentState();
         });
       });
     }
@@ -3324,6 +3513,7 @@
               try { updateBasieTableAndPlot(); } catch(e) { try { renderBasieTabSimple(); } catch(e2) {} }
             }
           }
+          updateHashForCurrentState();
         });
       });
     }
@@ -3591,6 +3781,32 @@
         });
       }
     }
+    // Deep-linking: a URL hash opens a specific tab/sub-tab directly, e.g.
+    // BASIE_Demo.html#/apply-basie
+    // The leading "/" is deliberate: it keeps the hash from matching any
+    // real element id, so the browser never performs its own native
+    // jump-to-anchor scroll (which otherwise fights with the tab switch and
+    // leaves the page scrolled down instead of at the top).
+    function applyDeepLinkFromHash() {
+      const id = (location.hash || '').replace(/^#\/?/, '');
+      if (!id) return;
+      // "#/unlock" is a client-only link that reveals the access-code
+      // field on the Apply BASIE to Your Work tab; it routes the same as
+      // "#/apply-basie" but the hash itself is left alone so that tab's
+      // own script (further down the page) can tell the two apart.
+      const subtabId = id === 'unlock' ? 'apply-basie' : id;
+      const subBtn = document.querySelector('.sub-tab-btn[data-subtab="' + subtabId + '"]');
+      if (subBtn) {
+        const parentTabBtn = document.querySelector('.tab-container button[data-tab="try-it"]');
+        if (parentTabBtn) parentTabBtn.click();
+        subBtn.click();
+      } else {
+        const tabBtn = document.querySelector('.tab-container button[data-tab="' + id + '"]');
+        if (tabBtn) tabBtn.click();
+      }
+      window.scrollTo(0, 0);
+    }
+
     // Initialization on page load
     function init() {
       setupTabs();
@@ -3598,12 +3814,779 @@
       setupEventListeners();
       renderDataTable();
       updateAfterDataChange();
+      applyDeepLinkFromHash();
       // Defer model run so the page renders fully before the computation starts
       setTimeout(function() { runModelAndUpdateAll(); }, 0);
     }
     document.addEventListener('DOMContentLoaded', init);
   })();
   </script>
+
+  <!-- ── "Try BASIE With Your Own Estimates" tool ──────────────────────
+       Self-contained script, deliberately separate from the main IIFE
+       above so it can be edited/removed independently.
+
+       LOCAL TESTING vs PRODUCTION:
+       Now pointing at the production API, reachable via Cloudflare
+       Tunnel (see launchd/com.johndeke.basie-tunnel.plist). For local
+       dev against a uvicorn running directly on this Mac instead,
+       temporarily change this back to 'http://127.0.0.1:8123'.
+  -->
+  <script>
+  (function() {
+    const BASIE_TOOL_API_BASE = 'https://api.johndeke.com';
+
+    function escapeHtmlTool(text) {
+      const div = document.createElement('div');
+      div.textContent = text == null ? '' : String(text);
+      return div.innerHTML;
+    }
+
+    function fmt(n, digits) {
+      if (n === null || n === undefined || isNaN(n)) return '&ndash;';
+      return Number(n).toFixed(digits === undefined ? 2 : digits);
+    }
+
+    // Access gating: purely cosmetic on this side (avoids confusing people
+    // without a code) -- the actual enforcement is server-side, on
+    // /api/analyze and /api/jobs/{id}, via the X-Basie-Token header below.
+    //
+    // Three states:
+    //   - no token, arrived without "#/unlock"  -> show nothing (the
+    //     default for anyone who just finds this page normally)
+    //   - no token, arrived via "#/unlock"       -> show the code field
+    //   - valid token already in localStorage    -> show the tool directly,
+    //     but only after confirming with the server that it's still valid
+    //     (revoked clients should silently see the same page as anyone
+    //     without access, not a stale UI shell that fails when used).
+    //
+    // Read location.hash into a const immediately: this runs synchronously
+    // during initial page parse, before the tab-routing script's later
+    // (DOMContentLoaded-deferred) hash rewrite, so it always sees the
+    // hash exactly as the visitor's link specified it.
+    const TOKEN_STORAGE_KEY = 'basieAccessToken';
+    let accessToken = localStorage.getItem(TOKEN_STORAGE_KEY) || null;
+    const cameViaUnlockLink = (location.hash || '').replace(/^#\/?/, '') === 'unlock';
+
+    const gateDiv = document.getElementById('basie-tool-gate');
+    const unlockedDiv = document.getElementById('basie-tool-unlocked');
+    const codeInput = document.getElementById('basie-tool-access-code');
+    const unlockBtn = document.getElementById('basie-tool-unlock-btn');
+    const gateStatus = document.getElementById('basie-tool-gate-status');
+
+    function showNothing() {
+      if (gateDiv) gateDiv.style.display = 'none';
+      if (unlockedDiv) unlockedDiv.style.display = 'none';
+    }
+
+    function showUnlocked() {
+      if (gateDiv) gateDiv.style.display = 'none';
+      if (unlockedDiv) unlockedDiv.style.display = '';
+    }
+
+    function showGate() {
+      accessToken = null;
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+      if (unlockedDiv) unlockedDiv.style.display = 'none';
+      if (gateDiv) gateDiv.style.display = '';
+      if (gateStatus) gateStatus.textContent = '';
+    }
+
+    // Revoked access (code removed + server restarted) should look exactly
+    // like a visit from someone who never had access at all -- no gate, no
+    // explanation, just the plain page.
+    function revokeAndShowDefault() {
+      accessToken = null;
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+      showNothing();
+    }
+
+    if (accessToken) {
+      fetch(BASIE_TOOL_API_BASE + '/api/verify-token', {
+        headers: { 'X-Basie-Token': accessToken }
+      }).then(function(resp) {
+        if (resp.ok) {
+          showUnlocked();
+        } else {
+          revokeAndShowDefault();
+        }
+      }).catch(function() {
+        // Network hiccup, not a revocation -- don't strand a legitimate
+        // client. If the token really is invalid, the next real action
+        // (running an analysis) will still catch it via its own 401 check.
+        showUnlocked();
+      });
+    } else if (cameViaUnlockLink) {
+      showGate();
+    } else {
+      showNothing();
+    }
+
+    if (unlockBtn) {
+      unlockBtn.addEventListener('click', async function() {
+        const code = (codeInput.value || '').trim();
+        if (!code) return;
+        unlockBtn.disabled = true;
+        gateStatus.textContent = '';
+        try {
+          const resp = await fetch(BASIE_TOOL_API_BASE + '/api/verify-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: code })
+          });
+          if (!resp.ok) {
+            if (resp.status === 429) {
+              const body = await resp.json().catch(() => ({}));
+              gateStatus.textContent = body.detail || 'Too many attempts -- please try again later.';
+            } else {
+              gateStatus.textContent = "That code didn't work.";
+            }
+            return;
+          }
+          const data = await resp.json();
+          accessToken = data.token;
+          localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
+          codeInput.value = '';
+          showUnlocked();
+        } catch (e) {
+          gateStatus.textContent = 'Could not reach the server -- please try again.';
+        } finally {
+          unlockBtn.disabled = false;
+        }
+      });
+      codeInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') unlockBtn.click();
+      });
+    }
+
+    let selectedFile = null;
+
+    const fileInput = document.getElementById('basie-tool-file');
+    const fileStatus = document.getElementById('basie-tool-file-status');
+    const runBtn = document.getElementById('basie-tool-run-btn');
+    const statusDiv = document.getElementById('basie-tool-status');
+    const resultsDiv = document.getElementById('basie-tool-results');
+    const warningsDiv = document.getElementById('basie-tool-warnings');
+    const diagnosticsSpan = document.getElementById('basie-tool-diagnostics');
+
+    if (!fileInput) return; // apply-basie tab not present; nothing to wire up
+
+    fileInput.addEventListener('change', function() {
+      selectedFile = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+      fileStatus.textContent = selectedFile ? ('Selected: ' + selectedFile.name) : '';
+      resultsDiv.style.display = 'none';
+      statusDiv.textContent = '';
+    });
+
+    function setStatus(msg, isError) {
+      statusDiv.textContent = msg || '';
+      statusDiv.style.color = isError ? '#B3261E' : '#555';
+    }
+
+    async function pollJob(jobId) {
+      const maxAttempts = 60; // ~60s at 1s interval; this model is normally sub-second
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        await new Promise(r => setTimeout(r, 1000));
+        let resp;
+        try {
+          resp = await fetch(BASIE_TOOL_API_BASE + '/api/jobs/' + jobId, {
+            headers: { 'X-Basie-Token': accessToken || '' }
+          });
+        } catch (e) {
+          throw new Error('Could not reach the analysis server. Is it running?');
+        }
+        if (resp.status === 401) throw new Error('__ACCESS_EXPIRED__');
+        if (!resp.ok) throw new Error('Server error while checking job status (HTTP ' + resp.status + ').');
+        const data = await resp.json();
+        if (data.status === 'done') return data.result;
+        if (data.status === 'error') throw new Error(data.error || 'The analysis failed.');
+        // else still pending/running, keep polling
+      }
+      throw new Error('Timed out waiting for results.');
+    }
+
+    // ================================
+    // Posterior viewing: threshold, view-as (bars/forest/table), sort,
+    // filter. Modeled closely on the "Interpret the i3 Estimates" tab's
+    // own pipeline (updateBasieTableAndPlot/drawVerticalBars/
+    // drawCustomForest/buildBasieTableHtml/updateSortFilterForMode), but
+    // reading real per-study posterior quantiles returned by the server
+    // (lastResult.studies[j].posterior_quantiles) instead of a client-side
+    // toy model's draws. These are 1000 evenly-spaced quantiles of the
+    // full posterior, not raw draws or a thinned subsample -- counting
+    // how many exceed a threshold, or building a KDE from them, works the
+    // same either way, but quantiles carry the full sample's precision in
+    // far less space. Kept in this separate IIFE deliberately -- see the
+    // comment at the top of this script block.
+    // ================================
+    let lastResult = null;
+    let basieToolChart = null;
+
+    const BASIE_TOOL_SORT_EST_OPTS = [
+      { value: 'est_desc',  label: 'Your Estimate ↓' },
+      { value: 'est_asc',   label: 'Your Estimate ↑' },
+      { value: 'post_desc', label: 'BASIE Estimate ↓' },
+      { value: 'post_asc',  label: 'BASIE Estimate ↑' },
+    ];
+    function basieToolGetSortProbOpts(cutoffLabel, hasCutoff) {
+      const opts = [
+        { value: 'pgt0_desc', label: 'P(>0) ↓' },
+        { value: 'pgt0_asc',  label: 'P(>0) ↑' },
+      ];
+      if (hasCutoff) {
+        opts.push({ value: 'pgtc_desc', label: 'P(>' + cutoffLabel + ') ↓' });
+        opts.push({ value: 'pgtc_asc',  label: 'P(>' + cutoffLabel + ') ↑' });
+      }
+      return opts;
+    }
+    const BASIE_TOOL_FILTER_EST_OPTS = [
+      { value: 'freq_est',  label: 'Your Estimate' },
+      { value: 'post_mean', label: 'BASIE Estimate' },
+    ];
+    function basieToolGetFilterProbOpts(cutoffLabel, hasCutoff) {
+      const opts = [{ value: 'pgt0', label: 'P(>0)' }];
+      if (hasCutoff) opts.push({ value: 'pgtc', label: 'P(>' + cutoffLabel + ')' });
+      return opts;
+    }
+    function basieToolRebuildSelect(sel, opts) {
+      const prev = sel.value;
+      sel.innerHTML = '';
+      opts.forEach(o => {
+        const el = document.createElement('option');
+        el.value = o.value; el.textContent = o.label;
+        sel.appendChild(el);
+      });
+      if (opts.some(o => o.value === prev)) sel.value = prev;
+      else sel.value = opts[0].value;
+    }
+    function basieToolUpdateSortFilterOptions(isProbability) {
+      const cutoffEl = document.getElementById('basie-tool-cutoff-input');
+      const cutoffRaw = cutoffEl ? cutoffEl.value : '';
+      const cutoff = parseFloat(cutoffRaw);
+      const hasCutoff = !isNaN(cutoff) && cutoffRaw !== '';
+      const cutoffLabel = hasCutoff ? cutoff.toFixed(2) : '';
+
+      const sortSel = document.getElementById('basie-tool-sort-option');
+      const filtSel = document.getElementById('basie-tool-filter-metric');
+      if (sortSel) basieToolRebuildSelect(sortSel, isProbability ? basieToolGetSortProbOpts(cutoffLabel, hasCutoff) : BASIE_TOOL_SORT_EST_OPTS);
+      if (filtSel) basieToolRebuildSelect(filtSel, isProbability ? basieToolGetFilterProbOpts(cutoffLabel, hasCutoff) : BASIE_TOOL_FILTER_EST_OPTS);
+
+      const help = document.getElementById('basie-tool-filter-bounds-help');
+      if (help) help.textContent = isProbability
+        ? 'Bounds are probabilities (0 to 1). Leave blank for no limit.'
+        : 'Leave bounds blank for no limit.';
+    }
+
+    // Counts each study's posterior quantiles against 0 / the current
+    // threshold -- this is what makes changing the threshold instant, no
+    // server round-trip: it's just re-counting already-fetched quantiles.
+    function basieToolComputeProbsFilterSort() {
+      const studies = lastResult.studies;
+      const J = studies.length;
+      const cutoffRaw = document.getElementById('basie-tool-cutoff-input')?.value || '';
+      const cutoff = parseFloat(cutoffRaw);
+      const hasCutoff = !isNaN(cutoff) && cutoffRaw !== '';
+
+      const freqEst  = studies.map(s => s.y);
+      const freqSE   = studies.map(s => s.se);
+      const postMean = studies.map(s => s.shrunk_estimate.mean);
+      const postLow  = studies.map(s => s.shrunk_estimate.q2_5);
+      const postHigh = studies.map(s => s.shrunk_estimate.q97_5);
+      const pGt0 = new Array(J), pLt0 = new Array(J), pGtCutoff = new Array(J);
+
+      for (let j = 0; j < J; j++) {
+        const draws = studies[j].posterior_quantiles;
+        let gt0 = 0, lt0 = 0, gtC = 0;
+        for (let d of draws) {
+          if (d > 0) gt0++;
+          if (d < 0) lt0++;
+          if (hasCutoff && d > cutoff) gtC++;
+        }
+        pGt0[j] = gt0 / draws.length;
+        pLt0[j] = lt0 / draws.length;
+        pGtCutoff[j] = hasCutoff ? (gtC / draws.length) : null;
+      }
+
+      const sortOption = document.getElementById('basie-tool-sort-option').value;
+      let orderIndices = [...Array(J).keys()];
+      if (sortOption === 'est_desc') orderIndices.sort((a,b) => freqEst[b] - freqEst[a]);
+      else if (sortOption === 'est_asc') orderIndices.sort((a,b) => freqEst[a] - freqEst[b]);
+      else if (sortOption === 'post_desc') orderIndices.sort((a,b) => postMean[b] - postMean[a]);
+      else if (sortOption === 'post_asc') orderIndices.sort((a,b) => postMean[a] - postMean[b]);
+      else if (sortOption === 'pgt0_desc') orderIndices.sort((a,b) => pGt0[b] - pGt0[a]);
+      else if (sortOption === 'pgt0_asc') orderIndices.sort((a,b) => pGt0[a] - pGt0[b]);
+      else if (sortOption === 'pgtc_desc') orderIndices.sort((a,b) => (pGtCutoff[b] || 0) - (pGtCutoff[a] || 0));
+      else if (sortOption === 'pgtc_asc') orderIndices.sort((a,b) => (pGtCutoff[a] || 0) - (pGtCutoff[b] || 0));
+
+      const filterMetric = document.getElementById('basie-tool-filter-metric').value;
+      const lower = parseFloat(document.getElementById('basie-tool-filter-lower').value);
+      const upper = parseFloat(document.getElementById('basie-tool-filter-upper').value);
+      const lo = isNaN(lower) ? -Infinity : lower;
+      const hi = isNaN(upper) ? Infinity : upper;
+      function metricVal(j) {
+        if (filterMetric === 'freq_est')  return freqEst[j];
+        if (filterMetric === 'post_mean') return postMean[j];
+        if (filterMetric === 'pgt0')      return pGt0[j];
+        if (filterMetric === 'pgtc')      return pGtCutoff[j];
+        return freqEst[j];
+      }
+      const filteredIndices = orderIndices.filter(j => (metricVal(j) >= lo && metricVal(j) <= hi));
+
+      return { freqEst, freqSE, postMean, postLow, postHigh, pGt0, pLt0, pGtCutoff, hasCutoff, cutoff, filteredIndices };
+    }
+
+    function basieToolBuildTableHtml(computed) {
+      const { freqEst, freqSE, postMean, pGt0, pLt0, pGtCutoff, hasCutoff, cutoff, filteredIndices } = computed;
+      const cutoffLabel = hasCutoff ? ('P(>' + cutoff.toFixed(2) + ')') : 'P(>threshold)';
+      const barsType = document.querySelector('input[name="basie-tool-bars-type"]:checked')?.value || 'estimate';
+      const barsShow = document.querySelector('input[name="basie-tool-bars-show"]:checked')?.value || 'freq';
+      const showFreq  = barsType === 'estimate' && (barsShow === 'freq'  || barsShow === 'both');
+      const showBayes = barsType === 'estimate' && (barsShow === 'bayes' || barsShow === 'both');
+      const showProb  = barsType === 'probability';
+
+      const headers = ['Study'];
+      if (showFreq)  headers.push('Your estimate', 'SE', 't-stat');
+      if (showBayes) headers.push('BASIE estimate');
+      if (showProb)  headers.push('P(>0)', 'P(<0)', cutoffLabel);
+      let h = '<thead><tr>' + headers.map(hd => '<th>' + hd + '</th>').join('') + '</tr></thead><tbody>';
+
+      filteredIndices.forEach(j => {
+        const s = lastResult.studies[j];
+        const t = freqEst[j] / freqSE[j];
+        let r = '<td>' + escapeHtmlTool(s.label) + '</td>';
+        if (showFreq)  r += '<td>' + fmt(freqEst[j], 3) + '</td><td>' + fmt(freqSE[j], 3) + '</td><td>' + fmt(t, 3) + '</td>';
+        if (showBayes) r += '<td>' + fmt(postMean[j], 3) + '</td>';
+        if (showProb)  r += '<td>' + fmt(pGt0[j], 3) + '</td><td>' + fmt(pLt0[j], 3) + '</td><td>' + (hasCutoff ? fmt(pGtCutoff[j], 3) : '&ndash;') + '</td>';
+        h += '<tr>' + r + '</tr>';
+      });
+      return h + '</tbody>';
+    }
+
+    function basieToolDrawVerticalBars(computed) {
+      const { freqEst, freqSE, postMean, pGt0, pGtCutoff, hasCutoff, cutoff, filteredIndices } = computed;
+      const barsType = document.querySelector('input[name="basie-tool-bars-type"]:checked')?.value || 'estimate';
+      const labels = filteredIndices.map(j => lastResult.studies[j].label);
+      const ctx = document.getElementById('basie-tool-forest-chart');
+      if (!ctx) return;
+
+      let datasets = [];
+      let yTitle = 'Effect size';
+      let yMin, yMax;
+      let showStars = false;
+      let significance = [];
+      let tooltipFmt = (c) => c.dataset.label + ': ' + c.parsed.y.toFixed(3);
+
+      if (barsType === 'estimate') {
+        const barsShow = document.querySelector('input[name="basie-tool-bars-show"]:checked')?.value || 'freq';
+        significance = filteredIndices.map(j => {
+          const t = freqEst[j] / freqSE[j];
+          return 2 * (1 - jStat.normal.cdf(Math.abs(t), 0, 1)) < 0.05;
+        });
+        showStars = true;
+        if (barsShow === 'freq' || barsShow === 'both') {
+          datasets.push({ label: 'Your estimate', data: filteredIndices.map(j => freqEst[j]),
+            backgroundColor: 'rgba(200,185,154,0.8)', borderColor: 'rgba(200,185,154,1)', borderWidth: 1 });
+        }
+        if (barsShow === 'bayes' || barsShow === 'both') {
+          datasets.push({ label: 'BASIE estimate', data: filteredIndices.map(j => postMean[j]),
+            backgroundColor: 'rgba(122,95,67,0.8)', borderColor: 'rgba(122,95,67,1)', borderWidth: 1 });
+        }
+      } else {
+        yTitle = 'Probability (%)';
+        yMin = 0; yMax = 100;
+        datasets.push({ label: 'P(effect > 0)', data: filteredIndices.map(j => pGt0[j] * 100),
+          backgroundColor: 'rgba(200,185,154,0.8)', borderColor: 'rgba(200,185,154,1)', borderWidth: 1 });
+        if (hasCutoff) {
+          datasets.push({ label: 'P(effect > ' + cutoff.toFixed(2) + ')',
+            data: filteredIndices.map(j => pGtCutoff[j] * 100),
+            backgroundColor: 'rgba(122,95,67,0.8)', borderColor: 'rgba(122,95,67,1)', borderWidth: 1 });
+        }
+        tooltipFmt = (c) => c.dataset.label + ': ' + c.parsed.y.toFixed(1) + '%';
+      }
+
+      if (basieToolChart) { basieToolChart.destroy(); basieToolChart = null; }
+      basieToolChart = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: { labels, datasets },
+        options: {
+          indexAxis: 'x', responsive: true, maintainAspectRatio: false,
+          scales: {
+            y: { title: { display: true, text: yTitle }, grid: { display: true },
+                 ...(yMin !== undefined ? { min: yMin } : {}),
+                 ...(yMax !== undefined ? { max: yMax } : {}) },
+            x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 90 } }
+          },
+          plugins: {
+            legend: { display: datasets.length > 1, position: 'top' },
+            tooltip: { callbacks: { label: tooltipFmt } },
+            datalabels: {
+              formatter: (value, context) => {
+                if (!showStars) return '';
+                if (context.dataset.label !== 'Your estimate') return '';
+                return significance[context.dataIndex] ? '*' : '';
+              },
+              color: '#c8102e', font: { size: 16 }, anchor: 'end', align: 'end', offset: 4,
+              display: (context) => {
+                if (!showStars) return false;
+                if (context.dataset.label !== 'Your estimate') return false;
+                return significance[context.dataIndex];
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function basieToolDrawCustomForest(computed) {
+      const { freqEst, freqSE, postMean, postLow, postHigh, filteredIndices } = computed;
+      const freqLow  = filteredIndices.map(j => freqEst[j] - 1.64 * freqSE[j]);
+      const freqHigh = filteredIndices.map(j => freqEst[j] + 1.64 * freqSE[j]);
+      const bayesLow  = filteredIndices.map(j => postLow[j]);
+      const bayesHigh = filteredIndices.map(j => postHigh[j]);
+      const combined = [...freqLow, ...freqHigh, ...bayesLow, ...bayesHigh, 0];
+      let xMin = Math.min(...combined);
+      let xMax = Math.max(...combined);
+      const width = xMax - xMin;
+      if (width <= 0) { xMin -= 0.1; xMax += 0.1; }
+      else { xMin -= 0.04 * width; xMax += 0.04 * width; }
+
+      const container = document.getElementById('basie-tool-forest-container');
+      if (!container) return;
+      container.innerHTML = '';
+      const range = xMax - xMin;
+      const zeroPct = ((0 - xMin) / range) * 100;
+      const zeroLine = document.createElement('div');
+      zeroLine.className = 'custom-forest-zero-line';
+      zeroLine.style.left = zeroPct + '%';
+      container.appendChild(zeroLine);
+
+      filteredIndices.forEach((j, idx) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'custom-forest-row';
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'custom-forest-label';
+        labelDiv.textContent = lastResult.studies[j].label;
+        rowDiv.appendChild(labelDiv);
+
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'custom-forest-line';
+
+        const fLeftPct  = ((freqLow[idx] - xMin) / range) * 100;
+        const fWidthPct = ((freqHigh[idx] - freqLow[idx]) / range) * 100;
+        const fMeanPct  = ((freqEst[j] - xMin) / range) * 100;
+        const fInterval = document.createElement('div');
+        fInterval.className = 'custom-forest-interval freq';
+        fInterval.style.left = fLeftPct + '%';
+        fInterval.style.width = fWidthPct + '%';
+        lineDiv.appendChild(fInterval);
+        const fPoint = document.createElement('div');
+        fPoint.className = 'custom-forest-point freq';
+        fPoint.style.left = fMeanPct + '%';
+        lineDiv.appendChild(fPoint);
+
+        const bLeftPct  = ((bayesLow[idx] - xMin) / range) * 100;
+        const bWidthPct = ((bayesHigh[idx] - bayesLow[idx]) / range) * 100;
+        const bMeanPct  = ((postMean[j] - xMin) / range) * 100;
+        const bInterval = document.createElement('div');
+        bInterval.className = 'custom-forest-interval bayes';
+        bInterval.style.left = bLeftPct + '%';
+        bInterval.style.width = bWidthPct + '%';
+        lineDiv.appendChild(bInterval);
+        const bPoint = document.createElement('div');
+        bPoint.className = 'custom-forest-point bayes';
+        bPoint.style.left = bMeanPct + '%';
+        lineDiv.appendChild(bPoint);
+
+        rowDiv.appendChild(lineDiv);
+        container.appendChild(rowDiv);
+      });
+
+      const axisDiv = document.createElement('div');
+      axisDiv.className = 'custom-forest-axis';
+      const nTicks = 5;
+      for (let i = 0; i < nTicks; i++) {
+        const val = xMin + (range * i) / (nTicks - 1);
+        const pct = ((val - xMin) / range) * 100;
+        const tick = document.createElement('div');
+        tick.className = 'custom-forest-axis-tick';
+        tick.style.left = pct + '%';
+        tick.textContent = val.toFixed(2);
+        axisDiv.appendChild(tick);
+      }
+      container.appendChild(axisDiv);
+    }
+
+    function basieToolRefreshView() {
+      if (!lastResult) return;
+      const errorDiv = document.getElementById('basie-tool-error');
+      if (errorDiv) { errorDiv.style.display = 'none'; errorDiv.textContent = ''; }
+      try {
+        const computed = basieToolComputeProbsFilterSort();
+        const vizChoice = document.querySelector('input[name="basie-tool-viz-choice"]:checked')?.value || 'bars';
+        ['bars','forest','table'].forEach(v => {
+          const el = document.getElementById('basie-tool-view-' + v);
+          if (el) el.style.display = (v === vizChoice) ? '' : 'none';
+        });
+
+        const tbl = document.getElementById('basie-tool-table');
+        if (tbl) tbl.innerHTML = basieToolBuildTableHtml(computed);
+
+        if (basieToolChart) { basieToolChart.destroy(); basieToolChart = null; }
+
+        if (vizChoice === 'bars') {
+          const barsType = document.querySelector('input[name="basie-tool-bars-type"]:checked')?.value || 'estimate';
+          const estGrp  = document.getElementById('basie-tool-bars-estimate-group');
+          const probGrp = document.getElementById('basie-tool-bars-prob-group');
+          if (estGrp)  estGrp.style.display  = barsType === 'estimate'    ? '' : 'none';
+          if (probGrp) probGrp.style.display = barsType === 'probability' ? '' : 'none';
+          basieToolDrawVerticalBars(computed);
+        } else if (vizChoice === 'forest') {
+          basieToolDrawCustomForest(computed);
+        }
+      } catch (e) {
+        console.error('Error rendering apply-basie plot:', e);
+        if (errorDiv) {
+          errorDiv.style.display = 'block';
+          errorDiv.textContent = 'Error rendering plot: ' + (e && e.message ? e.message : e);
+        }
+      }
+    }
+
+    // Wire up the posterior-viewing controls
+    document.querySelectorAll('input[name="basie-tool-viz-choice"]').forEach(r => {
+      r.addEventListener('change', function() {
+        const grp = document.getElementById('basie-tool-bars-options-group');
+        if (grp) grp.style.display = (this.value === 'bars' || this.value === 'table') ? '' : 'none';
+        if (this.value === 'forest') {
+          basieToolUpdateSortFilterOptions(false);
+        } else {
+          const barsType = document.querySelector('input[name="basie-tool-bars-type"]:checked')?.value || 'estimate';
+          basieToolUpdateSortFilterOptions(barsType === 'probability');
+        }
+        basieToolRefreshView();
+      });
+    });
+    document.querySelectorAll('input[name="basie-tool-bars-show"]').forEach(r => {
+      r.addEventListener('change', basieToolRefreshView);
+    });
+    document.querySelectorAll('input[name="basie-tool-bars-type"]').forEach(r => {
+      r.addEventListener('change', function() {
+        const estGrp  = document.getElementById('basie-tool-bars-estimate-group');
+        const probGrp = document.getElementById('basie-tool-bars-prob-group');
+        if (estGrp)  estGrp.style.display  = this.value === 'estimate'    ? '' : 'none';
+        if (probGrp) probGrp.style.display = this.value === 'probability' ? '' : 'none';
+        basieToolUpdateSortFilterOptions(this.value === 'probability');
+        basieToolRefreshView();
+      });
+    });
+    ['basie-tool-sort-option', 'basie-tool-filter-metric'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', basieToolRefreshView);
+    });
+    ['basie-tool-filter-lower', 'basie-tool-filter-upper', 'basie-tool-cutoff-input'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', function() {
+        if (id === 'basie-tool-cutoff-input') {
+          const barsType = document.querySelector('input[name="basie-tool-bars-type"]:checked')?.value || 'estimate';
+          basieToolUpdateSortFilterOptions(barsType === 'probability');
+        }
+        basieToolRefreshView();
+      });
+    });
+
+    // Predictive density plot for theta_new: a Gaussian KDE over the
+    // returned draws (same bandwidth rule -- Silverman's -- used by the
+    // dead-code prior-density plots elsewhere on this page), with vertical
+    // lines marking the middle 50/80/90% intervals plus the mean.
+    function basieToolMean(arr) {
+      return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : NaN;
+    }
+    function basieToolQuantile(arr, q) {
+      const sorted = arr.slice().sort((a, b) => a - b);
+      const pos = (sorted.length - 1) * q;
+      const base = Math.floor(pos);
+      const rest = pos - base;
+      if (sorted[base + 1] !== undefined) return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+      return sorted[base];
+    }
+    function basieToolSd(arr) {
+      const m = basieToolMean(arr);
+      const varsum = arr.reduce((acc, v) => acc + Math.pow(v - m, 2), 0);
+      return Math.sqrt(varsum / arr.length);
+    }
+    function basieToolEstimateDensity(draws, x, bandwidth) {
+      let sumPdf = 0;
+      for (let d of draws) {
+        const z = (x - d) / bandwidth;
+        sumPdf += Math.exp(-0.5 * z * z);
+      }
+      return sumPdf / (draws.length * bandwidth * Math.sqrt(2 * Math.PI));
+    }
+
+    function basieToolDrawDensityPlot(draws, meanVal) {
+      const container = document.getElementById('basie-tool-density-plot');
+      if (!container) return;
+      if (!draws || draws.length === 0) { container.innerHTML = ''; return; }
+
+      const q05 = basieToolQuantile(draws, 0.05);
+      const q10 = basieToolQuantile(draws, 0.10);
+      const q25 = basieToolQuantile(draws, 0.25);
+      const q75 = basieToolQuantile(draws, 0.75);
+      const q90 = basieToolQuantile(draws, 0.90);
+      const q95 = basieToolQuantile(draws, 0.95);
+      const q01 = basieToolQuantile(draws, 0.01);
+      const q99 = basieToolQuantile(draws, 0.99);
+
+      const sdVal = basieToolSd(draws);
+      const n = draws.length;
+      const bandwidth = (1.06 * sdVal * Math.pow(n, -1 / 5)) || 0.01;
+
+      let xMin = q01, xMax = q99;
+      const span = xMax - xMin;
+      if (span <= 0) { xMin -= 0.1; xMax += 0.1; }
+      else { xMin -= 0.08 * span; xMax += 0.08 * span; }
+
+      const W = 700, H = 220;
+      const padL = 20, padR = 20, padT = 15, padB = 36;
+      const plotW = W - padL - padR, plotH = H - padT - padB;
+      function xPx(v) { return padL + ((v - xMin) / (xMax - xMin)) * plotW; }
+
+      const nPts = 200;
+      const xs = [], ys = [];
+      for (let i = 0; i <= nPts; i++) {
+        const x = xMin + (xMax - xMin) * i / nPts;
+        xs.push(x);
+        ys.push(basieToolEstimateDensity(draws, x, bandwidth));
+      }
+      const yMax = Math.max(...ys) || 1;
+      function yPx(y) { return padT + plotH * (1 - y / yMax); }
+      function densityAt(x) { return basieToolEstimateDensity(draws, x, bandwidth); }
+
+      const curvePts = xs.map((x, i) => xPx(x).toFixed(1) + ',' + yPx(ys[i]).toFixed(1)).join(' ');
+      const baseY = yPx(0);
+      const fillPts = xPx(xs[0]).toFixed(1) + ',' + baseY.toFixed(1) + ' ' + curvePts + ' ' + xPx(xs[nPts]).toFixed(1) + ',' + baseY.toFixed(1);
+
+      function vLine(x, opacity, width, dash, color) {
+        const xp = xPx(x);
+        const yTop = yPx(densityAt(x));
+        return '<line x1="' + xp.toFixed(1) + '" y1="' + baseY.toFixed(1) + '" x2="' + xp.toFixed(1) + '" y2="' + yTop.toFixed(1) +
+          '" stroke="' + color + '" stroke-width="' + width + '" stroke-opacity="' + opacity + '"' +
+          (dash ? ' stroke-dasharray="' + dash + '"' : '') + ' />';
+      }
+
+      const NAVY = '#152D32', GOLD = '#c8a97a';
+      let lines = '';
+      lines += vLine(q05, 0.35, 1.5, '3,3', NAVY);
+      lines += vLine(q95, 0.35, 1.5, '3,3', NAVY);
+      lines += vLine(q10, 0.55, 1.5, '3,2', NAVY);
+      lines += vLine(q90, 0.55, 1.5, '3,2', NAVY);
+      lines += vLine(q25, 0.9, 2, null, NAVY);
+      lines += vLine(q75, 0.9, 2, null, NAVY);
+      lines += vLine(meanVal, 1, 2.5, null, GOLD);
+
+      const nTicks = 5;
+      let ticks = '';
+      for (let i = 0; i < nTicks; i++) {
+        const val = xMin + (xMax - xMin) * i / (nTicks - 1);
+        const xp = xPx(val);
+        ticks += '<line x1="' + xp.toFixed(1) + '" y1="' + baseY.toFixed(1) + '" x2="' + xp.toFixed(1) + '" y2="' + (baseY + 5).toFixed(1) + '" stroke="#999" stroke-width="1" />';
+        ticks += '<text x="' + xp.toFixed(1) + '" y="' + (baseY + 18).toFixed(1) + '" font-size="11" fill="#555" text-anchor="middle">' + val.toFixed(2) + '</text>';
+      }
+
+      const svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%; max-width:700px; height:auto; display:block;">' +
+        '<polygon points="' + fillPts + '" fill="rgba(122,95,67,0.18)" stroke="rgba(122,95,67,0.9)" stroke-width="1.5" />' +
+        '<line x1="' + padL + '" y1="' + baseY.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + baseY.toFixed(1) + '" stroke="#999" stroke-width="1" />' +
+        lines + ticks +
+        '</svg>';
+
+      const legend = '<div style="display:flex; flex-wrap:wrap; gap:1rem; font-size:0.82rem; color:#555; margin-top:0.4rem;">' +
+        '<span><strong style="color:' + NAVY + ';">50% interval:</strong> [' + fmt(q25, 3) + ', ' + fmt(q75, 3) + ']</span>' +
+        '<span><strong style="color:' + NAVY + ';">80% interval:</strong> [' + fmt(q10, 3) + ', ' + fmt(q90, 3) + ']</span>' +
+        '<span><strong style="color:' + NAVY + ';">90% interval:</strong> [' + fmt(q05, 3) + ', ' + fmt(q95, 3) + ']</span>' +
+        '</div>';
+
+      container.innerHTML = svg + legend;
+    }
+
+    function renderResults(result) {
+      const draws = result.theta_new.posterior_quantiles || [];
+      const probPositive = draws.length ? draws.filter(d => d > 0).length / draws.length : NaN;
+
+      document.getElementById('basie-tool-thetanew-val').textContent = fmt(result.theta_new.mean);
+      document.getElementById('basie-tool-thetanew-posprob-val').textContent = isNaN(probPositive) ? '–' : (Math.round(probPositive * 100) + '%');
+      document.getElementById('basie-tool-thetanew-sd-val').textContent = fmt(result.theta_new.sd);
+      basieToolDrawDensityPlot(draws, result.theta_new.mean);
+
+      if (result.warnings && result.warnings.length > 0) {
+        warningsDiv.style.display = 'block';
+        warningsDiv.innerHTML = '<strong>Please check:</strong><ul style="margin:0.4rem 0 0 1.2rem; padding:0;">' +
+          result.warnings.map(w => '<li>' + escapeHtmlTool(w) + '</li>').join('') + '</ul>';
+      } else {
+        warningsDiv.style.display = 'none';
+        warningsDiv.innerHTML = '';
+      }
+
+      diagnosticsSpan.textContent = 'max R-hat ' + fmt(result.diagnostics.max_rhat, 3) +
+        ', ' + result.diagnostics.n_divergent + ' divergent transitions.';
+
+      lastResult = result;
+      basieToolUpdateSortFilterOptions(false);
+      basieToolRefreshView();
+
+      resultsDiv.style.display = 'block';
+    }
+
+    runBtn.addEventListener('click', async function() {
+      if (!selectedFile) {
+        setStatus('A file must be uploaded before analysis can be run.', true);
+        return;
+      }
+
+      const priorMean = document.getElementById('basie-tool-prior-mean').value.trim();
+      const priorSd = document.getElementById('basie-tool-prior-sd').value.trim();
+
+      runBtn.disabled = true;
+      resultsDiv.style.display = 'none';
+      setStatus('Uploading and validating...', false);
+
+      const form = new FormData();
+      form.append('file', selectedFile);
+      form.append('prior_mu_mean', priorMean || '0');
+      form.append('prior_mu_sd', priorSd || '1');
+
+      try {
+        const resp = await fetch(BASIE_TOOL_API_BASE + '/api/analyze', {
+          method: 'POST',
+          headers: { 'X-Basie-Token': accessToken || '' },
+          body: form
+        });
+
+        if (resp.status === 401) throw new Error('__ACCESS_EXPIRED__');
+
+        if (!resp.ok) {
+          const errBody = await resp.json().catch(() => ({}));
+          throw new Error(errBody.detail || ('Request failed (HTTP ' + resp.status + ').'));
+        }
+
+        const submitData = await resp.json();
+        setStatus('Running the model (usually a few seconds)...', false);
+        const result = await pollJob(submitData.job_id);
+        setStatus('Done.', false);
+        renderResults(result);
+      } catch (err) {
+        if (err.message === '__ACCESS_EXPIRED__') {
+          setStatus('', false);
+          revokeAndShowDefault();
+        } else {
+          setStatus(err.message || 'Something went wrong.', true);
+        }
+      } finally {
+        runBtn.disabled = false;
+      }
+    });
+  })();
+  </script>
+
 <footer style="border-top: 1px solid #D8CCBB; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: #F9F9F1; color: #5a5244; font-size: 0.83rem;">
   <span>&copy; 2026 John Deke</span>
   <a href="index.html" style="color: #7A5F43; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">&#8592; johndeke.com</a>
