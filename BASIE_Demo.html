@@ -6,12 +6,7 @@
   <title>BASIE Demo</title>
   <!-- Import Montserrat and Zilla Slab fonts from Google Fonts -->
     <!-- Load external libraries from trusted CDNs -->
-  <!-- jQuery is required for DataTables -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-          integrity="sha256-K+8g5XvLqL4Ub+j68z8WM+duPwyJ9z7MM3bXU6Y9sPo=" crossorigin="anonymous"></script>
-  <!-- DataTables CSS and JS for tabular display -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <!-- Tables use the native HTML renderer; no jQuery or DataTables dependency. -->
   <!-- jStat provides statistical distributions (normal, gamma) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
   <!-- Chart.js for plotting; includes error bars plugin -->
@@ -59,7 +54,7 @@
       border: 1px solid #D6D9DE;
     }
     .welcome-contrast-box.new {
-      background: #205C43;
+      background: #193B61;
       color: white;
     }
     .welcome-contrast-box h4 {
@@ -69,7 +64,7 @@
       letter-spacing: 0.05em;
     }
     .welcome-contrast-box.old h4 { color: #888; }
-    .welcome-contrast-box.new h4 { color: #CDE7D8; }
+    .welcome-contrast-box.new h4 { color: #D4E2F0; }
     .welcome-contrast-box ul {
       margin: 0;
       padding-left: 1.2rem;
@@ -78,8 +73,8 @@
     }
     .welcome-contrast-box.new ul { color: #EEF1F3; }
     .welcome-section-header {
-      color: #205C43;
-      border-left: 4px solid #205C43;
+      color: #193B61;
+      border-left: 4px solid #193B61;
       padding-left: 0.75rem;
       margin-top: 2rem;
       margin-bottom: 0.75rem;
@@ -100,7 +95,7 @@
     .welcome-roadmap tr:last-child td { border-bottom: none; }
     .welcome-roadmap .tab-name {
       font-weight: 700;
-      color: #205C43;
+      color: #193B61;
       white-space: nowrap;
       width: 1%;
     }
@@ -111,27 +106,27 @@
       padding-left: 0;
       padding-right: 0;
     }
-    .welcome-roadmap tr:nth-child(odd) td { background: #F1F7F3; }
+    .welcome-roadmap tr:nth-child(odd) td { background: #F1F5FA; }
     .welcome-pitch {
       margin-top: 2rem;
       padding: 1.5rem;
-      background: linear-gradient(135deg, #205C43 0%, rgb(25,70,51) 100%);
+      background: linear-gradient(135deg, #193B61 0%, rgb(17,42,70) 100%);
       color: white;
       border-radius: 8px;
     }
     .welcome-pitch h3 {
-      color: #CDE7D8;
+      color: #D4E2F0;
       margin: 0 0 0.6rem 0;
       font-size: 1.15rem;
     }
     .welcome-pitch p {
-      color: #E2EEE7;
+      color: #E5EDF5;
       line-height: 1.65;
       margin: 0.5rem 0;
       font-size: 0.95rem;
     }
     .welcome-pitch ul {
-      color: #E2EEE7;
+      color: #E5EDF5;
       padding-left: 1.3rem;
       line-height: 1.75;
       font-size: 0.93rem;
@@ -158,10 +153,10 @@
     .pip-lead {
       font-size: 1.1rem;
       line-height: 1.7;
-      color: #205C43;
-      border-left: 4px solid #205C43;
+      color: #193B61;
+      border-left: 4px solid #193B61;
       padding: 0.75rem 1rem;
-      background: #F1F7F3;
+      background: #F1F5FA;
       border-radius: 0 4px 4px 0;
       margin: 0.75rem 0 1.25rem;
     }
@@ -174,7 +169,7 @@
     .pip-stat-box {
       flex: 1;
       min-width: 110px;
-      background: #205C43;
+      background: #193B61;
       color: white;
       border-radius: 6px;
       padding: 1rem 0.75rem;
@@ -184,7 +179,7 @@
       font-size: 2rem;
       font-weight: 700;
       line-height: 1.1;
-      color: #CDE7D8;
+      color: #D4E2F0;
     }
     .pip-stat-label {
       font-size: 0.82rem;
@@ -192,8 +187,8 @@
       opacity: 0.9;
     }
     .pip-section-header {
-      color: #205C43;
-      border-left: 4px solid #205C43;
+      color: #193B61;
+      border-left: 4px solid #193B61;
       padding-left: 0.75rem;
       margin-top: 2rem;
       margin-bottom: 0.75rem;
@@ -202,7 +197,7 @@
     .pip-figure {
       margin: 1.25rem 0;
       padding: 0.75rem;
-      background: #F1F7F3;
+      background: #F1F5FA;
       border: 1px solid #D6D9DE;
       border-radius: 4px;
     }
@@ -226,7 +221,7 @@
       gap: 1.25rem;
       margin: 1.5rem 0;
       padding: 1.25rem 1.5rem;
-      background: #205C43;
+      background: #193B61;
       color: white;
       border-radius: 6px;
       flex-wrap: wrap;
@@ -234,7 +229,7 @@
     .pip-callout-stat {
       font-size: 3.5rem;
       font-weight: 700;
-      color: #CDE7D8;
+      color: #D4E2F0;
       white-space: nowrap;
       flex-shrink: 0;
       min-width: 80px;
@@ -259,7 +254,7 @@
       line-height: 1.4;
     }
     .pip-comparison-table thead th {
-      background: #205C43;
+      background: #193B61;
       color: white;
       font-weight: 600;
       text-align: center;
@@ -273,7 +268,7 @@
       width: 32%;
     }
     .pip-bad  { color: #c8102e; text-align: center; }
-    .pip-good { color: #205C43; font-weight: 600; text-align: center; }
+    .pip-good { color: #193B61; font-weight: 600; text-align: center; }
     .pip-conclusion {
       margin: 1.5rem 0;
       padding: 1.1rem 1.25rem;
@@ -312,15 +307,15 @@
     h2 {
       font-size: 35px; /* locked: keeps pre-scale size of 1.75rem × 20px */
       /* Dark blue for main headings: RGB(11,41,73) */
-      color: #205C43;
+      color: #193B61;
     }
     h3 {
       font-size: 1.3rem;
-      color: #205C43;
+      color: #193B61;
     }
     h4 {
       font-size: 1.1rem;
-      color: #205C43;
+      color: #193B61;
     }
     p {
       line-height: 1.4;
@@ -357,7 +352,7 @@
       flex: 1;
       border-bottom: 3px solid transparent;
       transition: border-color 0.2s;
-      color: #205C43;
+      color: #193B61;
       font-weight: 600;
       font-family: Helvetica, Arial, sans-serif;
     }
@@ -366,8 +361,8 @@
     }
     .tab-container button.active {
       /* Teal accent for active tab: RGB(4, 107, 92) */
-      border-bottom: 3px solid #205C43;
-      color: #205C43;
+      border-bottom: 3px solid #193B61;
+      color: #193B61;
     }
     .tab-content {
       display: none;
@@ -390,7 +385,7 @@
       cursor: pointer;
       border-bottom: 3px solid transparent;
       transition: border-color 0.2s;
-      color: #205C43;
+      color: #193B61;
       font-weight: 600;
       font-family: Helvetica, Arial, sans-serif;
     }
@@ -398,8 +393,8 @@
       background-color: #F1F3F4;
     }
     .sub-tab-btn.active {
-      border-bottom: 3px solid #205C43;
-      color: #205C43;
+      border-bottom: 3px solid #193B61;
+      color: #193B61;
     }
     .sub-tab-content {
       display: none;
@@ -468,12 +463,12 @@
     }
     button.btn-primary {
       /* Primary button uses the updated teal RGB(4,107,92) */
-      background-color: #205C43;
+      background-color: #193B61;
       color: #ffffff;
     }
     button.btn-success {
       /* Success button uses the dark blue: RGB(11,41,73) */
-      background-color: #205C43;
+      background-color: #193B61;
       color: #ffffff;
     }
     button.btn-primary:disabled {
@@ -591,7 +586,7 @@
     }
     .custom-forest-interval.bayes {
       /* Teal interval for Bayesian */
-      background-color: rgba(32,92,67,1);
+      background-color: rgba(25,59,97,1);
       top: 5px;
     }
     .custom-forest-point {
@@ -606,7 +601,7 @@
       top: 4px;
     }
     .custom-forest-point.bayes {
-      background-color: rgba(32,92,67,1);
+      background-color: rgba(25,59,97,1);
       top: 7px;
     }
     .custom-forest-zero-line {
@@ -658,7 +653,7 @@
     /* Link styling to match Mathematica palette */
     a {
       /* Use teal for links */
-      color: #205C43;
+      color: #193B61;
     }
     a:hover {
       text-decoration: underline;
@@ -679,12 +674,12 @@
       align-items: center;
     }
   </style>
-  <link rel="stylesheet" href="theme.css?v=20261029">
+  <link rel="stylesheet" href="theme.css?v=20261029-2">
 </head>
 <body class="basie-demo">
 <div style="position: relative; padding: 0.6rem 1.5rem; background-color: #FFFFFF; border-bottom: 1px solid #D6D9DE; text-align: center;">
-    <a href="index.html" style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 1.6rem; color: #205C43; text-decoration: none; line-height: 1;" title="Home">&#8962;</a>
-    <span style="font-size: 36px; font-weight: 700; color: #205C43;">A Demonstration of BASIE</span>
+    <a href="index.html" style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 1.6rem; color: #193B61; text-decoration: none; line-height: 1;" title="Home">&#8962;</a>
+    <span style="font-size: 36px; font-weight: 700; color: #193B61;">A Demonstration of BASIE</span>
   </div>
   <!-- Tab navigation -->
   <div class="tab-container">
@@ -700,7 +695,7 @@
 
       <div class="welcome-hero">
         <h2>BASIE bridges the gap from evidence to decision making</h2>
-        <div style="text-align:center; font-size:1.1rem; font-weight:600; color:#205C43; letter-spacing:0.04em; margin:0.75rem 0 1.25rem;">
+        <div style="text-align:center; font-size:1.1rem; font-weight:600; color:#193B61; letter-spacing:0.04em; margin:0.75rem 0 1.25rem;">
           Evidence &nbsp;&rarr;&nbsp; BASIE &nbsp;&rarr;&nbsp; Decision Making
         </div>
         <p>Decision makers need more than just a description of evidence &ndash; they need to know what the evidence means for their decisions. They need to know how confident they can be, whether the evidence is strong enough to act on, and what they should realistically expect if they invest in a program or scale it to a new context. <strong>BASIE (Bayesian Interpretation of Estimates)</strong> was designed to answer these questions directly, using criteria relevant to the decision maker&rsquo;s goals, in plain terms that support a yes, no, or not-yet decision.</p>
@@ -749,7 +744,7 @@
   <div id="pip-foundation" class="tab-content">
     <div class="pip-narrative">
 
-      <h2 style="color:#205C43; margin-bottom:0.5rem;">Picking Winners: The Challenge Every Funder Faces</h2>
+      <h2 style="color:#193B61; margin-bottom:0.5rem;">Picking Winners: The Challenge Every Funder Faces</h2>
       <p class="pip-lead">Foundations, government agencies, and other funders face the same high-stakes question: of all the programs and interventions we could support, which ones are most likely to make a real difference? When rigorous evaluation evidence is available, the natural impulse is to follow the numbers &mdash; to fund the programs with the best-looking results. But reading evaluation findings correctly turns out to be harder than it looks.</p>
       <p style="line-height:1.65;">Consider a local foundation that wants to improve math outcomes in its community. Foundation staff draw on 44 rigorous evaluations of math interventions supported by the U.S. Department of Education&rsquo;s <a href="https://ies.ed.gov/use-work/evaluations/evaluation-investing-innovation" target="_blank" rel="noopener"><em>Investing in Innovation</em> (i3) program</a>. They set two explicit criteria for what &ldquo;works&rdquo;: a program should be <strong>very unlikely to produce a negative effect</strong>, and <strong>more likely than not to improve math scores by at least 0.10 standard deviations</strong> &mdash; a threshold they consider educationally meaningful.</p>
 
@@ -783,8 +778,8 @@
         <div class="pip-callout-text"><strong>Magnitude error of the standard approach.</strong> Simulations show that &ldquo;winning&rdquo; estimates average 0.52 SD &mdash; but the true effects behind those winners average only 0.08 SD. Across simulations, fewer than half of selected programs truly meet the foundation&rsquo;s criteria.</div>
       </div>
 
-      <details style="margin:0.75rem 0 1rem; border:1px solid #D6D9DE; border-radius:4px; padding:0.5rem 1rem; background:#F1F7F3;">
-        <summary style="cursor:pointer; font-weight:600; color:#205C43; padding:0.3rem 0; user-select:none; font-size:0.92rem;">&#128300;&nbsp; Simulation methodology (technical details)</summary>
+      <details style="margin:0.75rem 0 1rem; border:1px solid #D6D9DE; border-radius:4px; padding:0.5rem 1rem; background:#F1F5FA;">
+        <summary style="cursor:pointer; font-weight:600; color:#193B61; padding:0.3rem 0; user-select:none; font-size:0.92rem;">&#128300;&nbsp; Simulation methodology (technical details)</summary>
         <div style="margin-top:0.85rem; font-size:0.9rem; line-height:1.7; color:#333;">
 
           <p style="margin-bottom:0.75rem;">To assess inferential errors, we need to compare inferences to the truth. For example, calculating a Type M error requires comparing an <em>estimate</em> of an intervention&rsquo;s effect to its <em>true</em> effect. This is impossible with real data because true effects are unknown &mdash; but it is straightforward in a simulation, where true effects are generated and then estimated subject to random error.</p>
@@ -843,8 +838,8 @@
         </tbody>
       </table>
 
-      <h4 style="color:#205C43; margin-top:1.75rem; margin-bottom:0.5rem;">BASIE Applied to the Five Candidates</h4>
-      <p style="line-height:1.65;">The figure below shows what happens when BASIE reinterprets the five apparent winners. The light grey bars show the original frequentist estimates; the forest green bars show the Bayesian estimates, which are &ldquo;shrunk&rdquo; toward more realistic values by accounting for the overall distribution of effects in the i3 portfolio.</p>
+      <h4 style="color:#193B61; margin-top:1.75rem; margin-bottom:0.5rem;">BASIE Applied to the Five Candidates</h4>
+      <p style="line-height:1.65;">The figure below shows what happens when BASIE reinterprets the five apparent winners. The light grey bars show the original frequentist estimates; the navy bars show the Bayesian estimates, which are &ldquo;shrunk&rdquo; toward more realistic values by accounting for the overall distribution of effects in the i3 portfolio.</p>
 
       <figure class="pip-figure">
         <div class="pip-figcaption"><strong>Figure 2.</strong> Frequentist estimates (tan) vs. Bayesian estimates (dark gold) for the five programs selected by the standard approach. Bayesian estimates are shrunk substantially toward more plausible values.</div>
@@ -887,7 +882,7 @@
 
     <!-- Interpret Estimates Sub-tab -->
     <div id="interpret-estimates" class="sub-tab-content active">
-      <h2 style="color:#205C43; margin-bottom:0.5rem;">What does the evidence really mean?</h2>
+      <h2 style="color:#193B61; margin-bottom:0.5rem;">What does the evidence really mean?</h2>
     <p style="font-size:1.0rem; line-height:1.65; color:#333; margin-bottom:1rem;">You&rsquo;re now in the role of foundation staff, using BASIE to reinterpret the 44 i3 evaluation findings. Use the views below to compare intervention effects using both a frequentist and Bayesian approach. You can change the cutoff used to determine what constitutes a meaningful effect and you can assess sensitivity to prior distributions.</p>
 
     <!-- Meaningful threshold (always visible) -->
@@ -900,14 +895,14 @@
     </div>
 
     <!-- Prior assumptions -->
-    <div style="margin-bottom:1rem; border:1px solid #D6D9DE; border-radius:4px; padding:0.6rem 1rem 0.1rem 1rem; background:#F1F7F3;">
+    <div style="margin-bottom:1rem; border:1px solid #D6D9DE; border-radius:4px; padding:0.6rem 1rem 0.1rem 1rem; background:#F1F5FA;">
       <p style="font-size:0.88rem; color:#62666D; margin-bottom:0.4rem;">
         Prior distributions play a central role in Bayesian interpretation.
-        <a href="#" id="prior-info-link-interpret-estimates" style="color:#205C43; font-weight:600;"
+        <a href="#" id="prior-info-link-interpret-estimates" style="color:#193B61; font-weight:600;"
            onclick="navigateToPriorSection('interpret-estimates'); return false;">Learn more &rarr;</a>
       </p>
       <details style="border:none; padding:0; background:none; margin:0;">
-        <summary style="cursor:pointer; font-weight:600; color:#205C43; padding:0.3rem 0; user-select:none;">&#9881;&#xFE0E;&nbsp; Adjust prior assumptions</summary>
+        <summary style="cursor:pointer; font-weight:600; color:#193B61; padding:0.3rem 0; user-select:none;">&#9881;&#xFE0E;&nbsp; Adjust prior assumptions</summary>
       <div style="margin-top:0.75rem; display:flex; flex-wrap:wrap; gap:1.5rem; padding-bottom:0.5rem;">
         <div style="flex:1; min-width:240px;">
           <label class="prior-panel-mu-label" style="display:block; font-weight:600; margin-bottom:0.4rem;"></label>
@@ -1015,7 +1010,7 @@
     <div id="interpret-view-table" style="display:none;">
       <h4 style="margin-top:0.5rem;">Posterior summary table</h4>
       <div class="table-responsive">
-        <table id="basie-table" class="display" style="width:100%"></table>
+        <table id="basie-table" class="basie-native-table" style="width:100%"></table>
       </div>
     </div>
 
@@ -1027,7 +1022,7 @@
     <!-- Apply BASIE to Your Work Sub-tab -->
     <div id="apply-basie" class="sub-tab-content">
       <div class="welcome-narrative" style="padding-top:0.5rem;">
-        <h2 style="color:#205C43; margin-bottom:0.5rem;">Try BASIE With Your Own Estimates</h2>
+        <h2 style="color:#193B61; margin-bottom:0.5rem;">Try BASIE With Your Own Estimates</h2>
 
       <p style="font-size:1.0rem; line-height:1.65; color:#333; margin-bottom:1.25rem;">You can upload your own estimates (no more than 200) to our on-premises server and a model will be run to interpret those estimates using BASIE. Note that the results of the analysis and the estimates will be retained on the server.</p>
 
@@ -1035,12 +1030,12 @@
            This is purely to avoid confusing visitors without a code -- the
            real enforcement happens server-side on /api/analyze and
            /api/jobs/{id}, not here. -->
-      <div id="basie-tool-gate" style="margin-bottom:1rem; border:1px solid #D6D9DE; border-radius:4px; padding:1rem 1.25rem; background:#F1F7F3;">
-        <div style="font-weight:600; color:#205C43; margin-bottom:0.5rem;">Have an access code?</div>
+      <div id="basie-tool-gate" style="margin-bottom:1rem; border:1px solid #D6D9DE; border-radius:4px; padding:1rem 1.25rem; background:#F1F5FA;">
+        <div style="font-weight:600; color:#193B61; margin-bottom:0.5rem;">Have an access code?</div>
         <p class="help-text" style="margin:0 0 0.6rem 0;">This interactive tool is available to organizations we're working with directly. Enter your access code to unlock it.</p>
         <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
           <input type="text" id="basie-tool-access-code" placeholder="Access code" style="padding:0.45rem 0.6rem; border:1px solid #D6D9DE; border-radius:4px; font-family:inherit; font-size:0.95rem;">
-          <button id="basie-tool-unlock-btn" style="background:#205C43; color:white; border:none; border-radius:4px; padding:0.55rem 1.2rem; font-size:0.9rem; font-weight:600; cursor:pointer; font-family:inherit;">Unlock</button>
+          <button id="basie-tool-unlock-btn" style="background:#193B61; color:white; border:none; border-radius:4px; padding:0.55rem 1.2rem; font-size:0.9rem; font-weight:600; cursor:pointer; font-family:inherit;">Unlock</button>
         </div>
         <div id="basie-tool-gate-status" class="help-text" style="margin-top:0.5rem;"></div>
       </div>
@@ -1048,19 +1043,19 @@
       <div id="basie-tool-unlocked" style="display:none;">
 
       <!-- Upload card -->
-      <div style="margin-bottom:1rem; border:1px solid #D6D9DE; border-radius:4px; padding:1rem 1.25rem; background:#F1F7F3;">
-        <div style="font-weight:600; color:#205C43; margin-bottom:0.5rem;">1. Upload your data</div>
+      <div style="margin-bottom:1rem; border:1px solid #D6D9DE; border-radius:4px; padding:1rem 1.25rem; background:#F1F5FA;">
+        <div style="font-weight:600; color:#193B61; margin-bottom:0.5rem;">1. Upload your data</div>
         <p class="help-text" style="margin:0 0 0.6rem 0;">CSV with columns <code>y</code> (standardized effect size, e.g. Cohen's d) and <code>se</code> (its standard error). An optional <code>label</code> column names each study. At least 2 studies, up to 200.</p>
         <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
           <input type="file" id="basie-tool-file" accept=".csv">
-          <a href="i3_template.csv" download style="color:#205C43; font-weight:600; font-size:0.9rem;">Download an example (the i3 estimates) &rarr;</a>
+          <a href="i3_template.csv" download style="color:#193B61; font-weight:600; font-size:0.9rem;">Download an example (the i3 estimates) &rarr;</a>
         </div>
         <div id="basie-tool-file-status" class="help-text" style="margin-top:0.5rem;"></div>
       </div>
 
       <!-- Prior settings card -->
-      <div style="margin-bottom:1rem; border:1px solid #D6D9DE; border-radius:4px; padding:1rem 1.25rem; background:#F1F7F3;">
-        <div style="font-weight:600; color:#205C43; margin-bottom:0.5rem;">2. Specify the mean and standard deviation of the prior distribution for the average true effect corresponding to your estimates, or use the provided default.</div>
+      <div style="margin-bottom:1rem; border:1px solid #D6D9DE; border-radius:4px; padding:1rem 1.25rem; background:#F1F5FA;">
+        <div style="font-weight:600; color:#193B61; margin-bottom:0.5rem;">2. Specify the mean and standard deviation of the prior distribution for the average true effect corresponding to your estimates, or use the provided default.</div>
         <p class="help-text" style="margin:0 0 0.6rem 0;">This is the average effect size you'd expect before seeing your data &mdash; BASIE will update it based on what you upload.</p>
         <div style="display:flex; gap:1.5rem; flex-wrap:wrap;">
           <div>
@@ -1076,7 +1071,7 @@
 
       <!-- Run button + status -->
       <div style="margin-bottom:1.25rem;">
-        <button id="basie-tool-run-btn" style="background:#205C43; color:white; border:none; border-radius:4px; padding:0.7rem 1.5rem; font-size:1rem; font-weight:600; cursor:pointer; font-family:inherit;">Run analysis</button>
+        <button id="basie-tool-run-btn" style="background:#193B61; color:white; border:none; border-radius:4px; padding:0.7rem 1.5rem; font-size:1rem; font-weight:600; cursor:pointer; font-family:inherit;">Run analysis</button>
         <div id="basie-tool-status" style="margin-top:0.6rem; font-size:0.9rem;"></div>
       </div>
 
@@ -1214,8 +1209,8 @@
 
       <p style="line-height:1.65; margin-bottom:1.75rem;">Whether you need a one-time analysis, a reusable framework, or a full evaluation approach built around Bayesian reasoning, a solution can be designed to fit your team, your data, and your decisions.</p>
 
-      <div style="padding:1.25rem 1.5rem; border:2px solid #205C43; border-radius:6px; background:#F1F7F3;">
-        <p style="font-weight:700; color:#205C43; font-size:1.05rem; margin-bottom:0.5rem;">Interested in working together?</p>
+      <div style="padding:1.25rem 1.5rem; border:2px solid #193B61; border-radius:6px; background:#F1F5FA;">
+        <p style="font-weight:700; color:#193B61; font-size:1.05rem; margin-bottom:0.5rem;">Interested in working together?</p>
         <p style="line-height:1.65; margin:0;">Contact <strong><a href="mailto:jdeke73@gmail.com?subject=BASIE%20--%20user%20inquiry">John Deke</a></strong> to discuss what a tailored BASIE implementation could look like for your organization.</p>
       </div>
 
@@ -1229,7 +1224,7 @@
   <div id="about" class="tab-content">
     <div class="welcome-narrative">
 
-      <h2 style="color:#205C43; margin-bottom:0.5rem;">Methods</h2>
+      <h2 style="color:#193B61; margin-bottom:0.5rem;">Methods</h2>
       <p style="font-size:1.05rem; line-height:1.65; color:#333;">BASIE (Bayesian Interpretation of Estimates) is a framework for applying hierarchical Bayesian models to portfolios of estimates &mdash; whether from randomized trials, quasi-experimental designs, or descriptive analyses of group differences or trends &mdash; producing posterior probabilities and predictive intervals that directly support evidence-based decisions. It was developed by John Deke and Mariel Finucane. The motivating example used throughout &mdash; a local foundation evaluating 44 i3 math interventions &mdash; is described in detail on the <strong>Picking Winners</strong> tab.</p>
 
       <h3 class="welcome-section-header">The statistical model</h3>
@@ -1246,19 +1241,19 @@
 
       <!-- Back button: only shown when navigated from a prior panel link -->
       <div id="prior-back-btn" style="display:none; margin-bottom:1rem;">
-        <button onclick="navigateBackFromPrior()" style="background:none; border:1px solid #D6D9DE; border-radius:4px; padding:0.3rem 0.8rem; font-size:0.85rem; color:#205C43; cursor:pointer; font-family:inherit;">&#8592; Back</button>
+        <button onclick="navigateBackFromPrior()" style="background:none; border:1px solid #D6D9DE; border-radius:4px; padding:0.3rem 0.8rem; font-size:0.85rem; color:#193B61; cursor:pointer; font-family:inherit;">&#8592; Back</button>
       </div>
 
       <p style="line-height:1.65;">Bayesian interpretation requires combining evidence from the current study with prior information about the plausible range of effects. To understand why, consider what we are trying to accomplish: we want to know the probability that a program&rsquo;s true effect is meaningful. An estimate alone cannot answer this question &mdash; it reflects both random error and genuine program effects. To calculate the probability that the estimate reflects a meaningful effect, we need information about how common meaningful effects are in general. That information is captured by the prior distribution.</p>
 
-      <h4 style="color:#205C43; margin:0.75rem 0 0.4rem;">Priors should be evidence-based, not arbitrary</h4>
+      <h4 style="color:#193B61; margin:0.75rem 0 0.4rem;">Priors should be evidence-based, not arbitrary</h4>
       <p style="line-height:1.65;">The choice of prior should be grounded in evidence and logic, not chosen arbitrarily or to favor a predetermined conclusion. A well-chosen, transparent prior is far preferable to avoiding the question &mdash; frequentist significance tests also embed implicit assumptions about the plausibility of effects, but do so without stating them openly. Making prior assumptions explicit is a feature of Bayesian analysis, not a weakness.</p>
 
-      <h4 style="color:#205C43; margin:0.75rem 0 0.4rem;">The other estimates are the main source of prior information</h4>
+      <h4 style="color:#193B61; margin:0.75rem 0 0.4rem;">The other estimates are the main source of prior information</h4>
       <p style="line-height:1.65;">The most important source of prior information for interpreting any individual estimate is the collection of all the other estimates in the portfolio. This is the central insight behind the hierarchical normal model: each study&rsquo;s estimate informs our understanding of the population of true effects, and that collective understanding in turn shapes the interpretation of each individual estimate. This process &mdash; called <em>partial pooling</em> or <em>shrinkage</em> &mdash; pulls extreme estimates toward more realistic values, correcting for the winner&rsquo;s curse illustrated in the <strong>Picking Winners</strong> tab.</p>
       <p style="line-height:1.65;">In addition to learning from the data, we place a &ldquo;prior on the prior&rdquo; &mdash; called a <em>hyper-prior</em> &mdash; that reflects general background knowledge about effect sizes in the domain. The sliders in the prior panel control these hyper-priors.</p>
 
-      <h4 style="color:#205C43; margin:0.75rem 0 0.4rem;">The hyper-prior on &mu; (mean of true effects)</h4>
+      <h4 style="color:#193B61; margin:0.75rem 0 0.4rem;">The hyper-prior on &mu; (mean of true effects)</h4>
       <p style="line-height:1.65;">The hyper-prior on &mu; is always centered at zero &mdash; reflecting the assumption that, before seeing the data, positive and negative effects are equally plausible. This is also a form of pre-registered skepticism that prevents the prior from being chosen in a way that favors a desired result. Once the data are observed, the posterior for &mu; can move substantially away from zero if the estimates collectively point in that direction.</p>
       <p style="line-height:1.65;">The four options for the standard deviation of this hyper-prior reflect different background assumptions about how large effects are likely to be, informed by meta-analyses showing that variation in effects across social programs is real but not enormous:</p>
       <ul style="line-height:1.9; padding-left:1.3rem; font-size:0.93rem;">
@@ -1268,7 +1263,7 @@
         <li><strong>N(0, 1.0&sup2;):</strong> Very diffuse &mdash; places substantial prior weight on large effects. Not typically supported by systematic reviews of social program evaluations, but included as a sensitivity and bounding analysis.</li>
       </ul>
 
-      <h4 style="color:#205C43; margin:0.75rem 0 0.4rem;">The hyper-prior on &tau; (SD of true effects)</h4>
+      <h4 style="color:#193B61; margin:0.75rem 0 0.4rem;">The hyper-prior on &tau; (SD of true effects)</h4>
       <p style="line-height:1.65;">&tau; governs how much true effects vary across studies. A small &tau; means programs have similar effects; a large &tau; means there is substantial heterogeneity. The Gamma family is a natural choice for &tau; for three reasons: (1) it is defined only on positive values, as required since standard deviations must be non-negative; (2) with shape parameter k&nbsp;=&nbsp;2, it places relatively little weight near zero, avoiding the unrealistic assumption that all programs have identical true effects; and (3) the <a href="https://github.com/stan-dev/stan/wiki/prior-choice-recommendations" target="_blank" rel="noopener">Stan Prior Choice Recommendations</a> (Gelman et al.) explicitly recommend Gamma(2, 0) as a &ldquo;boundary-avoiding&rdquo; prior for hierarchical scale parameters, because it keeps the posterior mode away from zero while still allowing it to be close to zero if the data warrant &mdash; BASIE uses Gamma(2, &beta;) with &beta;&nbsp;&gt;&nbsp;0, producing proper (integrable) priors with this same boundary-avoiding shape.</p>
       <p style="line-height:1.65;">The five options, described in terms of their implications for the spread of true effects:</p>
       <ul style="line-height:1.9; padding-left:1.3rem; font-size:0.93rem;">
@@ -1279,7 +1274,7 @@
         <li><strong>Uninformative (flat) [default]:</strong> &tau; is estimated entirely from the data with no prior constraint. Consistent with the Rubin (1981) eight schools model. Appropriate when you want the evidence itself to determine the degree of shrinkage without any prior nudge toward a particular level of heterogeneity.</li>
       </ul>
 
-      <h4 style="color:#205C43; margin:0.75rem 0 0.4rem;">A note on sensitivity</h4>
+      <h4 style="color:#193B61; margin:0.75rem 0 0.4rem;">A note on sensitivity</h4>
       <p style="line-height:1.65;">We encourage users to move the sliders and observe how results change. Robustness to prior choice is itself informative &mdash; if the conclusions are similar across a range of reasonable priors, the evidence is strong. If they change substantially, the data alone may not be sufficient for confident conclusions, and the choice of prior deserves careful attention.</p>
 
       <h3 class="welcome-section-header">Posterior computation</h3>
@@ -1569,7 +1564,6 @@
     let feChart;    // fixed effect scatter chart
     let forestChart, axisChart; // for tables & plots tab
     let modelResults = null; // will hold results from Bayesian model
-    let tableInstance = null; // DataTables instance for BASIE table
     let pipModelResults = null; // Cached model results for the Picking Winners tab
     let pipFig1Chart = null;
     let pipFig2Chart = null;
@@ -1891,8 +1885,8 @@
           {
             label: 'Relative prior likelihood vs 0',
             data: relMu,
-            backgroundColor: 'rgba(32,92,67,0.6)',
-            borderColor: 'rgba(32,92,67,1)',
+            backgroundColor: 'rgba(25,59,97,0.6)',
+            borderColor: 'rgba(25,59,97,1)',
             borderWidth: 1
           }
         ]
@@ -2288,8 +2282,8 @@
           {
             label: 'Relative posterior density vs 0',
             data: relMu,
-            backgroundColor: 'rgba(32,92,67,0.6)',
-            borderColor: 'rgba(32,92,67,1)',
+            backgroundColor: 'rgba(25,59,97,0.6)',
+            borderColor: 'rgba(25,59,97,1)',
             borderWidth: 1
           }
         ]
@@ -2657,7 +2651,7 @@
     }
 
     // Simpler rendering for BASIE tab: draws a bar chart of frequentist vs Bayesian means and populates a summary table.  This serves as a fallback when the more complex
-    // forest plot fails or DataTables errors prevent rendering.  It uses the current sorting/filtering and cutoff settings.
+    // forest plot fails. It uses the current sorting/filtering and cutoff settings.
     function renderBasieTabSimple() {
       if (!modelResults) return;
       // Read sorting and filtering selections
@@ -2719,7 +2713,7 @@
         return freqEst[j];
       }
       indices = indices.filter(j => metricVal(j) >= lo && metricVal(j) <= hi);
-      // Build table rows for DataTable
+      // Build rows for the native HTML table
       const tableRows = indices.map(j => {
         return {
           id: dataset[j].id,
@@ -2779,7 +2773,7 @@
         // Teal accent for Bayesian bars
         datasets.push({ label: 'Bayesian', data: bayesData,
           /* Updated teal for Bayesian bars: RGB(4,107,92) */
-          backgroundColor: 'rgba(32,92,67,0.8)', borderColor: 'rgba(32,92,67,1)', borderWidth: 1 });
+          backgroundColor: 'rgba(25,59,97,0.8)', borderColor: 'rgba(25,59,97,1)', borderWidth: 1 });
       }
       // Determine y-axis limits based on the visible datasets to ensure bars are visible
       const allVals = [];
@@ -2909,7 +2903,7 @@
         }
         if (barsShow === 'bayes' || barsShow === 'both') {
           datasets.push({ label: 'Bayesian (posterior mean)', data: filteredIndices.map(j => postMean[j]),
-            backgroundColor: 'rgba(32,92,67,0.8)', borderColor: 'rgba(32,92,67,1)', borderWidth: 1 });
+            backgroundColor: 'rgba(25,59,97,0.8)', borderColor: 'rgba(25,59,97,1)', borderWidth: 1 });
         }
         tooltipFmt = (c2) => `${c2.dataset.label}: ${c2.parsed.y.toFixed(3)}`;
 
@@ -2925,7 +2919,7 @@
         if (showCutoff) {
           datasets.push({ label: `P(effect > ${cutoffVal.toFixed(2)})`,
             data: filteredIndices.map(j => (pGtCutoffArr[j] * 100)),
-            backgroundColor: 'rgba(32,92,67,0.8)', borderColor: 'rgba(32,92,67,1)', borderWidth: 1 });
+            backgroundColor: 'rgba(25,59,97,0.8)', borderColor: 'rgba(25,59,97,1)', borderWidth: 1 });
         }
         tooltipFmt = (c2) => `${c2.dataset.label}: ${c2.parsed.y.toFixed(1)}%`;
       }
@@ -3356,7 +3350,7 @@
         const pGt   = draws.filter(d => d > cutoff).length / draws.length;
         const pStr  = (pGt * 100).toFixed(0) + '%';
         const pStyle = pGt >= 0.50
-          ? 'color:#205C43; font-weight:600; text-align:center;'
+          ? 'color:#193B61; font-weight:600; text-align:center;'
           : 'color:#c8102e; text-align:center;';
         html += `<tr>
           <td>${row.id}</td>
@@ -3615,7 +3609,7 @@
       }
 
       function buildPriorSvg(type, params) {
-        const TEAL = '#205C43', NAVY = '#205C43';
+        const TEAL = '#193B61', NAVY = '#193B61';
         const isFlat = type === 'tau' && (!isFinite(params.shape) || !isFinite(params.rate));
         if (isFlat) return '<div style="font-size:0.82rem;color:#666;font-style:italic;padding:6px 0;">Prior places no constraint on \u03c4 \u2014 the degree of shrinkage is determined entirely by the data.</div>';
         const xMin = type === 'mu' ? MU_AXIS_MIN : 0;
@@ -4190,7 +4184,7 @@
         }
         if (barsShow === 'bayes' || barsShow === 'both') {
           datasets.push({ label: 'BASIE estimate', data: filteredIndices.map(j => postMean[j]),
-            backgroundColor: 'rgba(32,92,67,0.8)', borderColor: 'rgba(32,92,67,1)', borderWidth: 1 });
+            backgroundColor: 'rgba(25,59,97,0.8)', borderColor: 'rgba(25,59,97,1)', borderWidth: 1 });
         }
       } else {
         yTitle = 'Probability (%)';
@@ -4200,7 +4194,7 @@
         if (hasCutoff) {
           datasets.push({ label: 'P(effect > ' + cutoff.toFixed(2) + ')',
             data: filteredIndices.map(j => pGtCutoff[j] * 100),
-            backgroundColor: 'rgba(32,92,67,0.8)', borderColor: 'rgba(32,92,67,1)', borderWidth: 1 });
+            backgroundColor: 'rgba(25,59,97,0.8)', borderColor: 'rgba(25,59,97,1)', borderWidth: 1 });
         }
         tooltipFmt = (c) => c.dataset.label + ': ' + c.parsed.y.toFixed(1) + '%';
       }
@@ -4475,7 +4469,7 @@
           (dash ? ' stroke-dasharray="' + dash + '"' : '') + ' />';
       }
 
-      const NAVY = '#205C43', GOLD = '#CDE7D8';
+      const NAVY = '#193B61', GOLD = '#D4E2F0';
       let lines = '';
       lines += vLine(q05, 0.35, 1.5, '3,3', NAVY);
       lines += vLine(q95, 0.35, 1.5, '3,3', NAVY);
@@ -4495,7 +4489,7 @@
       }
 
       const svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%; max-width:700px; height:auto; display:block;">' +
-        '<polygon points="' + fillPts + '" fill="rgba(32,92,67,0.18)" stroke="rgba(32,92,67,0.9)" stroke-width="1.5" />' +
+        '<polygon points="' + fillPts + '" fill="rgba(25,59,97,0.18)" stroke="rgba(25,59,97,0.9)" stroke-width="1.5" />' +
         '<line x1="' + padL + '" y1="' + baseY.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + baseY.toFixed(1) + '" stroke="#999" stroke-width="1" />' +
         lines + ticks +
         '</svg>';
@@ -4590,7 +4584,7 @@
 
 <footer style="border-top: 1px solid #D6D9DE; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: #FFFFFF; color: #62666D; font-size: 0.83rem;">
   <span>&copy; 2026 John Deke</span>
-  <a href="index.html" style="color: #205C43; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">&#8592; johndeke.com</a>
+  <a href="index.html" style="color: #193B61; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">&#8592; johndeke.com</a>
 </footer>
 
 </body>

@@ -1,8 +1,8 @@
 /* johndeke.com: white and charcoal, with a distinct accent for each section. */
 :root {
   --home-accent: #171717;
-  --services-accent: #193B61;
-  --basie-accent: #205C43;
+  --services-accent: #205C43;
+  --basie-accent: #193B61;
   --publications-accent: #4A6176;
   --experience-accent: #8A6500;
   --ink: #18191B;
@@ -86,15 +86,23 @@ body.site-main { background: var(--bg); color: var(--text); }
 .site-main .experience-entry > span { width: auto !important; min-width: 3.5rem; text-align: center; }
 .site-main footer { background: var(--bg); color: var(--muted); border-color: var(--border); }
 
-/* The BASIE tools use forest green for Bayesian results and grey for original estimates. */
+/* The BASIE tools use navy for Bayesian results and grey for original estimates. */
 body.basie-demo { --accent: var(--basie-accent); background: var(--bg); color: var(--text); }
 .basie-demo a { color: var(--accent); }
 .basie-demo h2, .basie-demo h3, .basie-demo h4, .basie-demo h5 { color: var(--accent); }
 .basie-demo input[type="radio"], .basie-demo input[type="checkbox"], .basie-demo input[type="range"] { accent-color: var(--accent); }
-.basie-demo .well { background: #F1F7F3; border-color: var(--border); border-left: 3px solid var(--accent); }
+.basie-demo .well { background: #F1F5FA; border-color: var(--border); border-left: 3px solid var(--accent); }
 .basie-demo .welcome-roadmap .tab-name { color: var(--accent); }
-.basie-demo .welcome-pitch h3, .basie-demo .welcome-contrast-box.new h4 { color: #CDE7D8; }
-.basie-demo .tab-container button.active, .basie-demo .sub-tab-btn.active { background: #EBF2EE; }
+.basie-demo .welcome-pitch h3, .basie-demo .welcome-contrast-box.new h4 { color: #D4E2F0; }
+.basie-demo .tab-container button.active, .basie-demo .sub-tab-btn.active { background: #EBF0F6; }
+.basie-demo .basie-native-table { border-collapse: collapse; text-align: left; }
+.basie-demo .basie-native-table th, .basie-demo .basie-native-table td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  font-size: 0.85rem;
+}
+.basie-demo .basie-native-table th { color: var(--accent); background: #EBF0F6; }
 
 @media (max-width: 640px) {
   .site-main .nav-links { gap: 0; flex-wrap: wrap; justify-content: flex-end; }
