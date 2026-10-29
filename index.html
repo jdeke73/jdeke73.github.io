@@ -8,13 +8,13 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --dark:    #152D32;
-      --gold:    #7A5F43;
-      --bg:      #F9F9F1;
-      --bg2:     #F2EDE3;
-      --border:  #D4C4B0;
-      --text:    #1a1a18;
-      --muted:   #5a5244;
+      --dark:    #18191B;
+      --gold:    #171717;
+      --bg:      #FFFFFF;
+      --bg2:     #F1F2F4;
+      --border:  #D6D9DE;
+      --text:    #34363A;
+      --muted:   #62666D;
       --font:    'Nimbus Sans', 'NimbusSan', Helvetica, Arial, sans-serif;
     }
 
@@ -213,8 +213,9 @@
       .container { padding: 2rem 1rem; }
     }
   </style>
+  <link rel="stylesheet" href="theme.css?v=20261029">
 </head>
-<body>
+<body class="site-main" data-section="home">
 
 <!-- ── NAV ── -->
 <nav>
@@ -241,10 +242,10 @@
         <p class="home-bio">With support from federal agencies, I co-led the development of <strong>BASIE (Bayesian Interpretation of Estimates)</strong>, an approach now used across federal agencies to provide transparent, probability-based interpretation of both impact estimates and descriptive differences between groups or across time. BASIE empowers more useful, comprehensive, and integrated interpretation of heterogeneous research findings.</p>
 
         <div class="home-buttons">
-          <button class="btn-primary" onclick="showPage('services')">Services</button>
-          <button class="btn-outline" onclick="showPage('tool')">BASIE</button>
-          <button class="btn-outline" onclick="showPage('pubs')">Publications</button>
-          <button class="btn-outline" onclick="showPage('exp')">Experience</button>
+          <button class="btn-primary" data-destination="services" onclick="showPage('services')">Services</button>
+          <button class="btn-outline" data-destination="tool" onclick="showPage('tool')">BASIE</button>
+          <button class="btn-outline" data-destination="pubs" onclick="showPage('pubs')">Publications</button>
+          <button class="btn-outline" data-destination="exp" onclick="showPage('exp')">Experience</button>
         </div>
       </div>
       <div class="home-photo">
@@ -260,8 +261,8 @@
 <div id="page-tool" class="page">
   <div class="container">
     <div style="margin-bottom:1.5rem;">
-      <h2 style="font-size:1.9rem; font-weight:700; color:#152D32; margin-bottom:0.5rem;">BASIE bridges the gap from evidence to decision making</h2>
-      <div style="text-align:center; font-size:1.1rem; font-weight:600; color:#7A5F43; letter-spacing:0.04em; margin:0.5rem 0 0;">
+      <h2 style="font-size:1.9rem; font-weight:700; color:var(--accent); margin-bottom:0.5rem;">BASIE bridges the gap from evidence to decision making</h2>
+      <div class="evidence-bridge" style="text-align:center; font-size:1.1rem; font-weight:600; color:var(--accent); letter-spacing:0.04em; margin:0.5rem 0 0;">
         Evidence &nbsp;&rarr;&nbsp; BASIE &nbsp;&rarr;&nbsp; Decision Making
       </div>
     </div>
@@ -474,10 +475,10 @@
       <p>I offer consulting, technical assistance, and review across a range of evaluation methodology topics</p>
     </div>
 
-    <div style="background:#152D32; color:#F9F9F1; border-radius:10px; padding:1.75rem 2rem; margin-bottom:1.5rem;">
-      <h3 style="color:#F9F9F1; margin-bottom:0.5rem;">Interested in working together?</h3>
-      <p style="margin-bottom:1rem; color:#d4c4b0; line-height:1.65;">Whether you need a one-time review, ongoing technical assistance, or a full evaluation framework built around Bayesian reasoning, I can design something that fits your team, your data, and your decisions.</p>
-      <a href="mailto:jdeke73@gmail.com" class="btn-primary" style="background:#7A5F43; display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none;">Get in Touch</a>
+    <div class="service-callout" style="background:var(--tint); color:var(--text); border-radius:10px; padding:1.75rem 2rem; margin-bottom:1.5rem;">
+      <h3 style="color:var(--accent); margin-bottom:0.5rem;">Interested in working together?</h3>
+      <p style="margin-bottom:1rem; color:var(--text); line-height:1.65;">Whether you need a one-time review, ongoing technical assistance, or a full evaluation framework built around Bayesian reasoning, I can design something that fits your team, your data, and your decisions.</p>
+      <a href="mailto:jdeke73@gmail.com" class="btn-primary" style="background:var(--accent); display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none;">Get in Touch</a>
     </div>
 
     <!-- BASIE -->
@@ -485,10 +486,10 @@
       <div class="pub-meta"><span class="pub-type">Signature Service</span></div>
       <h2 style="margin-top:0.5rem;">BASIE Implementation and Tools</h2>
       <p>I co-developed the BASIE (Bayesian Interpretation of Estimates) framework and can help organizations apply it to their evaluation portfolios. Services include:</p>
-      <ul style="line-height:1.8; padding-left:1.3rem; color:#5a5244;">
+      <ul style="line-height:1.8; padding-left:1.3rem; color:var(--muted);">
         <li><strong>Reinterpret</strong> existing estimates using BASIE</li>
         <li><strong>Develop</strong> empirically grounded prior distributions from existing evidence bases</li>
-        <li><strong>Build</strong> tailored BASIE tools and dashboards (for example, <a href="BASIE_Demo.html" target="_blank" style="color:#7A5F43;">BASIE Demo</a>)</li>
+        <li><strong>Build</strong> tailored BASIE tools and dashboards (for example, <a href="BASIE_Demo.html" target="_blank" style="color:var(--accent);">BASIE Demo</a>)</li>
         <li><strong>Train</strong> researchers, program staff, and funders to use BASIE</li>
       </ul>
     </div>
@@ -498,7 +499,7 @@
       <div class="pub-meta"><span class="pub-type">Evaluation Methodology</span></div>
       <h2 style="margin-top:0.5rem;">Evaluation Technical Assistance</h2>
       <p>I provide methodological guidance across a range of evaluation topics, including:</p>
-      <ul style="line-height:1.8; padding-left:1.3rem; color:#5a5244;">
+      <ul style="line-height:1.8; padding-left:1.3rem; color:var(--muted);">
         <li><strong>Randomized controlled trials</strong> design and analysis</li>
         <li><strong>Regression discontinuity design</strong> implementation and standards review</li>
         <li><strong>Statistical power analysis</strong> for multiple design types</li>
@@ -514,7 +515,7 @@
       <div class="pub-meta"><span class="pub-type">Evidence Synthesis</span></div>
       <h2 style="margin-top:0.5rem;">Bayesian Meta-Analysis and Evidence Synthesis</h2>
       <p>I bring deep expertise in synthesizing evidence across studies, including:</p>
-      <ul style="line-height:1.8; padding-left:1.3rem; color:#5a5244;">
+      <ul style="line-height:1.8; padding-left:1.3rem; color:var(--muted);">
         <li><strong>Making sense</strong> of evidence in systematic reviews for decision makers</li>
         <li><strong>Standards development</strong> for systematic reviews</li>
         <li><strong>Bayesian meta-analysis</strong> to characterize variation in effects across sites, populations, and contexts</li>
@@ -526,7 +527,7 @@
       <div class="pub-meta"><span class="pub-type">Review and Oversight</span></div>
       <h2 style="margin-top:0.5rem;">Quality Assurance and Expert Review</h2>
       <p>I provide constructive, collegial input to improve quality, including:</p>
-      <ul style="line-height:1.8; padding-left:1.3rem; color:#5a5244;">
+      <ul style="line-height:1.8; padding-left:1.3rem; color:var(--muted);">
         <li><strong>Review</strong> design plans, analysis plans, and final reports</li>
         <li><strong>Serve</strong> on technical working groups and expert panels</li>
       </ul>
@@ -544,9 +545,9 @@
       <h1>Experience</h1>
     </div>
 
-    <h2 style="font-size:1.3rem; font-weight:700; color:var(--dark); margin-bottom:1.25rem; padding-bottom:0.4rem; border-bottom:2px solid var(--border);">Education</h2>
+    <h2 style="font-size:1.3rem; font-weight:700; color:var(--accent); margin-bottom:1.25rem; padding-bottom:0.4rem; border-bottom:2px solid var(--border);">Education</h2>
 
-    <div style="display:flex; gap:2rem; margin-bottom:1.1rem; align-items:baseline;">
+    <div class="experience-entry" style="display:flex; gap:2rem; margin-bottom:1.1rem; align-items:baseline;">
       <span style="font-size:0.95rem; font-weight:600; color:var(--muted); flex-shrink:0; width:3rem;">2000</span>
       <div>
         <div style="font-weight:600; color:var(--dark);">Ph.D., Economics</div>
@@ -554,7 +555,7 @@
       </div>
     </div>
 
-    <div style="display:flex; gap:2rem; margin-bottom:2rem; align-items:baseline;">
+    <div class="experience-entry" style="display:flex; gap:2rem; margin-bottom:2rem; align-items:baseline;">
       <span style="font-size:0.95rem; font-weight:600; color:var(--muted); flex-shrink:0; width:3rem;">1995</span>
       <div>
         <div style="font-weight:600; color:var(--dark);">B.S., Economics and Mathematics, with distinction</div>
@@ -562,9 +563,9 @@
       </div>
     </div>
 
-    <h2 style="font-size:1.3rem; font-weight:700; color:var(--dark); margin-bottom:1.25rem; padding-bottom:0.4rem; border-bottom:2px solid var(--border);">Work Experience</h2>
+    <h2 style="font-size:1.3rem; font-weight:700; color:var(--accent); margin-bottom:1.25rem; padding-bottom:0.4rem; border-bottom:2px solid var(--border);">Work Experience</h2>
 
-    <div style="display:flex; gap:2rem; margin-bottom:1.5rem; align-items:baseline;">
+    <div class="experience-entry" style="display:flex; gap:2rem; margin-bottom:1.5rem; align-items:baseline;">
       <span style="font-size:0.95rem; font-weight:600; color:var(--muted); flex-shrink:0; width:3rem;">2025&ndash;</span>
       <div>
         <div style="font-weight:600; color:var(--dark);">Independent Consultant</div>
@@ -572,20 +573,20 @@
       </div>
     </div>
 
-    <div style="display:flex; gap:2rem; margin-bottom:0.6rem; align-items:baseline;">
+    <div class="experience-entry" style="display:flex; gap:2rem; margin-bottom:0.6rem; align-items:baseline;">
       <span style="font-size:0.95rem; font-weight:600; color:var(--muted); flex-shrink:0; width:3rem;">2000&ndash;<br>2025</span>
       <div style="font-weight:600; color:var(--dark);">Mathematica</div>
     </div>
 
-    <div style="display:flex; gap:2rem; margin-bottom:0.5rem; align-items:baseline; padding-left:1rem;">
+    <div class="experience-role" style="display:flex; gap:2rem; margin-bottom:0.5rem; align-items:baseline; padding-left:1rem;">
       <span style="font-size:0.9rem; color:var(--muted); flex-shrink:0; width:5rem;">2021&ndash;2025</span>
       <div style="color:var(--dark); font-size:0.95rem;">Senior Fellow</div>
     </div>
-    <div style="display:flex; gap:2rem; margin-bottom:0.5rem; align-items:baseline; padding-left:1rem;">
+    <div class="experience-role" style="display:flex; gap:2rem; margin-bottom:0.5rem; align-items:baseline; padding-left:1rem;">
       <span style="font-size:0.9rem; color:var(--muted); flex-shrink:0; width:5rem;">2005&ndash;2021</span>
       <div style="color:var(--dark); font-size:0.95rem;">Senior Researcher</div>
     </div>
-    <div style="display:flex; gap:2rem; margin-bottom:2rem; align-items:baseline; padding-left:1rem;">
+    <div class="experience-role" style="display:flex; gap:2rem; margin-bottom:2rem; align-items:baseline; padding-left:1rem;">
       <span style="font-size:0.9rem; color:var(--muted); flex-shrink:0; width:5rem;">2000&ndash;2005</span>
       <div style="color:var(--dark); font-size:0.95rem;">Researcher</div>
     </div>
@@ -596,7 +597,7 @@
 <!-- ── FOOTER ── -->
 <footer>
   <span>John Deke, PhD &middot; Independent Consultant</span>
-  <a href="mailto:jdeke73@gmail.com" class="btn-primary" style="background:#7A5F43; display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none; font-size:0.85rem; padding:0.4rem 1rem;">Get in Touch</a>
+  <a href="mailto:jdeke73@gmail.com" class="btn-primary" style="background:var(--accent); display:inline-flex; align-items:center; gap:0.4rem; text-decoration:none; font-size:0.85rem; padding:0.4rem 1rem;">Get in Touch</a>
   <span>&copy; 2026 John Deke. All rights reserved.</span>
 </footer>
 
@@ -606,6 +607,7 @@
     document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
     document.getElementById('page-' + id).classList.add('active');
     document.getElementById('nav-' + id).classList.add('active');
+    document.body.dataset.section = id;
     window.scrollTo(0, 0);
   }
   // Set initial active nav
